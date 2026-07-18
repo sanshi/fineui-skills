@@ -1,0 +1,24 @@
+{
+  "name": "fineui-skills",
+  "description": "FineUI 组件库 AI 技能：让 AI 编程助手准确生成使用 FineUI 的代码，覆盖 F.js 前端 / FineUIPro(WebForms) / FineUICore(TagHelper 与流式 API) 四端写法。",
+  "version": "0.1.0",
+  "license": "MIT",
+  "author": {
+    "name": "FineUI",
+    "url": "https://www.fineui.com"
+  },
+  "homepage": "https://www.fineui.com",
+  "skills": "./skills/",
+  "keywords": [
+    "fineui",
+    "ui-components",
+    "webforms",
+    "asp-net-core",
+    "javascript",
+    "jquery",
+    "grid",
+    "taghelper",
+    "agent-skills",
+    "skills"
+  ]
+}
