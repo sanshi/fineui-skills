@@ -1,65 +1,8 @@
-# Panel 面板 与 TabStrip 选项卡
-
-## 一、Panel 面板
-
-容器属性：`Title`、`BodyPadding`、`EnableCollapse`（折叠）、`IconFont`/`IconUrl`、`ShowBorder`、`ShowHeader`、`AutoScroll`、`Height`、`Layout`。工具栏放 `<Toolbars>`（C#）/ `bars`（F.js），内容放 `<Items>` / `items`。
-
-### 工具栏（顶部/底部）
-
-工具栏项：`ToolbarText`、`ToolbarSeparator`（分隔线）、`Button`、`ToolbarFill`（撑开右对齐）。F.js 的 `'-'` = 分隔线、`'->'` = 填充。`Position="Top"` / `"Bottom"`。
-
-```javascript
-// F.js
-bars: [{ type: 'Toolbar', position: 'top', items: [
-    { type: 'ToolbarText', text: '文本' }, '-', { type: 'Button', text: '按钮' }, '->', { type: 'ToolbarText', text: '右' }
-] }]
-```
-```aspx
-<%-- Pro / Core-TagHelper --%>
-<Toolbars>
-    <f:Toolbar Position="Top" runat="server"><Items>
-        <f:ToolbarText Text="文本" runat="server" /><f:ToolbarSeparator runat="server" />
-        <f:Button Text="按钮" runat="server" /><f:ToolbarFill runat="server" />
-    </Items></f:Toolbar>
-</Toolbars>
-```
-```csharp
-// Core-MVC（Fluent）
-.Toolbars(F.Toolbar().Position(ToolbarPosition.Top).Items(
-    F.ToolbarText().Text("文本"), F.ToolbarSeparator(), F.Button().Text("按钮"), F.ToolbarFill()))
-```
-
-### 折叠与折叠事件
-
-```javascript
-// F.js
-{ type: 'Panel', collapsible: true, ... }   // F.ui.Panel1.toggleCollapse() / isCollapsed()
-```
-```aspx
-<%-- Pro / Core-TagHelper：折叠触发服务端事件 --%>
-<f:Panel EnableCollapse="true" EnableCollapseEvent="true" OnCollapse="Panel1_Collapse"
-         EnableExpandEvent="true" OnExpand="Panel1_Expand" runat="server"> ... </f:Panel>
-```
-
-### 标题栏工具图标（Tools）
-
-```aspx
-<%-- Pro / Core-TagHelper：标题右侧的小图标按钮 --%>
-<f:Panel ... runat="server">
-    <Items> ... </Items>
-    <Tools>
-        <f:Tool IconFont="_Gear" ToolTip="设置" EnablePostBack="false" runat="server">
-            <Listeners><f:Listener Event="click" Handler="onToolClick" /></Listeners>
-        </f:Tool>
-    </Tools>
-</f:Panel>
-```
-
----
-
-## 二、TabStrip 选项卡
+# TabStrip 选项卡
 
 容器：`Height`、`TabPosition="Top"`、`ActiveTabIndex`（默认激活）、`EnableTabCloseMenu`、`ShowBorder`。每个 `Tab` 有 `Title`/`TitleRawHtml`、`BodyPadding`、`Layout`、`Closable`、`Disabled`、`Icon`；内容用 `<Items>`/`items`，简单文本可用 `content`(F.js)/`Content`。
+
+## 静态选项卡
 
 ```javascript
 // F.js
@@ -91,7 +34,7 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
     ))
 ```
 
-### Tab 内嵌 iframe
+## Tab 内嵌 iframe
 
 ```aspx
 <%-- Pro / Core-TagHelper --%>
@@ -104,9 +47,7 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
 F.Tab().Title("标签二（IFrame）").EnableIFrame(true).IFrameUrl(Url.Content("~/Panel/Group")).Listener("iframeload", "onTabIFrameLoad")
 ```
 
----
-
-## 三、动态增删选项卡
+## 动态增删选项卡
 
 ### 客户端（各写法一致）
 
@@ -133,5 +74,6 @@ PageContext.RegisterStartupScript(TabStrip1.GetAddTabReference("tab_x", "https:/
 
 ## See also
 
-- [layout-types.md](layout-types.md)：Fit / Region / HBox / VBox
+- [panel.md](panel.md)：Panel
+- [accordion.md](accordion.md)：Accordion
 - `fineui-window`：Tab 里放 iframe 编辑页

@@ -4,7 +4,9 @@
 
 ## 取值一览（`LayoutType` 枚举）
 
-`Container`（默认，依次排列）、`Fit`、`Region`、`HBox`、`VBox`、`Column`、`Anchor`、`Accordion`、`Card`（TabStrip 用）、`Table`、`Absolute`、`Block`（响应式）。
+`Container`（默认，依次排列）、`Fit`、`Region`、`Block`（响应式）、`HBox`、`VBox`、`Column`、`Anchor`、`Accordion`、`Card`（TabStrip 用）、`Table`、`Absolute`、`InlineBlock`。
+
+> **HBox / VBox 是重点，单独一篇**：见 [hbox-vbox.md](hbox-vbox.md)。
 
 ---
 
@@ -78,40 +80,53 @@ F.create({ type: 'Panel', renderTo: document.body, isViewPort: true, layout: 're
 
 ---
 
-## HBox / VBox —— 弹性盒子
+## Block —— 响应式栅格（12 块，随屏幕断点变化）
 
-水平/垂直排列，子用 `BoxFlex` 弹性分配剩余空间（或固定 `Width`/`Height`）。容器 `BoxConfigAlign`（Stretch/Center/End…）、`BoxConfigPosition`（Start/Center/End）、`BoxConfigChildMargin`（子项间距 `"0 5 0 0"`）。
+类似 Bootstrap 栅格但**纯 JS 实现**。容器 `Layout="Block"`；子面板用 `Block`/`BlockSM`/`BlockMD`/`BlockLG`（值 1–12，一行总和 12，超出换行）。间距 `BlockConfigSpace`；栅格总数默认 12，可用 `BlockConfigBlockCount` 自定义。
+
+**断点**：`Block`(<768，始终水平) / `BlockSM`(≥768) / `BlockMD`(≥992) / `BlockLG`(≥1200)——屏幕小于该档时层叠排列。
 
 ```javascript
-// F.js —— HBox
-{ type: 'Panel', layout: 'hbox', boxConfigAlign: 'stretch', items: [
-    { type: 'Panel', boxFlex: 1, title: '左' }, { type: 'Panel', width: 200, title: '右固定' }
-] }
+// F.js —— layout:'block'（或 layout:{ type:'block', space:10 }）；子项 blockMD/blockLG 等
+F.create({ type: 'Panel', renderTo: '#wrap', layout: 'block', isFluid: true, header: false, bodyPadding: 10,
+    items: [
+        { type: 'Panel', blockMD: 6, blockLG: 4, header: false, items: [{ type: 'Label', value: 'MD=6 LG=4' }] },
+        { type: 'Panel', blockMD: 6, blockLG: 4, header: false, items: [{ type: 'Label', value: 'MD=6 LG=4' }] },
+        { type: 'Panel', blockMD: 12, blockLG: 4, header: false, items: [{ type: 'Label', value: 'MD=12 LG=4' }] }
+    ] });
 ```
 ```aspx
 <%-- Pro / Core-TagHelper --%>
-<f:Panel Layout="HBox" BoxConfigAlign="Stretch" BoxConfigChildMargin="0 5 0 0" runat="server">
+<f:Panel IsFluid="true" runat="server" Layout="Block" BlockConfigSpace="10px" ShowHeader="false">
     <Items>
-        <f:Panel BoxFlex="1" Title="左" runat="server" /><f:Panel Width="200px" Title="右固定" runat="server" />
+        <f:Panel Block="6" BlockMD="9" BlockLG="4" runat="server" ShowHeader="false"><Items>
+            <f:Label EncodeText="false" Text="Block=6<br/>MD=9<br/>LG=4" runat="server" /></Items></f:Panel>
+        <f:Panel Block="6" BlockMD="3" BlockLG="4" runat="server" ShowHeader="false"> ... </f:Panel>
+        <f:Panel Block="12" BlockMD="12" BlockLG="4" runat="server" ShowHeader="false"> ... </f:Panel>
     </Items>
 </f:Panel>
 ```
 ```csharp
 // Core-MVC（Fluent）
-@(F.Panel().Layout(LayoutType.HBox).BoxConfigAlign(BoxLayoutAlign.Stretch).BoxConfigChildMargin("0 5 0 0")
-    .Items(F.Panel().BoxFlex(1).Title("左"), F.Panel().Width(200).Title("右固定")))
+@(F.Panel().IsFluid(true).Layout(LayoutType.Block).BlockConfigSpace(10).ShowHeader(false)
+    .Items(
+        F.Panel().Block(6).BlockMD(9).BlockLG(4).ShowHeader(false).Items(F.Label().EncodeText(false).Text("Block=6 MD=9 LG=4")),
+        F.Panel().Block(6).BlockMD(3).BlockLG(4).ShowHeader(false).Items(F.Label().Text("...")),
+        F.Panel().Block(12).BlockMD(12).BlockLG(4).ShowHeader(false).Items(F.Label().Text("..."))
+    ))
 ```
 
-VBox 同理，方向为垂直（子用 `BoxFlex` 分高）。
+> `BlockConfigBlockCount="20"` 可把栅格总数从 12 改成别的。**`InlineBlock` 是另一种（非响应式）布局，别与 `Block` 混淆。**
 
 ---
 
 ## Column / Anchor
 
-- **Column**：`Layout="Column"`，子面板用 `ColumnWidth="60%"`（Pro/F.js `columnWidth: 0.6`）或固定 `Width`。官方推荐改用 HBox。
+- **Column**：`Layout="Column"`，子面板用 `ColumnWidth="60%"`（F.js `columnWidth: 0.6`）或固定 `Width`。官方推荐改用 HBox（见 [hbox-vbox.md](hbox-vbox.md)）。
 - **Anchor**：`Layout="Anchor"`（表单默认），子控件用 `AnchorValue="100% 70%"`（百分比）或 `"100% -72"`（百分比 + 像素偏移）。
 
 ## See also
 
-- [panel-tab.md](panel-tab.md)：Panel 工具栏、TabStrip
+- [hbox-vbox.md](hbox-vbox.md)：HBox / VBox 弹性盒子（重点）
+- `fineui-panel`：Panel / TabStrip / Accordion 容器
 - `fineui-foundation` 的 page-scaffold.md：整页 ViewPort + Region 骨架
