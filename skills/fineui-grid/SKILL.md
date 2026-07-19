@@ -128,10 +128,10 @@ protected void Page_Load(object sender, EventArgs e) {
 | 文件 | 何时读 |
 |------|--------|
 | [references/columns.md](references/columns.md) | 列定义、列类型、格式化（日期/数字）、自定义渲染、固定列 |
+| [references/data-loading.md](references/data-loading.md) | 内存分页 / 数据库分页、翻页事件回发、RecordCount |
+| [references/editing.md](references/editing.md) | 单元格编辑、列编辑器、读取编辑数据（各栈 API 差异） |
 | [references/selection.md](references/selection.md) | 行选择：复选框多选/单选、默认选中、读取与设置选中行 |
-| _（规划中）_ data-loading.md | 服务端数据、服务端分页、loadData；RazorForms/RazorPages 数据初始化差异 |
-| _（规划中）_ editing.md | 单元格/行编辑、读取编辑后数据 |
-| _（规划中）_ paging-toolbar.md | 分页工具栏、PageManager 全局配置、窄屏简洁分页 |
+| [references/paging-toolbar.md](references/paging-toolbar.md) | 分页工具栏、页大小选择器、窄屏简洁分页、全局配置 |
 
 ## 概念 → 各写法属性名对照（Key Options at a Glance）
 
