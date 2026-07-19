@@ -74,6 +74,7 @@ npx skills update
 | `fineui-form` | 表单：Form/SimpleForm 容器、字段、多列布局、字段/整表校验、读值 | ✅ v0.1 |
 | `fineui-window` | 窗口与消息框：Window（内联/iframe）、开关、closeArgument 回传、Alert/Confirm/Notify | ✅ v0.1 |
 | `fineui-tree` | 树：节点/图标、后台建树/数据绑定、复选框/级联、节点事件、异步懒加载 | ✅ v0.1 |
+| `fineui-layout` | 布局：Panel（工具栏/折叠）、TabStrip（iframe/动态增删）、Fit/Region/HBox/VBox、视口自适应 | ✅ v0.1 |
 | `fineui-upgrade` | 版本升级（v10+）：识别破坏性变更、生成迁移清单（源自 release_history） | ✅ v0.1 |
 
 ## 用法
