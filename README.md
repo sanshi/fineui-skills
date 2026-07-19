@@ -75,6 +75,7 @@ npx skills update
 | `fineui-window` | 窗口与消息框：Window（内联/iframe）、开关、closeArgument 回传、Alert/Confirm/Notify | ✅ v0.1 |
 | `fineui-tree` | 树：节点/图标、后台建树/数据绑定、复选框/级联、节点事件、异步懒加载 | ✅ v0.1 |
 | `fineui-layout` | 布局：Panel（工具栏/折叠）、TabStrip（iframe/动态增删）、Fit/Region/HBox/VBox、视口自适应 | ✅ v0.1 |
+| `fineui-buttons-toolbar` | 按钮与菜单：语义色/图标/徽标、服务端/客户端点击、确认按钮、LinkButton、下拉菜单 | ✅ v0.1 |
 | `fineui-upgrade` | 版本升级（v10+）：识别破坏性变更、生成迁移清单（源自 release_history） | ✅ v0.1 |
 
 ## 用法
