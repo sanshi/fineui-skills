@@ -70,7 +70,7 @@ npx skills update
 | 技能 | 说明 | 状态 |
 |------|------|------|
 | `fineui-foundation` | 地基：写法判定 / `F.create` / PageManager / 页面骨架 / RawHtml 安全模型 / 命名约定 | ✅ v0.1 |
-| `fineui-grid` | 表格（Grid）：列配置、数据加载、编辑、选择、分页、工具栏等 | ✅ v0.1 |
+| `fineui-grid` | 表格（Grid）：列/数据/编辑/选择/分页、排序、合计行、表头过滤、多表头、行分组、树表格、列锁定、单元格合并、行扩展/命令/事件、拖拽排序、大数据（13 篇分类参考） | ✅ v0.1 |
 | `fineui-form` | 表单：Form/SimpleForm 容器、字段、多列布局、字段/整表校验、读值 | ✅ v0.1 |
 | `fineui-window` | 窗口与消息框：Window（内联/iframe）、开关、closeArgument 回传、Alert/Confirm/Notify | ✅ v0.1 |
 | `fineui-tree` | 树：节点/图标、后台建树/数据绑定、复选框/级联、节点事件、异步懒加载 | ✅ v0.1 |

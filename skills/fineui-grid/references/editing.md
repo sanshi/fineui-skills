@@ -163,7 +163,7 @@ protected void btnSubmit_Click(object sender, EventArgs e) {
 3. **新增/删除行**需 `IncludeMergedData="true"`；否则只拿到修改、拿不到新增删除。
 4. **点击进入编辑**：F.js `cellEditingClicks`；C# 三模式 `ClicksToEdit`（1 单击 / 2 双击）。
 5. **列级只读**：F.js 不设 `editable` 或用 `beforeedit` 返回 `false`；C# 用 `EnableColumnEdit="false"`。
-6. **编辑器控件**：TextBox / DropDownList / NumberBox / DatePicker 等表单字段（详见 `fineui-form` 技能，规划中）。
+6. **编辑器控件**：TextBox / DropDownList / NumberBox / DatePicker 等表单字段（详见 `fineui-form` 技能）。
 
 ## See also
 

@@ -214,11 +214,15 @@ F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(t
 | `sortable` / `sortField` | boolean / string | 排序 | `SortField` |
 | `lockable` / `locked` | boolean | 允许/当前锁定 | `EnableLock` / `Locked` |
 | `hidden` | boolean | 隐藏（仍加载） | `Hidden` |
-| `editable` / `editor` | boolean / Field | 单元格编辑 | 见 editing.md（规划中） |
+| `editable` / `editor` | boolean / Field | 单元格编辑 | 见 [editing.md](editing.md) |
 | `columnType` | renderfield/rownumberfield/checkboxfield/rowexpanderfield | 列类型 | 对应列标签 |
-| `summaryType` / `summaryRenderer` | sum/min/max/count/avg / fn | 合计行 | 见 paging-toolbar.md（规划中） |
+| `summaryType` / `summaryRenderer` | sum/avg / fn | 合计行 | 见 [summary.md](summary.md) |
+| `sortable` / `sorter` | boolean / fn | 排序 | 见 [sorting.md](sorting.md) |
+| `filter` | boolean / object | 表头过滤 | 见 [filter.md](filter.md) |
 
 ## See also
 
 - [selection.md](selection.md)：整行复选框选择（与布尔展示列不同）
-- `fineui-form` 技能：单元格编辑器（`editor`）用到表单字段（规划中）
+- [header.md](header.md)：表头选项、多表头、动态创建列
+- [sorting.md](sorting.md) · [summary.md](summary.md) · [filter.md](filter.md)：列的排序 / 合计 / 过滤
+- `fineui-form` 技能：单元格编辑器（`editor`）用到表单字段

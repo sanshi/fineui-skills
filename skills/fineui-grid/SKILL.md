@@ -4,11 +4,17 @@ description: >
   帮助开发者使用 FineUI 的 Grid（表格）组件，覆盖 F.js（JavaScript）、Pro（WebForms），
   以及 FineUICore 的三种开发模式 MVC（Fluent API）/ RazorForms（TagHelper）/ RazorPages（TagHelper）。
   用于表格配置、列定义与渲染、数据加载与绑定、单元格编辑、行选择（复选框多选/单选）、
-  分页、排序、分组、合计行、工具栏等场景。
+  分页、排序、合计行、表头过滤、多表头、行分组、树表格、列锁定、单元格合并、
+  行扩展/行命令/行事件、拖拽排序、大数据表格、工具栏等**表格全部分类功能**。
   Trigger phrases（触发词）: "FineUI 表格", "F.Grid", "Grid 列", "grid columns",
   "RenderField", "BoundField", "复选框多选", "EnableCheckBoxSelect", "checkboxSelect",
   "选中行", "SelectedRowIndexArray", "RendererFunction", "RendererArgument",
-  "列渲染", "服务端分页", "loadData", "DataKeyNames", "Fluent API", "TagHelper".
+  "列渲染", "服务端分页", "loadData", "DataKeyNames",
+  "表格排序", "AllowSorting", "SortField", "服务端排序", "合计行", "EnableSummary", "SummaryType",
+  "表头过滤", "AllowFilters", "EnableFilter", "多表头", "GroupField", "行分组", "EnableRowGroup",
+  "树表格", "EnableTree", "TreeColumn", "列锁定", "AllowColumnLocking", "单元格合并", "mergeColumns",
+  "行扩展列", "RowExpander", "行命令", "RowCommand", "行单击事件", "OnRowClick",
+  "拖拽排序", "EnableColumnMove", "大数据表格", "EnableBigData".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -125,6 +131,10 @@ protected void Page_Load(object sender, EventArgs e) {
 
 ## 参考文档（Documentation Reference Files）
 
+> 表格是最复杂组件，按功能分类拆成 13 个参考文件。**按需求只读相关的那几篇**，不必全读。
+
+**基础（数据 / 列 / 分页 / 选择 / 编辑）**
+
 | 文件 | 何时读 |
 |------|--------|
 | [references/columns.md](references/columns.md) | 列定义、列类型、格式化（日期/数字）、自定义渲染、固定列 |
@@ -132,6 +142,24 @@ protected void Page_Load(object sender, EventArgs e) {
 | [references/editing.md](references/editing.md) | 单元格编辑、列编辑器、读取编辑数据（各栈 API 差异） |
 | [references/selection.md](references/selection.md) | 行选择：复选框多选/单选、默认选中、读取与设置选中行 |
 | [references/paging-toolbar.md](references/paging-toolbar.md) | 分页工具栏、页大小选择器、窄屏简洁分页、全局配置 |
+
+**数据处理（排序 / 合计 / 过滤 / 分组 / 树）**
+
+| 文件 | 何时读 |
+|------|--------|
+| [references/sorting.md](references/sorting.md) | 客户端/服务端排序、多列排序、按别的字段排、自定义排序函数 |
+| [references/summary.md](references/summary.md) | 合计行：客户端/服务端、当前页/全部、浮动、多行 |
+| [references/filter.md](references/filter.md) | 表头过滤：文本/数字/日期/下拉/复选、多条件、行内过滤、服务端过滤处理 |
+| [references/row-group.md](references/row-group.md) | 行分组：分组头渲染、展开折叠、组内小计 |
+| [references/tree-grid.md](references/tree-grid.md) | 树表格：父子层级行、复选框级联、图标、分页 |
+
+**布局与交互（表头 / 行功能 / 高级）**
+
+| 文件 | 何时读 |
+|------|--------|
+| [references/header.md](references/header.md) | 表头选项（隐藏/菜单/提示/列自定义属性）、**多表头**、动态创建列 |
+| [references/row-features.md](references/row-features.md) | 行扩展列、弹窗列、行命令按钮、行单击/双击/选中事件、行/单元格样式、行高行密度 |
+| [references/advanced.md](references/advanced.md) | 列锁定、列/行拖拽排序、单元格合并、大数据表格 |
 
 ## 概念 → 各写法属性名对照（Key Options at a Glance）
 
@@ -153,8 +181,10 @@ protected void Page_Load(object sender, EventArgs e) {
 
 ## 相关技能（Related Skills）
 
-- `fineui-foundation`：`F.create` / PageManager / 部署栈与模式总览 / RawHtml 安全模型 / 命名约定（规划中）
-- `fineui-form`：Grid 单元格编辑器用到表单字段（规划中）
+- `fineui-foundation`：`F.create` / PageManager / 部署栈与模式总览 / RawHtml 安全模型 / 命名约定
+- `fineui-form`：Grid 单元格编辑器、过滤字段用到的表单字段（TextBox / NumberBox / DropDownList 等）
+- `fineui-window`：Grid 弹窗列用到的 Window 组件
+- `fineui-tree`：独立的 Tree 控件（与 Grid 的"树表格"不同，见 tree-grid.md）
 
 ## 约束与规则（Constraints & Rules）
 
@@ -171,6 +201,10 @@ protected void Page_Load(object sender, EventArgs e) {
 6. **RazorForms vs RazorPages（同为 TagHelper，但后台模型不同）**：RazorForms 三件套（`.cshtml` + `.cshtml.cs` **partial** + `.designer.cs`）、`Page_Load`/`IsPostBack`、`OnClick="方法名"`；RazorPages 两件套（**非** partial、**无** designer）、`OnGet`/`OnPostXxx`、`OnClick="@Url.Handler(\"方法名\")"`。
 7. **客户端渲染列优先用 `RenderField`**：Core 三模式与 F.js 一致。Pro 另有声明式 `BoundField`（服务端渲染，日期用 `DataFormatString="{0:yyyy/MM/dd}"`），但为保持一致，除非必要优先 `RenderField`。
 8. **行选择读取**：C# 端服务端读选中行用 `Grid1.SelectedRowIndexArray`（0 基索引）+ `Grid1.DataKeys[rowIndex][n]` 取主键（需先声明 `DataKeyNames`）。详见 [references/selection.md](references/selection.md)。
+9. **三个"分组/层级"概念别混**：**多表头**（列的分组，`GroupField`，[header.md](references/header.md)）≠ **行分组**（数据行按字段分组，`EnableRowGroup`，[row-group.md](references/row-group.md)）≠ **树表格**（行父子层级，`EnableTree`，[tree-grid.md](references/tree-grid.md)）。用户说"分组"时先确认是哪一种。
+10. **F.js 嵌套配置 vs .NET 拍平属性**：多个高级功能 F.js 把选项收进一个对象（`tree:{...}`/`rowGroup:{...}`/`rowExpander:{...}`/`filter:{...}`），而 Pro/Core 拍平成一堆独立属性（`EnableTree`/`TreeColumn`/...）。转写时注意这种结构差异。
+11. **C# 行事件 EventArgs 类名按栈不同**：同一行事件，Pro 与 RazorForms 的参数类名不一样（如行命令 Pro `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`）。详见 [row-features.md](references/row-features.md)，别照抄错。
+12. **合并/拖拽无服务端属性**：单元格合并（`mergeCells`/`mergeColumns`）、行拖拽（`moveRowUp` 等）都是客户端方法；列/行顺序持久化靠自定义回发。详见 [advanced.md](references/advanced.md)。
 
 ## 官方资源（Official Resources）
 
