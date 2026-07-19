@@ -10,10 +10,10 @@
 | 某列开启过滤 | 列 `filter: true`（或 `filter:{…}`） | 列 `EnableFilter="true"` | `.EnableFilter(true)` | `EnableFilter="true"` |
 | 行内过滤行 | `inlineFilters: true` | `InlineFilters="true"` | `.InlineFilters(true)` | `InlineFilters="true"` |
 | 多条件 | `filter:{ multi:true, matcherDefault:'all' }` | `<Filter EnableMultiConditions="true">` | `.Filter(F.GridFilter().EnableMultiConditions(true))` | `<Filter EnableMultiConditions="true">` |
-| 过滤变更事件 | listener `filterchange` | `OnFilterChange`（**无 d**） | `.OnFilterChanged(Url.Action(...),"Grid1")` | `OnFilterChanged`（**有 d**） |
+| 过滤变更事件 | listener `filterchange` | `OnFilterChanged`（旧名 `OnFilterChange` 仍兼容） | `.OnFilterChanged(Url.Action(...),"Grid1")` | `OnFilterChanged` |
 | 读取过滤条件 | 回调参数 `filteredData` | `Grid1.FilteredData` | 回发参数 `JArray Grid1_filteredData` | RazorForms `Grid1.FilteredData` / RazorPages `JArray Grid1_filteredData` |
 
-> ⚠️ **事件名大小写陷阱**：**Pro 是 `OnFilterChange` / `Grid1_FilterChange`（没有 "d"）**；**Core 三模式都是 `OnFilterChanged` / `Grid1_FilterChanged`（有 "d"）**；F.js listener 是 `filterchange`。别写错。
+> **事件命名（v15.2 起已统一）**：服务端一律用过去式带 "d" 的 **`OnFilterChanged`**（Pro 与 Core 三模式相同，与 `OnPageIndexChanged` / `OnPageSizeChanged` 命名一致）。Pro 旧名 `OnFilterChange`（无 d）已标记 `[Obsolete]`、仍可编译但不推荐。**F.js 客户端 listener 仍是小写 `filterchange`**（客户端事件名，天然不带 d，不受此次统一影响）。
 
 ---
 
@@ -41,7 +41,7 @@ columns: [
 ### Pro（WebForms，aspx）
 
 ```aspx
-<f:Grid ID="Grid1" runat="server" AllowFilters="true" OnFilterChange="Grid1_FilterChange" DataKeyNames="Id">
+<f:Grid ID="Grid1" runat="server" AllowFilters="true" OnFilterChanged="Grid1_FilterChanged" DataKeyNames="Id">
     <Columns>
         <f:RenderField ColumnID="Name" DataField="Name" HeaderText="姓名" EnableFilter="true" />
         <f:RenderField ColumnID="EntranceYear" DataField="EntranceYear" FieldType="Int" HeaderText="入学年份" EnableFilter="true">
@@ -141,10 +141,10 @@ Grid1.FindColumn("Name").ColumnFilteredData = new GridColumnFilteredData() {
 | **Core-MVC / RazorPages** | 回发参数 `JArray Grid1_filteredData` | JSON `"column"` `"multi"` `"matcher"` `"items"`（每项 `"operator"` `"value"` `"text"`） |
 | **F.js** | listener 回调第二参 `filteredData` | 前端自行按条件过滤数组 |
 
-### Pro（WebForms）—— 服务端事件 `Grid1_FilterChange`（无 d）
+### Pro（WebForms）—— 服务端事件 `OnFilterChanged`
 
 ```csharp
-protected void Grid1_FilterChange(object sender, EventArgs e) {
+protected void Grid1_FilterChanged(object sender, EventArgs e) {
     BindGrid();                                   // 内部用 Grid1.FilteredData / NewFilteredTable 过滤后 DataBind
     labResult.Text = "过滤数据：" + EncodeJson(Grid1.FilteredData);
 }
@@ -199,7 +199,7 @@ listeners: {
 
 ## 关键约束
 
-1. **事件名区分**：Pro `OnFilterChange`（无 d）；Core 三模式 `OnFilterChanged`（有 d）；F.js listener `filterchange`。
+1. **事件名已统一（v15.2）**：服务端全部用 `OnFilterChanged`（带 d，Pro 与 Core 一致）；Pro 旧名 `OnFilterChange` 为兼容别名（`[Obsolete]`，仍可用）。F.js 客户端 listener 仍是 `filterchange`。同理分页事件用 `OnPageIndexChanged` / `OnPageSizeChanged`。
 2. **过滤 = 重新查询**：过滤本身只收集条件，真正筛选/翻页要在回发里按条件重查数据库再 `DataSource`/`DataBind`。
 3. **读条件两套 API**：Pro/RazorForms 读 `Grid1.FilteredData` / `column.ColumnFilteredData`（服务端对象）；MVC/RazorPages 读回发参数 `JArray Grid1_filteredData`（JSON）。别混。
 4. **行内过滤限制**：`InlineFilters` 不支持多条件；多条件用表头菜单 `<Filter EnableMultiConditions="true">`。
