@@ -71,7 +71,7 @@ npx skills update
 |------|------|------|
 | `fineui-foundation` | 地基：写法判定 / `F.create` / PageManager / 页面骨架 / RawHtml 安全模型 / 命名约定 | ✅ v0.1 |
 | `fineui-grid` | 表格（Grid）：列配置、数据加载、编辑、选择、分页、工具栏等 | ✅ v0.1 |
-| `fineui-upgrade` | 版本升级（v10+）：识别破坏性变更、生成迁移清单（源自 release_history） | 🚧 规划中 |
+| `fineui-upgrade` | 版本升级（v10+）：识别破坏性变更、生成迁移清单（源自 release_history） | ✅ v0.1 |
 
 ## 用法
 
