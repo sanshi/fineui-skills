@@ -1,6 +1,8 @@
 # Grid 行选择（Selection）
 
-整行复选框选择：勾选行、读取/设置选中行。四端并列，最小代码。
+整行复选框选择：勾选行、读取/设置选中行。各写法并列，最小代码。
+
+> 选择涉及**数据初始化与事件**，因此 **RazorForms 与 RazorPages 在此有真实差异**（不像列定义那样一致）：RazorForms 走后台 `Page_Load`，RazorPages 走标签内联 + `OnPost`。下文分别给出。
 
 ## 两个易混概念（务必区分）
 
@@ -32,7 +34,7 @@ F.create({
 });
 ```
 
-### FineUIPro (aspx)
+### Pro（WebForms，aspx）
 
 ```aspx
 <f:Grid ID="Grid1" runat="server" IsFluid="true" Title="表格"
@@ -41,7 +43,7 @@ F.create({
 </f:Grid>
 ```
 
-### Core 流式（MVC）
+### Core-MVC（Fluent API）
 
 ```csharp
 @(F.Grid().IsFluid(true).Title("表格").ID("Grid1").DataIDField("Id").DataTextField("Name")
@@ -50,10 +52,10 @@ F.create({
     .DataSource(ViewBag.Grid1DataSource))
 ```
 
-### Core TagHelper
+### Core-TagHelper（RazorForms / RazorPages）
 
 ```html
-<%-- RazorForms：主键字段用 _DataKeyNames --%>
+<%-- 标签相同；RazorForms 用 _DataKeyNames 声明服务端读取所需主键 --%>
 <f:Grid ID="Grid1" IsFluid="true" Title="表格" EnableCheckBoxSelect="true"
         DataIDField="Id" DataTextField="Name" _DataKeyNames="Id,Name,Gender,Major">
     <Columns> <!-- ... --> </Columns>
@@ -64,7 +66,7 @@ F.create({
 
 ## 2. 默认选中行
 
-`SelectedRowIndexArray` 用**0 基行索引**（`4, 9` = 第 5、10 行）。F.js 用行 ID。
+`SelectedRowIndexArray` 用**0 基行索引**（`4, 9` = 第 5、10 行）。F.js 用行 ID。**注意各模式初始化位置不同**。
 
 ```javascript
 // F.js —— 数据加载后按行 ID 选中
@@ -73,15 +75,15 @@ listeners: {
 }
 ```
 ```csharp
-// Pro（后置代码，!IsPostBack 内，DataBind 之后）
+// Pro / RazorForms —— 后台 Page_Load（!IsPostBack）内，DataBind 之后
 Grid1.SelectedRowIndexArray = new int[] { 4, 9 };
 ```
 ```csharp
-// Core 流式（View 内）
+// Core-MVC（Fluent API）—— View 内链式
 .DataSource(ViewBag.Grid1DataSource).SelectedRowIndexArray(4, 9)
 ```
 ```html
-<!-- Core TagHelper（RazorPages，标签内内联）-->
+<!-- Core-RazorPages —— 标签内联 -->
 <f:Grid ... SelectedRowIndexArray="@(new int[] { 4, 9 })">
 ```
 
@@ -89,14 +91,14 @@ Grid1.SelectedRowIndexArray = new int[] { 4, 9 };
 
 ## 3. 读取选中行
 
-C# 端有两种范式。
+C# 端有两种范式，按模式选用。
 
 ### 方式 A：服务端按索引读取（Pro / RazorForms）
 
 前提：声明了 `DataKeyNames`（Pro）/ `_DataKeyNames`（RazorForms），且数据在服务端 `DataBind()`，这样 `DataKeys` 可用。
 
 ```csharp
-// Pro / RazorForms 后置代码
+// Pro / RazorForms 后台代码
 protected void Button1_Click(object sender, EventArgs e)
 {
     foreach (int rowIndex in Grid1.SelectedRowIndexArray)   // 0 基索引
@@ -114,7 +116,7 @@ protected void Button1_Click(object sender, EventArgs e)
 Button1.OnClientClick = Grid1.GetNoSelectionAlertInTopReference("没有选中项！");
 ```
 
-### 方式 B：客户端收集 JSON 回发（Core MVC / RazorPages）
+### 方式 B：客户端收集 JSON 回发（Core-MVC / RazorPages）
 
 客户端把选中行收集成 JSON，作为参数回发；服务端用 `JArray` 接收（需 `using Newtonsoft.Json.Linq;`）。
 
@@ -133,12 +135,12 @@ Button1.OnClientClick = Grid1.GetNoSelectionAlertInTopReference("没有选中项
 ```
 
 ```csharp
-// Core MVC（流式）：按钮把 getGridSelectedRows() 作为参数 selected 回发
+// Core-MVC（Fluent API）：按钮把 getGridSelectedRows() 作为参数 selected 回发
 @(F.Button().Text("选中了哪些行").ID("Button1")
     .OnClick(Url.Action("Button1_Click"), new Parameter("selected", "getGridSelectedRows()")))
 ```
 ```csharp
-// Core MVC Controller
+// Core-MVC Controller
 [HttpPost, ValidateAntiForgeryToken]
 public IActionResult Button1_Click(JArray selected)
 {
@@ -148,12 +150,12 @@ public IActionResult Button1_Click(JArray selected)
 ```
 
 ```html
-<!-- Core RazorPages：按钮 + 参数 -->
+<!-- Core-RazorPages：按钮 + 参数 -->
 <f:Button Text="选中了哪些行" ID="Button1" OnClick="@Url.Handler(&quot;Button1_Click&quot;)"
           OnClickParameter1="@(new Parameter(&quot;selected&quot;, &quot;getGridSelectedRows()&quot;))"></f:Button>
 ```
 ```csharp
-// Core RazorPages 后置代码（OnPost 处理器）
+// Core-RazorPages 后台（OnPost 处理器）
 public IActionResult OnPostButton1_Click(JArray selected)
 {
     foreach (JArray item in selected) { /* ... */ }
@@ -178,7 +180,7 @@ rows.forEach(function (item) { console.log(item.id, item.values.Name); });
 Grid1.SelectedRowIndexArray = new int[] { 1, 5, 7 };
 ```
 ```csharp
-// Core 流式 / RazorPages（回发处理器内，用 UIHelper）
+// Core-MVC / RazorPages（回发处理器内，用 UIHelper）
 UIHelper.Grid("Grid1").SelectedRowIndexArray(1, 5, 7);
 return UIHelper.Result();
 ```
@@ -189,12 +191,12 @@ F.ui.Grid1.selectRows(['R2', 'R6', 'R8']);
 
 ---
 
-## 5. 复选框单选（Core 流式示例）
+## 5. 复选框单选（Core-MVC 示例）
 
 `EnableCheckBoxSelect(true)` + `EnableMultiSelect(false)` = 复选框单选；配 `rowselect` / `rowdeselect` 事件回发单行。
 
 ```csharp
-// View
+// View（Fluent API）
 @(F.Grid().IsFluid(true).Title("表格（单选）").ID("Grid1").DataIDField("Id").DataTextField("Name")
     .EnableCheckBoxSelect(true).EnableMultiSelect(false)
     .Listener("rowselect", "onGrid1RowSelect").Listener("rowdeselect", "onGrid1RowDeselect")
@@ -213,4 +215,4 @@ public IActionResult Grid1_RowSelect(string rowId, string rowText, int rowIndex,
 ## See also
 
 - [columns.md](columns.md)：布尔展示列（`checkboxfield` / `RenderCheckField`）与整行选择的区别
-- SKILL.md 约束 6：RazorForms 与 RazorPages 的事件模型差异（`OnClick="方法名"` vs `OnClick="@Url.Handler(...)"`）
+- SKILL.md 约束 5、6：Core 三模式数据初始化差异、RazorForms 与 RazorPages 的后台模型差异

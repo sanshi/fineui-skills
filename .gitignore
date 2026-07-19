@@ -10,3 +10,11 @@ Thumbs.db
 # 临时文件
 *.log
 *.tmp
+
+# AI 工具 / harness 自动生成（勿入公开仓库）
+.agents/
+.claude/
+.cursor/
+.gemini/
+.jolli/
+.mcp.json

@@ -1,17 +1,19 @@
 # Grid 列配置（Columns）
 
-四端并列。概念相同、属性名不同；每段为最小代码。
+各写法并列，概念相同、属性名不同；每段为最小代码。
+
+> 列定义属于**前台写法**：**Core-RazorForms 与 Core-RazorPages 的列标签完全一致**（都是 TagHelper），故本文合称 **Core-TagHelper**。两者的差异在数据初始化/事件（见 [selection.md](selection.md) 与 SKILL.md 约束 5、6），与列定义无关。
 
 ## 列类型一览
 
-| 用途 | F.js `columnType` | Pro / Core 标签 | Core 流式 |
-|------|-------------------|-----------------|-----------|
+| 用途 | F.js `columnType` | Pro / Core-TagHelper 标签 | Core-MVC (Fluent API) |
+|------|-------------------|---------------------------|------------------------|
 | 普通渲染列（默认） | `'renderfield'`（默认，可省） | `<f:RenderField>` | `F.RenderField()` |
 | 行号列 | `'rownumberfield'` | `<f:RowNumberField>` | `F.RowNumberField()` |
 | 布尔展示列 | `'checkboxfield'` | `<f:RenderCheckField>` | `F.RenderCheckField()` |
 | 行展开列 | `'rowexpanderfield'` | `<f:RowExpanderField>` | `F.RowExpanderField()` |
 
-> Pro 另有服务端渲染的声明式列：`<f:BoundField>`、`<f:TemplateField>`、`<f:CheckBoxField>`、`<f:HyperLinkField>`（Core 不提供，用 `RenderField` + 渲染函数替代）。为四端一致，优先用 `RenderField`。
+> Pro 另有服务端渲染的声明式列：`<f:BoundField>`、`<f:TemplateField>`、`<f:CheckBoxField>`、`<f:HyperLinkField>`（Core 不提供，用 `RenderField` + 渲染函数替代）。为保持一致，优先用 `RenderField`。
 
 ---
 
@@ -30,7 +32,7 @@ columns: [
 ]
 ```
 
-### FineUIPro (aspx)
+### Pro（WebForms，aspx）
 
 ```aspx
 <Columns>
@@ -41,7 +43,7 @@ columns: [
 </Columns>
 ```
 
-### Core 流式（MVC）
+### Core-MVC（Fluent API）
 
 ```csharp
 .Columns(
@@ -52,7 +54,7 @@ columns: [
 )
 ```
 
-### Core TagHelper（RazorForms / RazorPages）
+### Core-TagHelper（RazorForms / RazorPages，列写法相同）
 
 ```html
 <Columns>
@@ -67,7 +69,7 @@ columns: [
 
 ## 格式化列：日期与数字
 
-C# 三端用**内置渲染器** `Renderer` + `RendererArgument`（日期 `yyyy/MM/dd`；数字 `N2` 千分位两位小数、`P1` 百分比、`D10` 十进制整数），并配 `FieldType`。F.js 用 `fieldType` + `fieldFormat`（内部走 `F.format.dateRenderer` / `numberRenderer`）。
+C# 三模式用**内置渲染器** `Renderer` + `RendererArgument`（日期 `yyyy/MM/dd`；数字 `N2` 千分位两位小数、`P1` 百分比、`D10` 十进制整数），并配 `FieldType`。F.js 用 `fieldType` + `fieldFormat`（内部走 `F.format.dateRenderer` / `numberRenderer`）。
 
 ### F.js
 
@@ -78,7 +80,7 @@ columns: [
 ]
 ```
 
-### FineUIPro (aspx)
+### Pro（WebForms，aspx）
 
 ```aspx
 <f:RenderField ColumnID="EntranceDate" DataField="EntranceDate" HeaderText="入学日期"
@@ -87,7 +89,7 @@ columns: [
     FieldType="Double" Renderer="Number" RendererArgument="N2" Width="150px" />
 ```
 
-### Core 流式（MVC）
+### Core-MVC（Fluent API）
 
 ```csharp
 F.RenderField().HeaderText("入学日期").DataField("EntranceDate")
@@ -96,7 +98,7 @@ F.RenderField().HeaderText("工资").DataField("Salary")
     .FieldType(FieldType.Double).Renderer(Renderer.Number).RendererArgument("N2").Width(150)
 ```
 
-### Core TagHelper
+### Core-TagHelper（RazorForms / RazorPages）
 
 ```html
 <f:RenderField HeaderText="入学日期" DataField="EntranceDate" FieldType="Date" Renderer="Date" RendererArgument="yyyy/MM/dd" Width="150" />
@@ -109,7 +111,7 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 
 ## 自定义渲染
 
-需要返回自定义 HTML（如链接、彩色标签）时：**F.js 直接写 `renderer` 内联函数**；**C# 三端用 `RendererFunction` 指向页面内的 JS 函数名**（函数签名同 F.js 的 `renderer`）。
+需要返回自定义 HTML（如链接、彩色标签）时：**F.js 直接写 `renderer` 内联函数**；**C# 三模式用 `RendererFunction` 指向页面内的 JS 函数名**（函数签名同 F.js 的 `renderer`）。
 
 ### F.js（内联函数）
 
@@ -123,22 +125,22 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 }
 ```
 
-### C# 三端（RendererFunction 指向 JS 函数）
+### C# 三模式（RendererFunction 指向 JS 函数）
 
 ```aspx
-<%-- Pro --%>
+<%-- Pro（WebForms）--%>
 <f:RenderField ColumnID="Status" DataField="Status" HeaderText="状态" RendererFunction="renderStatus" />
 ```
 ```csharp
-// Core 流式
+// Core-MVC（Fluent API）
 F.RenderField().HeaderText("状态").DataField("Status").RendererFunction("renderStatus")
 ```
 ```html
-<!-- Core TagHelper -->
+<!-- Core-TagHelper（RazorForms / RazorPages）-->
 <f:RenderField HeaderText="状态" DataField="Status" RendererFunction="renderStatus" />
 ```
 ```html
-<!-- 页面内定义 JS（三端通用），签名与 F.js renderer 一致 -->
+<!-- 页面内定义 JS（三模式通用），签名与 F.js renderer 一致 -->
 <script>
     function renderStatus(value, params) {
         var color = value === '在职' ? 'green' : 'gray';
@@ -160,15 +162,15 @@ F.RenderField().HeaderText("状态").DataField("Status").RendererFunction("rende
 { text: '是否在校', field: 'AtSchool', columnType: 'checkboxfield' }
 ```
 ```aspx
-<%-- Pro --%>
+<%-- Pro（WebForms）--%>
 <f:RenderCheckField ColumnID="AtSchool" DataField="AtSchool" HeaderText="是否在校" EnableColumnEdit="false" />
 ```
 ```csharp
-// Core 流式
+// Core-MVC（Fluent API）
 F.RenderCheckField().HeaderText("是否在校").DataField("AtSchool").RenderAsStaticField(true)
 ```
 ```html
-<!-- Core TagHelper -->
+<!-- Core-TagHelper（RazorForms / RazorPages）-->
 <f:RenderCheckField HeaderText="是否在校" DataField="AtSchool" RenderAsStaticField="true" />
 ```
 
@@ -176,22 +178,22 @@ F.RenderCheckField().HeaderText("是否在校").DataField("AtSchool").RenderAsSt
 
 ## 固定（锁定）列
 
-F.js：`lockable`（允许锁定）+ `locked`（当前锁定）。C# 三端：`EnableLock` + `Locked`。
+F.js：`lockable`（允许锁定）+ `locked`（当前锁定）。C# 三模式：`EnableLock` + `Locked`。
 
 ```javascript
 // F.js
 { text: '姓名', field: 'Name', lockable: true, locked: true }
 ```
 ```aspx
-<%-- Pro --%>
+<%-- Pro（WebForms）--%>
 <f:RenderField ColumnID="Name" DataField="Name" HeaderText="姓名" EnableLock="true" Locked="true" />
 ```
 ```csharp
-// Core 流式
+// Core-MVC（Fluent API）
 F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(true)
 ```
 ```html
-<!-- Core TagHelper -->
+<!-- Core-TagHelper（RazorForms / RazorPages）-->
 <f:RenderField HeaderText="姓名" DataField="Name" EnableLock="true" Locked="true" />
 ```
 

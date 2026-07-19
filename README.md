@@ -1,19 +1,22 @@
 # FineUI Agent Skills
 
-官方 AI 技能（Agent Skills）集合，让 **Claude Code / GitHub Copilot / Cursor / OpenCode / Codex** 等 AI 编程助手**准确生成使用 FineUI 的代码**——用对 API、用对版本、不瞎编、不混用竞品，并覆盖 FineUI 的四端写法。
+官方 AI 技能（Agent Skills）集合，让 **Claude Code / GitHub Copilot / Cursor / OpenCode / Codex** 等 AI 编程助手**准确生成使用 FineUI 的代码**——用对 API、用对版本、不瞎编、不混用竞品，并覆盖 FineUI 的各种写法（F.js、Pro，以及 Core 的 MVC / RazorForms / RazorPages）。
 
 > **这些技能是给 AI 编程助手用的，不是给人直接阅读的运行时库。** 内容全部是「如何使用 FineUI」的公开知识（等同官网文档/示例），**不含 FineUI 源码或内部实现**。
 
-## FineUI 四端
+## FineUI 部署栈与开发模式
 
-同一个组件，四种写法，本技能集逐端给出可运行的最小代码：
+FineUI 有 **3 部署栈**，其中 **Core 含 3 种开发模式**。本技能集为每种写法给出可运行的最小代码：
 
-| 端 | 技术栈 | 写法 |
-|----|--------|------|
-| **F.js** | 纯 JavaScript（jQuery） | `F.create({ type: 'Grid', ... })` |
-| **FineUIPro** | .NET Framework / WebForms | `<f:Grid runat="server">` + 后置代码 |
-| **FineUICore（流式）** | ASP.NET Core MVC | `F.Grid().IsFluid(true)...`（View 流式 API） |
-| **FineUICore（TagHelper）** | ASP.NET Core RazorForms / RazorPages | `<f:Grid>` TagHelper 标签 |
+| 部署栈 | 开发模式 | 前台写法 |
+|--------|---------|---------|
+| **F.js** | —（纯 JavaScript / jQuery） | `F.create({ type: 'Grid', ... })` |
+| **Pro** | WebForms | `<f:Grid runat="server">` + 后置代码 |
+| **Core** | **MVC** | `Html.F().Grid()...`（**Fluent API**） |
+| **Core** | **RazorForms**（Core 推荐） | `<f:Grid>` **TagHelper**（数据在后台 `Page_Load` 绑定） |
+| **Core** | **RazorPages** | `<f:Grid>` **TagHelper**（数据在标签内联 `DataSource`） |
+
+> RazorForms 与 RazorPages 共用 TagHelper 标签，差异在数据初始化与事件（见 `fineui-grid` 技能）。
 
 ## 前置要求
 
@@ -67,7 +70,7 @@ npx skills update
 | 技能 | 说明 | 状态 |
 |------|------|------|
 | `fineui-grid` | 表格（Grid）：列配置、数据加载、编辑、选择、分页、分组、工具栏等 | ✅ v0.1 |
-| `fineui-foundation` | 地基：`F.create` / PageManager / 四端总览 / RawHtml 安全模型 / 命名约定 | 🚧 规划中 |
+| `fineui-foundation` | 地基：`F.create` / PageManager / 部署栈与模式总览 / RawHtml 安全模型 / 命名约定 | 🚧 规划中 |
 | `fineui-upgrade` | 版本升级：识别破坏性变更、生成迁移清单（源自 release_history） | 🚧 规划中 |
 
 ## 用法
