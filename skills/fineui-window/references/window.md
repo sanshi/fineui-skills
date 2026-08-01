@@ -30,10 +30,15 @@ F.create({ type: 'Window', id: 'Window1', title: '窗体', width: 650, height: 3
 窗口内容是另一个页面。`EnableIFrame=true` + iframe url（可在打开时动态指定）。
 
 ```javascript
-// F.js —— show 时传 url
+// F.js —— iframe: true 必填，否则 show(url) 不会创建 iframe 元素
 F.create({ type: 'Window', id: 'Window1', title: '编辑', width: 850, height: 500, modal: true,
-    maximizable: true, resizable: true, hidden: true });
+    iframe: true, maximizable: true, resizable: true, hidden: true,
+    closeAction: 'hidepostback', listeners: { close: function (event, closeArgument) {
+        // closeArgument 为子页回传参数（等同 C# OnClose 的 e.CloseArgument）
+        if (closeArgument) { F.ui.Grid1.getStore().reload(); }
+    } } });
 // 打开：F.ui.Window1.show('edit.html?id=1', '编辑 - 张三');
+// show 还可覆盖尺寸：F.ui.Window1.show(url, title, 900, 600);
 ```
 ```aspx
 <%-- Pro —— EnableIFrame + Hidden；url 在打开时给 --%>
@@ -94,13 +99,25 @@ PageContext.RegisterStartupScript(ActiveWindow.GetHideRefreshReference());     /
 PageContext.RegisterStartupScript(ActiveWindow.GetHideExecuteScriptReference("parent.removeActiveTab();")); // 关闭 + 执行 JS
 ```
 ```javascript
-// 子页客户端
+// 子页客户端（F.activeWindow 方法集）
 F.activeWindow.hide();                 // 仅关闭
-F.activeWindow.hidePostBack('arg');    // 关闭 + 带参回发
+F.activeWindow.hidePostBack('arg');    // 关闭 + 带参回发父页（触发 OnClose/close 事件，e.CloseArgument='arg'）
+F.activeWindow.hideRefresh();          // 关闭 + 刷新父页
+F.activeWindow.hideExecuteScript('parent.F.ui.Grid1.getStore().reload();'); // 关闭 + 执行父页 JS
+F.activeWindow.close();                // 关闭（触发 close 事件，但不传 closeArgument；服务端 e.CloseArgument 为空串）
 ```
+
+> `closeAction: 'close'` 与 `'hidepostback'` 在客户端行为完全一致（同一代码分支），均触发 `close` 事件。`'close'` 是 F.js 独有别名，Pro/Core 服务端枚举只有 `Hide`/`HideRefresh`/`HidePostBack`。
 
 ### 父页接收 closeArgument
 
+```javascript
+// F.js —— 父页创建窗口时注册 close 事件（closeAction: 'hidepostback' 或 'close' 时触发）
+F.create({ type: 'Window', id: 'Window1', iframe: true, hidden: true, closeAction: 'hidepostback',
+    listeners: { close: function (event, closeArgument) {
+        if (closeArgument) { F.ui.Grid1.getStore().reload(); }   // 收到回传参数，刷新表格
+    } } });
+```
 ```csharp
 // Pro / Core-RazorForms —— WindowCloseEventArgs.CloseArgument
 protected void Window1_Close(object sender, WindowCloseEventArgs e) {

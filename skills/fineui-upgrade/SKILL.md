@@ -20,7 +20,7 @@ metadata:
 
 - 本技能内置的破坏性变更清单覆盖到 **v15.2**。
 - **若用户的目标版本高于 v15.2** → 告知用户：本技能可能未包含更新版本的破坏性变更，建议先更新本技能（`npx skills update`），再继续。
-- **若源版本或目标版本 ≤ v9** → 告知用户：本技能只覆盖 v10 及以上，v9 及以下请参考官方 `release_history.txt`。
+- **若源版本或目标版本 ≤ v9** → 告知用户：本技能只覆盖 v10 及以上，v9 及以下请参考官方在线发布历史 https://fineui.com/versions/ 。
 
 ## 升级流程
 
@@ -40,7 +40,7 @@ metadata:
 |------|------|
 | [references/breaking-changes.md](references/breaking-changes.md) | v10+ 各大版本破坏性变更清单 + 迁移办法 + HTML 编码主线 |
 
-完整逐条以项目 `release_history.txt` 为准（搜索“不兼容”）。
+完整逐条以官方在线发布历史为准：https://fineui.com/versions/ （在其中搜索“不兼容”）。
 
 ## 约束与规则（Constraints & Rules）
 
@@ -49,9 +49,9 @@ metadata:
 3. **按写法过滤**：一个项目通常只用一种写法，只处理该写法相关的破坏性变更；`[JS]`/`[Pro]`/`[Core]` 标注要看清。
 4. **ESM / class 化不是使用者的破坏性变更**：v15.0 的组件层 ESM 化、ES2022 class 化官方明确“不影响对外 API”，**不要**据此改用户代码。
 5. **HTML 编码是重灾区**：跨 v10/v15/v15.2 升级时，重点排查原本依赖“文本按 HTML 渲染”的地方（菜单、标题、提示、空状态 EmptyText、消息框），逐一改为可信 HTML 声明（RawHtml，见 `fineui-foundation` 的 rawhtml.md）。区分可信内容与用户输入——用户输入不要声明为可信。
-6. **绝不编造变更**：不确定某属性/方法在目标版本是否变化时，查 `release_history.txt` 或官网，别猜。
+6. **绝不编造变更**：不确定某属性/方法在目标版本是否变化时，查在线发布历史（https://fineui.com/versions/ ）或官网，别猜。
 
 ## 官方资源
 
-- 发布历史：项目根目录 `release_history.txt`（权威，逐版本“不兼容”标注）
+- 在线发布历史：https://fineui.com/versions/ （权威，逐版本“不兼容”标注）
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/

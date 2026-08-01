@@ -6,7 +6,9 @@ description: >
   覆盖 F.js（JavaScript）、Pro（WebForms）、以及 FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper）。
   Trigger phrases（触发词）: "FineUI 表单", "F.Form", "SimpleForm", "FormRow", "表单校验",
   "ValidateForms", "Required", "TextBox", "NumberBox", "DatePicker", "DropDownList",
-  "RadioButtonList", "CheckBox", "MarkInvalid", "字段标签", "LabelWidth", "读取表单值".
+  "RadioButtonList", "CheckBox", "CheckBoxList", "TimePicker", "Label", "Hidden",
+  "FileUpload", "TriggerBox", "DropDownBox", "HtmlEditor", "MarkInvalid", "字段标签",
+  "LabelWidth", "读取表单值", "下拉树", "文件上传", "富文本编辑器".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -80,7 +82,8 @@ F.create({
 | 文件 | 何时读 |
 |------|--------|
 | [references/form-layout.md](references/form-layout.md) | Form vs SimpleForm、LabelWidth/LabelAlign、多列 FormRow/ColumnWidths |
-| [references/fields.md](references/fields.md) | 各字段类型（TextBox/TextArea/NumberBox/DatePicker/DropDownList/CheckBox/RadioButtonList）+ 读值 |
+| [references/fields.md](references/fields.md) | 基础字段（TextBox/TextArea/NumberBox/DatePicker/DropDownList/CheckBox/RadioButtonList/CheckBoxList/TimePicker/Label/Hidden）+ 读值 |
+| [references/advanced-fields.md](references/advanced-fields.md) | 高级字段：FileUpload（文件上传）、TriggerBox（触发器）、DropDownBox（下拉树/下拉表格/多选下拉）、HtmlEditor（富文本） |
 | [references/validation.md](references/validation.md) | 必填/正则/比较/自定义校验、整表校验、服务端 MarkInvalid |
 
 ## 相关技能（Related Skills）

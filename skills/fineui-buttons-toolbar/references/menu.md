@@ -106,5 +106,5 @@ public IActionResult OnPostMenuLang_CheckedChanged(string checkedValue) {   // R
 ## See also
 
 - [button.md](button.md)：Button
-- `fineui-layout`：把菜单按钮放进 Toolbar
+- `fineui-panel`：Toolbar 工具栏（放在容器 `<Toolbars>`）
 - `fineui-foundation` 的 rawhtml.md：菜单项文本含 HTML（v15.2 默认转义，用 `F.rawHtml`/`_TextRawHtml`）

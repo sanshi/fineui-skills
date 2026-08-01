@@ -45,19 +45,26 @@ F.TextBox().ID("tbxPwd").Label("密码").TextMode(TextMode.Password).Required(tr
 ## NumberBox
 
 `MaxValue`/`MinValue`/`NoDecimal`/`NoNegative`/`DecimalPrecision`/`Increment`。
+千分位 `Commas`；前后缀 `NumberPrefix`/`NumberSuffix`；显示模式 `DisplayType`（`default`/`progress`/`rate`）。
 
 ```javascript
 // F.js
 { type: 'NumberBox', fieldLabel: '0-9 整数', maxValue: 9, minValue: 0, noDecimal: true, noNegative: true, required: true }
+// 千分位 + 前缀：
+{ type: 'NumberBox', fieldLabel: '金额', value: 12345.67, commas: true, numberPrefix: '￥', decimalPrecision: 2 }
+// 评分模式：
+{ type: 'NumberBox', fieldLabel: '评分', value: 3.5, displayType: 'rate', rateAllowHalf: true, rateCount: 5 }
 ```
 ```aspx
 <%-- Pro --%>
 <f:NumberBox runat="server" Label="0-9 整数" MaxValue="9" MinValue="0" NoDecimal="true" NoNegative="true" Required="true" />
 <f:NumberBox runat="server" Label="两位小数" MaxValue="1" MinValue="0" DecimalPrecision="2" Increment="0.01" />
+<f:NumberBox runat="server" Label="金额" Commas="true" NumberPrefix="￥" DecimalPrecision="2" />
 ```
 ```csharp
 // Core-MVC（Fluent）
 F.NumberBox().Label("0-9 整数").MaxValue(9).MinValue(0).NoDecimal(true).NoNegative(true).Required(true)
+F.NumberBox().Label("金额").Commas(true).NumberPrefix("￥").DecimalPrecision(2)
 ```
 ```html
 <!-- Core-TagHelper -->
@@ -156,6 +163,111 @@ F.RadioButtonList().ID("rbl2").DataTextField("Name").DataValueField("Id").DataSo
     <f:RadioItem Text="男" Value="1" />
     <f:RadioItem Text="女" Value="0" />
 </f:RadioButtonList>
+```
+
+## CheckBoxList（复选框列表，多选）
+
+多个互不互斥的复选框；`ColumnNumber` 控制列数；`DisplayType="Switch"` 开关样式；可 `DataSource` 绑定。读值：`SelectedValueArray`（字符串数组）。
+
+```javascript
+// F.js —— data 二维数组 [[值,文本], ...]；value 为预选值数组
+{ type: 'CheckBoxList', id: 'cbl1', fieldLabel: '兴趣', columnNumber: 3,
+  data: [['music', '音乐'], ['sport', '运动'], ['read', '阅读']], value: ['music', 'read'] }
+```
+```aspx
+<%-- Pro --%>
+<f:CheckBoxList runat="server" ID="cbl1" Label="兴趣" ColumnNumber="3" Required="true">
+    <f:CheckItem Text="音乐" Value="music" />
+    <f:CheckItem Text="运动" Value="sport" />
+    <f:CheckItem Text="阅读" Value="read" />
+</f:CheckBoxList>
+```
+```csharp
+// Core-MVC（Fluent）
+F.CheckBoxList().ID("cbl1").Label("兴趣").ColumnNumber(3)
+    .Items(F.CheckItem().Text("音乐").Value("music"), F.CheckItem().Text("运动").Value("sport"))
+```
+```html
+<!-- Core-TagHelper -->
+<f:CheckBoxList ID="cbl1" Label="兴趣" ColumnNumber="3">
+    <f:CheckItem Text="音乐" Value="music" />
+    <f:CheckItem Text="运动" Value="sport" />
+</f:CheckBoxList>
+```
+```csharp
+// 读取选中值（Pro / RazorForms）
+string[] selected = cbl1.SelectedValueArray;   // 如 ["music", "read"]
+```
+
+## TimePicker（时间选择）
+
+固定步长的时间下拉列表（区别于 DatePicker 的 time 模式）。`Increment` 间隔分钟数；`MinValue`/`MaxValue` 限制范围（格式 `HH:mm`）。
+
+```javascript
+// F.js
+{ type: 'TimePicker', id: 'tp1', fieldLabel: '预约时间', minValue: '09:00', maxValue: '18:00', increment: 60 }
+```
+```aspx
+<%-- Pro --%>
+<f:TimePicker runat="server" ID="tp1" Label="预约时间" MinValue="09:00" MaxValue="18:00" Increment="60" />
+```
+```csharp
+// Core-MVC（Fluent）
+F.TimePicker().ID("tp1").Label("预约时间").MinValue("09:00").MaxValue("18:00").Increment(60)
+```
+```html
+<!-- Core-TagHelper -->
+<f:TimePicker ID="tp1" Label="预约时间" MinValue="09:00" MaxValue="18:00" Increment="60"></f:TimePicker>
+```
+
+## Label（只读文本标签）
+
+展示只读文本，常用于显示计算结果或回显。`setValue()` 动态更新；可信 HTML 用 `F.rawHtml(...)` / `new RawHtml(...)`。
+
+```javascript
+// F.js
+{ type: 'Label', id: 'labResult', fieldLabel: '结果', value: '初始文本' }
+// 动态更新：F.ui.labResult.setValue('新文本');
+```
+```aspx
+<%-- Pro --%>
+<f:Label runat="server" ID="labResult" Label="结果" Text="初始文本" />
+```
+```csharp
+// Core-MVC（Fluent）
+F.Label().ID("labResult").Label("结果").Text("初始文本")
+// 服务端更新：UIHelper.Label("labResult").Text("新文本");
+```
+```html
+<!-- Core-TagHelper -->
+<f:Label ID="labResult" Label="结果" Text="初始文本"></f:Label>
+```
+```csharp
+// Pro / RazorForms 服务端更新
+labResult.Text = "新文本";
+```
+
+## Hidden（隐藏字段）
+
+不可见的表单字段，用于在客户端记录状态、传递参数。`setValue()`/`getValue()` 读写。
+
+```javascript
+// F.js
+{ type: 'Hidden', id: 'hfUserId', value: '12345' }
+// 读写：F.ui.hfUserId.getValue(); F.ui.hfUserId.setValue('67890');
+```
+```aspx
+<%-- Pro --%>
+<f:Hidden runat="server" ID="hfUserId" Value="12345" />
+```
+```csharp
+// Core-MVC（Fluent）
+F.Hidden().ID("hfUserId").Value("12345")
+// 服务端读写（Pro/RazorForms）：hfUserId.Value = "67890"; string v = hfUserId.Value;
+```
+```html
+<!-- Core-TagHelper -->
+<f:Hidden ID="hfUserId" Value="12345"></f:Hidden>
 ```
 
 ---

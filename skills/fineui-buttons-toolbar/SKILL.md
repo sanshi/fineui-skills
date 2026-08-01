@@ -2,11 +2,12 @@
 name: fineui-buttons-toolbar
 description: >
   帮助开发者使用 FineUI 的按钮与菜单：Button（语义色/图标/尺寸/徽标）、服务端与客户端点击、确认按钮、
-  LinkButton、Menu/MenuButton 下拉菜单（MenuHyperLink/MenuCheckBox/MenuText/MenuSeparator）。
+  LinkButton、ButtonGroup（按钮分组/互斥按下/多按下）、Menu/MenuButton 下拉菜单（MenuHyperLink/MenuCheckBox/MenuText/MenuSeparator）。
   覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper）。
   Trigger phrases（触发词）: "FineUI 按钮", "F.Button", "Button", "ButtonColor", "语义颜色按钮",
   "OnClick", "OnClientClick", "确认按钮", "ConfirmText", "LinkButton", "下拉菜单", "MenuButton",
-  "Menu", "MenuHyperLink", "MenuCheckBox", "徽标", "Badge", "IconFont".
+  "Menu", "MenuHyperLink", "MenuCheckBox", "徽标", "Badge", "IconFont",
+  "ButtonGroup", "按钮分组", "pressGroup", "互斥按下", "EnablePress".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -15,11 +16,12 @@ metadata:
 
 # FineUI 按钮与菜单技能（Buttons & Menu）
 
-> 工具栏（Toolbar，放在 Panel/Grid 的 `<Toolbars>` 里）见 `fineui-layout` 技能。本技能聚焦按钮与下拉菜单控件本身。
+> 工具栏（Toolbar，放在 Panel/Grid 的 `<Toolbars>` 里）见 `fineui-panel` 技能。本技能聚焦按钮、按钮分组与下拉菜单控件本身。
 
 ## 何时使用（When to Use）
 
 - 按钮：语义色、图标、尺寸、徽标；服务端/客户端点击；点击前确认
+- 按钮分组 ButtonGroup：无间距拼接、互斥按下（单选）、多按下、纵向
 - 超链接按钮 LinkButton
 - 下拉菜单 Menu / MenuButton（含子菜单、可勾选菜单项）
 
@@ -65,7 +67,7 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '主按钮', color: 'primary
 ## 相关技能（Related Skills）
 
 - `fineui-foundation`：写法判定、命名约定、RawHtml（按钮文本含 HTML 时）
-- `fineui-layout`：Toolbar 工具栏（放在容器 `<Toolbars>`）
+- `fineui-panel`：Toolbar 工具栏（放在容器 `<Toolbars>`）
 - `fineui-window`：Confirm 确认框、消息框
 
 ## 约束与规则（Constraints & Rules）

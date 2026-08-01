@@ -139,11 +139,75 @@ F.LinkButton().ID("LinkButton3").Text("服务端事件").OnClick(Url.Action("Lin
 ```javascript
 F.ui.btn.enable(); F.ui.btn.disable(); F.ui.btn.isDisabled();
 F.ui.btn.setText('新文本'); F.ui.btn.setTooltip('提示');
-// 切换按下状态：{ type:'Button', enableToggle:true, pressed:true } → F.ui.btn.toggle()
+// 切换按下状态：{ type:'Button', enablePress:true, pressed:true } → F.ui.btn.toggle()
 ```
 
 ## See also
 
 - [menu.md](menu.md)：下拉菜单
-- `fineui-layout`：Toolbar 工具栏
+- `fineui-panel`：Toolbar 工具栏（放在容器 `<Toolbars>`）
 - `fineui-window`：Confirm 确认框、消息框
+
+---
+
+## ButtonGroup 按钮分组
+
+多个按钮拼接显示（无间距），支持横向/纵向、互斥按下、多按下等模式。
+
+关键属性：
+- `Vertical`：纵向显示（默认横向）
+- `PressGroup`：启用按下状态分组（互斥单选）
+- `AllowMultiPress`：允许多个按钮同时按下
+- `AllowNonePress`：允许分组中没有按钮处于按下状态
+- 按钮子项需设 `EnablePress="true"` 才能参与按下状态；`Pressed="true"` 初始按下
+- `presschange` 事件（F.js）/ `OnPressChange`（C#）：按下状态改变时触发
+
+```javascript
+// F.js —— 基础分组（无间距拼接）
+F.create({ type: 'ButtonGroup', renderTo: '#wrap', items: [
+    { type: 'Button', text: '左对齐', iconFont: 'align-left' },
+    { type: 'Button', text: '居中', iconFont: 'align-center' },
+    { type: 'Button', text: '右对齐', iconFont: 'align-right' }
+] });
+
+// F.js —— 互斥按下（单选，pressGroup: true）
+F.create({ type: 'ButtonGroup', renderTo: '#wrap', pressGroup: true, items: [
+    { type: 'Button', text: '日', enablePress: true, pressed: true },
+    { type: 'Button', text: '周', enablePress: true },
+    { type: 'Button', text: '月', enablePress: true }
+], listeners: { presschange: function (event, item, pressed) {
+    if (pressed) { showNotify('选中：' + item.text); }
+} } });
+
+// F.js —— 多按下（allowMultiPress: true，工具栏开关组合）
+F.create({ type: 'ButtonGroup', renderTo: '#wrap', allowMultiPress: true, items: [
+    { type: 'Button', iconFont: 'bold', enablePress: true },
+    { type: 'Button', iconFont: 'italic', enablePress: true },
+    { type: 'Button', iconFont: 'underline', enablePress: true }
+] });
+
+// F.js —— 纵向显示
+F.create({ type: 'ButtonGroup', renderTo: '#wrap', vertical: true, items: [
+    { type: 'Button', text: '上移', iconFont: 'arrow-up' },
+    { type: 'Button', text: '下移', iconFont: 'arrow-down' }
+] });
+```
+```aspx
+<%-- Pro / Core-TagHelper --%>
+<f:ButtonGroup runat="server" ID="bg1" PressGroup="true">
+    <Items>
+        <f:Button Text="日" EnablePress="true" Pressed="true" runat="server" />
+        <f:Button Text="周" EnablePress="true" runat="server" />
+        <f:Button Text="月" EnablePress="true" runat="server" />
+    </Items>
+</f:ButtonGroup>
+```
+```csharp
+// Core-MVC（Fluent）
+@(F.ButtonGroup().ID("bg1").PressGroup(true)
+    .Items(
+        F.Button().Text("日").EnablePress(true).Pressed(true),
+        F.Button().Text("周").EnablePress(true),
+        F.Button().Text("月").EnablePress(true)
+    ))
+```
