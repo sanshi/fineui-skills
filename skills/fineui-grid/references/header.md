@@ -2,21 +2,21 @@
 
 表头相关：隐藏表头、表头菜单开关、列管理菜单、表头提示、列自定义属性、**多表头（分组表头）**、**动态创建列**。
 
-> 命名规律：**F.js camelCase，四个 .NET 栈都是同词的 PascalCase**，且列宽/菜单几个名字 F.js 与 .NET **不同源**（下表已标注），别机械套用。
+> 命名规律：**F.js camelCase；.NET 侧（Pro 与 Core 三模式）都是同词的 PascalCase；Java 是同词的 kebab-case**，且列宽/菜单几个名字 F.js 与 .NET/Java **不同源**（下表已标注），别机械套用。
 
 ## 概念 → 各写法属性名对照
 
-| 概念 | F.js | .NET（Pro / Core-MVC / Core-TagHelper） |
-|------|------|------------------------------------------|
-| 隐藏列头行 | `gridHeader: false` | `ShowGridHeader="false"` / `.ShowGridHeader(false)` |
-| 隐藏面板标题栏 | `header: false` | `ShowHeader="false"` / `.ShowHeader(false)` |
-| 关表头下拉菜单 | `columnMenu: false` | `EnableHeaderMenu="false"` |
-| 关列宽拖动 | `columnResizable: false` | `EnableColumnResize="false"` |
-| 关表头排序菜单项 | `columnMenuSort: false` | `EnableHeaderMenuSort="false"` |
-| 表头提示 / 位置 | `headerTooltip` / `headerTooltipPosition` | `HeaderToolTip` / `HeaderToolTipPosition` |
-| 列自定义属性 | 列 `attrs: { ... }` | 见 §5（三栈写法不同） |
-| 多表头（分组） | 列嵌套 `columns: [ ... ]` | `<f:GroupField>` + 嵌套 `<Columns>` / `F.GroupField()` |
-| 运行时重配列 | `grid.configColumns(...)` | 服务端 `Grid.Columns.Add(...)` |
+| 概念 | F.js | .NET（Pro / Core-MVC / Core-TagHelper） | Java（Thymeleaf 方言） |
+|------|------|------------------------------------------|------------------------|
+| 隐藏列头行 | `gridHeader: false` | `ShowGridHeader="false"` / `.ShowGridHeader(false)` | `show-grid-header="false"` |
+| 隐藏面板标题栏 | `header: false` | `ShowHeader="false"` / `.ShowHeader(false)` | `show-header="false"` |
+| 关表头下拉菜单 | `columnMenu: false` | `EnableHeaderMenu="false"` | `enable-header-menu="false"` |
+| 关列宽拖动 | `columnResizable: false` | `EnableColumnResize="false"` | `enable-column-resize="false"` |
+| 关表头排序菜单项 | `columnMenuSort: false` | `EnableHeaderMenuSort="false"` | `enable-header-menu-sort="false"` |
+| 表头提示 / 位置 | `headerTooltip` / `headerTooltipPosition` | `HeaderToolTip` / `HeaderToolTipPosition` | `header-tool-tip` / `header-tool-tip-position` |
+| 列自定义属性 | 列 `attrs: { ... }` | 见 §5（各栈写法不同） | 列内嵌 `<f:attributes><f:attribute key= value=>`（见 §5） |
+| 多表头（分组） | 列嵌套 `columns: [ ... ]` | `<f:GroupField>` + 嵌套 `<Columns>` / `F.GroupField()` | `<f:group-field>` + 嵌套 `<f:columns>` |
+| 运行时重配列 | `grid.configColumns(...)` | 服务端 `Grid.Columns.Add(...)` | 服务端 `Grid1.addColumn(...)` |
 
 ---
 
@@ -35,6 +35,10 @@
 ```csharp
 // Core-MVC（Fluent）
 @(F.Grid().ShowGridHeader(false).EnableRowLines(false).EnableAlternateRowColor(false) ...)
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid ... show-grid-header="false" enable-row-lines="false" enable-alternate-row-color="false"> ... </f:grid>
 ```
 
 ---
@@ -63,8 +67,12 @@
 <%-- Pro / Core-TagHelper --%>
 <f:Grid ... EnableHeaderMenu="false" EnableColumnResize="false"> ... </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid ... enable-header-menu="false" enable-column-resize="false"> ... </f:grid>
+```
 
-**只关排序菜单项、保留菜单**：`columnMenu: true` + `columnMenuSort: false`（.NET `EnableHeaderMenu="true"` + `EnableHeaderMenuSort="false"`）。
+**只关排序菜单项、保留菜单**：`columnMenu: true` + `columnMenuSort: false`（.NET `EnableHeaderMenu="true"` + `EnableHeaderMenuSort="false"`；**Java `enable-header-menu="true"` + `enable-header-menu-sort="false"`**）。
 
 ---
 
@@ -97,6 +105,18 @@
     .Tools(F.Tool().ID("toolColumns").IconFont(IconFont._ColumnsAlt).Text("管理列").ToolTip("显示隐藏列").TabIndex(0)
         .Listener("click", "onToolColumnsClick")))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：<f:tools><f:tool> + 监听 click；JS 里 showColumnsMenu 与 F.js 相同 -->
+<f:grid id="Grid1" ... enable-header-menu="false">
+    <f:columns> ... </f:columns>
+    <f:tools>
+        <f:tool id="toolColumns" icon-font="_ColumnsAlt" text="管理列" tool-tip="显示隐藏列" tab-index="0">
+            <f:listeners><f:listener event="click" handler="onToolColumnsClick"></f:listener></f:listeners>
+        </f:tool>
+    </f:tools>
+</f:grid>
+<!-- script 槽：function onToolColumnsClick(event){ F.ui.Grid1.showColumnsMenu(this.el); }（同 F.js） -->
+```
 
 > 相关 API：`grid.hideColumn(event, column, true/false)`、列 `hideable` / `hidden`、`tool.setMenu(menu)`。
 
@@ -113,8 +133,12 @@
 ```aspx
 <f:RenderField DataField="Major" HeaderText="所学专业" HeaderToolTip="这是所学专业列" HeaderToolTipPosition="Top" />
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:render-field data-field="Major" header-text="所学专业" header-tool-tip="这是所学专业列" header-tool-tip-position="Top"></f:render-field>
+```
 
-**列自定义 HTML 属性**（给列头挂 `data-*` 等，三栈写法不同）：
+**列自定义 HTML 属性**（给列头挂 `data-*` 等，各栈写法不同）：
 
 ```javascript
 // F.js —— 列 attrs
@@ -134,6 +158,12 @@ F.RenderField().HeaderText("姓名").DataField("Name").Attribute("data-header-co
 <f:RenderField HeaderText="姓名" DataField="Name">
     <Attributes><f:Attribute Key="data-header-color" Value="color1" /></Attributes>
 </f:RenderField>
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— 嵌套 <f:attributes><f:attribute> -->
+<f:render-field header-text="姓名" data-field="Name">
+    <f:attributes><f:attribute key="data-header-color" value="color1"></f:attribute></f:attributes>
+</f:render-field>
 ```
 
 ---
@@ -179,6 +209,22 @@ columns: [
             F.RenderField().HeaderText("数据一").DataField("AHData1"),
             F.RenderField().HeaderText("数据二").DataField("AHData2"))))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— <f:group-field> 嵌套 <f:columns>（可多层） -->
+<f:columns>
+    <f:render-field data-field="Year" header-text="统计年份"></f:render-field>
+    <f:group-field header-text="安徽省" text-align="Center">
+        <f:columns>
+            <f:group-field header-text="合肥市" text-align="Center">
+                <f:columns>
+                    <f:render-field data-field="AHData1" header-text="数据一"></f:render-field>
+                    <f:render-field data-field="AHData2" header-text="数据二"></f:render-field>
+                </f:columns>
+            </f:group-field>
+        </f:columns>
+    </f:group-field>
+</f:columns>
+```
 
 - **排序**：在 Grid 上开 `AllowSorting`（F.js 列 `sortable:true`），叶子列设 `SortField`；分组节点本身不排序。
 - **初始隐藏某分组**：分组节点 `Hidden="true"`（F.js `hidden:true`）；运行时 `F.ui.grid1.getColumn('anhui').toggleVisible()`。
@@ -202,6 +248,7 @@ F.ui.grid1.configColumns(createGrid2Columns(), { idField: 'Id', checkboxSelect: 
 | **Core-MVC** | Controller `Index()` | `new RenderField()` / `RenderCheckField` / `RowNumberField` | `ViewBag.Grid1Columns = list.ToArray()` → View `.Columns(ViewBag.Grid1Columns)` |
 | **Core-RazorPages** | `OnGet()` | 同 MVC | `ViewBag.Grid1Columns` → 标签 `Columns="@ViewBag.Grid1Columns"` |
 | **Core-RazorForms** | `Page_Load`（`!IsPostBack`） | 同 MVC | `Grid1.Columns.Clear(); ...Add(col); Grid1.DataBind();` |
+| **Java** | `Page_Load`（`!isPostBack()`） | `new RenderField()` / `new RenderCheckField()` / `new RowNumberField()`（`com.fineui.java.core.controls.*`） | `Grid1.getColumns().clear(); Grid1.addColumn(col); ...; Grid1.dataBind();` |
 
 ```csharp
 // Pro —— 必须在 Page_Init
@@ -221,8 +268,29 @@ columns.Add(new RenderField { HeaderText = "姓名", DataField = "Name" });
 columns.Add(new RenderCheckField { HeaderText = "是否在校", DataField = "AtSchool", RenderAsStaticField = true });
 ViewBag.Grid1Columns = columns.ToArray();   // View: .Columns(ViewBag.Grid1Columns) / Columns="@ViewBag.Grid1Columns"
 ```
+```java
+// FineUIJava —— 在 Page_Load 里用 Bean 建列并加入 Grid（标签 <f:columns> 留空）
+@FineUIPage("grid-dynamic/dynamic-columns")
+public class DynamicColumns extends FineUIPageBase {
+    com.fineui.java.core.controls.Grid Grid1;
+    public void Page_Load(Object sender, EventArgs e) {
+        if (!isPostBack()) {
+            Grid1.getColumns().clear();
+            Grid1.addColumn(new RowNumberField());
+            RenderField name = new RenderField(); name.setHeaderText("姓名"); name.setDataField("Name");
+            Grid1.addColumn(name);
+            RenderCheckField atSchool = new RenderCheckField();
+            atSchool.setHeaderText("是否在校"); atSchool.setDataField("AtSchool"); atSchool.setRenderAsStaticField(true);
+            Grid1.addColumn(atSchool);
+            // 日期列：logTime.setFieldType(FieldType.Date); logTime.setRenderer(Renderer.Date); logTime.setRendererArgument("yyyy/MM/dd");
+            Grid1.setDataSource(getRows());
+            Grid1.dataBind();
+        }
+    }
+}
+```
 
-标签里 `<Columns>` 留空。**Pro 只支持首次初始化建列、不支持回发动态建列**。
+标签里 `<Columns>`（Java `<f:columns>`）留空。**Pro 只支持首次初始化建列、不支持回发动态建列**；Java 同 RazorForms，在 `Page_Load` 建列即可。
 
 ---
 

@@ -88,6 +88,34 @@ F.create({
 </f:Grid>
 ```
 
+### FineUIJava（Thymeleaf 方言，`<f:editor>` 子标签）
+
+结构同 Core-TagHelper：`allow-cell-editing` + `clicks-to-edit`（1 单击 / 2 双击），列内嵌 `<f:editor>` 放表单字段；列级只读用 `enable-column-edit="false"`。
+
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid id="Grid1" allow-cell-editing="true" clicks-to-edit="1">
+    <f:columns>
+        <f:row-number-field></f:row-number-field>
+        <f:render-field header-text="姓名" column-id="Name" data-field="Name">
+            <f:editor><f:text-box id="tbxName" required="true"></f:text-box></f:editor>
+        </f:render-field>
+        <f:render-field header-text="性别" column-id="Gender" data-field="Gender" field-type="Int" renderer-function="renderGender">
+            <f:editor>
+                <f:drop-down-list id="ddlGender" required="true">
+                    <f:list-item text="男" value="1"></f:list-item>
+                    <f:list-item text="女" value="0"></f:list-item>
+                </f:drop-down-list>
+            </f:editor>
+        </f:render-field>
+        <f:render-field header-text="入学年份" column-id="EntranceYear" data-field="EntranceYear" field-type="Int">
+            <f:editor><f:number-box no-decimal="true" no-negative="true" min-value="2000" max-value="2025"></f:number-box></f:editor>
+        </f:render-field>
+        <f:render-field header-text="所学专业" column-id="Major" data-field="Major" enable-column-edit="false"></f:render-field>
+    </f:columns>
+</f:grid>
+```
+
 ---
 
 ## 读取编辑后的数据（各栈 API 不同 —— 重点）
@@ -150,19 +178,56 @@ protected void btnSubmit_Click(object sender, EventArgs e) {
 }
 ```
 
+### FineUIJava —— **方法** `Grid1.getModifiedData()`（含 status）/ `Grid1.getMergedData()`
+
+Java 走**方法**（不像 RazorForms 的属性），两者返回 `List<Map<String, Object>>`，每行有 `values`（`Map<String,Object>`）：
+
+- **`getModifiedData()`**：只含被改动的行，每行带 `status`——`"modified"`（改现有行）/`"newadded"`（新增行）/`"deleted"`（删除行）+ `id`。**处理新增/删除首选它**（靠 status 分流），无需开 `include-merged-data`。
+- **`getMergedData()`**：所有未删除行的当前值（含新增/已改/未改）——需先在 `<f:grid>` 上开 `include-merged-data="true"`，适合“整表重建”。
+
+```java
+// FineUIJava 页面类 —— 用 getModifiedData() 的 status 分流新增/改/删（推荐）
+public void btnSubmit_Click(Object sender, EventArgs e) {
+    for (Map<String, Object> row : Grid1.getModifiedData()) {
+        String status = String.valueOf(row.get("status"));
+        String rowId  = String.valueOf(row.get("id"));
+        @SuppressWarnings("unchecked")
+        Map<String, Object> values = (Map<String, Object>) row.get("values");   // 改动的列
+        if ("modified".equals(status))      { /* 用 values 更新 rowId 对应行 */ }
+        else if ("newadded".equals(status)) { /* 用 values 插入新行 */ }
+        else if ("deleted".equals(status))  { /* 删除 rowId 对应行 */ }
+    }
+    Grid1.dataBind();
+}
+```
+```java
+// 或整表重建：需 <f:grid include-merged-data="true">
+public void btnSubmit_Click(Object sender, EventArgs e) {
+    for (Map<String, Object> mergedRow : Grid1.getMergedData()) {
+        @SuppressWarnings("unchecked")
+        Map<String, Object> values = (Map<String, Object>) mergedRow.get("values");
+        String name = String.valueOf(values.get("Name"));
+        // ... 用 values 各列重建整表
+    }
+}
+```
+
+> 编辑器控件、渲染函数、`beforeedit`/`aftercelledit` 等客户端监听 JS 与 F.js 完全相同，Java 侧直接复用。
+
 ---
 
 ## 关键约束
 
-1. **读编辑数据的 API 四套不同，别混**：
+1. **读编辑数据的 API 五套不同，别混**：
    - F.js：`grid.getModifiedData()`（方法）；
    - **Pro（WebForms）**：`Grid1.GetModifiedData()` / `GetModifiedDict()` / `GetMergedData()`（**方法**）；
    - **Core-MVC / RazorPages**：回发参数 `JArray Grid1_mergedData`（**没有** `GetMergedData()` 方法）；
-   - **Core-RazorForms**：控件属性 `Grid1.MergedData`（**没有** `GetMergedData()` 方法）。
-2. **合并数据结构**：C# 端 `JArray`，逐行 `row["values"]`（`JObject`），再 `values.Value<T>("列名")`。
-3. **新增/删除行**需 `IncludeMergedData="true"`；否则只拿到修改、拿不到新增删除。
-4. **点击进入编辑**：F.js `cellEditingClicks`；C# 三模式 `ClicksToEdit`（1 单击 / 2 双击）。
-5. **列级只读**：F.js 不设 `editable` 或用 `beforeedit` 返回 `false`；C# 用 `EnableColumnEdit="false"`。
+   - **Core-RazorForms**：控件属性 `Grid1.MergedData`（**没有** `GetMergedData()` 方法）；
+   - **Java**：**方法** `Grid1.getModifiedData()`（带 `status` 分流新增/改/删）/ `Grid1.getMergedData()`（需 `include-merged-data="true"`），返回 `List<Map<String,Object>>`（**不是 JArray**）。
+2. **合并数据结构**：C# 端 `JArray`，逐行 `row["values"]`（`JObject`），再 `values.Value<T>("列名")`；**Java 端是 `Map<String,Object>`，逐行 `row.get("values")`（也是 `Map`），再 `values.get("列名")`**。
+3. **新增/删除行**：C# 需 `IncludeMergedData="true"`（Java `include-merged-data="true"`）才能用合并数据；**Java 也可不开该属性、改用 `getModifiedData()` 的 `status`（`modified`/`newadded`/`deleted`）分流**。
+4. **点击进入编辑**：F.js `cellEditingClicks`；C# 三模式 `ClicksToEdit`；**Java `clicks-to-edit`**（1 单击 / 2 双击）。
+5. **列级只读**：F.js 不设 `editable` 或用 `beforeedit` 返回 `false`；C# 用 `EnableColumnEdit="false"`；**Java `enable-column-edit="false"`**。
 6. **编辑器控件**：TextBox / DropDownList / NumberBox / DatePicker 等表单字段（详见 `fineui-form` 技能）。
 
 ## See also

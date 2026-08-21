@@ -37,8 +37,17 @@
         F.Panel().BoxFlex(1).Title("右弹性")
     ))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:panel layout="HBox" box-config-align="Stretch" box-config-child-margin="0 5 0 0">
+    <f:items>
+        <f:panel width="200" title="左固定"></f:panel>
+        <f:panel box-flex="1" title="右弹性"></f:panel>
+    </f:items>
+</f:panel>
+```
 
-两栏等分：两个子项都 `BoxFlex="1"`。
+两栏等分：两个子项都 `BoxFlex="1"`（Java `box-flex="1"`）。
 
 ## VBox —— 垂直盒子
 
@@ -68,16 +77,28 @@
         F.Panel().BoxFlex(1).Layout(LayoutType.Fit).Items(F.Grid().ID("Grid1"))
     ))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：下方 box-flex="1" 撑满，内部 layout="Fit" 放 Grid -->
+<f:panel layout="VBox" box-config-align="Stretch">
+    <f:items>
+        <f:panel height="40" title="工具区"></f:panel>
+        <f:panel box-flex="1" layout="Fit"><f:items><f:grid id="Grid1"> ... </f:grid></f:items></f:panel>
+    </f:items>
+</f:panel>
+```
 
 ## 属性对照
 
-| 概念 | F.js | C#（Pro / Core） |
-|------|------|------------------|
-| 布局 | `layout: 'hbox'` / `'vbox'` | `Layout="HBox"` / `"VBox"` / `.Layout(LayoutType.HBox)` |
-| 弹性尺寸 | `boxFlex: 1` | `BoxFlex="1"` / `.BoxFlex(1)` |
-| 交叉轴对齐 | `boxConfigAlign: 'stretch'` | `BoxConfigAlign="Stretch"` / `.BoxConfigAlign(BoxLayoutAlign.Stretch)` |
-| 主轴排列 | `boxConfigPosition: 'start'` | `BoxConfigPosition="Start"` / `.BoxConfigPosition(BoxLayoutPosition.Start)` |
-| 子项间距 | `boxConfigChildMargin: '0 5 0 0'` | `BoxConfigChildMargin="0 5 0 0"` |
+| 概念 | F.js | C#（Pro / Core） | Java（Thymeleaf 方言） |
+|------|------|------------------|------------------------|
+| 布局 | `layout: 'hbox'` / `'vbox'` | `Layout="HBox"` / `"VBox"` / `.Layout(LayoutType.HBox)` | `layout="HBox"` / `"VBox"` |
+| 弹性尺寸 | `boxFlex: 1` | `BoxFlex="1"` / `.BoxFlex(1)` | `box-flex="1"` |
+| 交叉轴对齐 | `boxConfigAlign: 'stretch'` | `BoxConfigAlign="Stretch"` / `.BoxConfigAlign(BoxLayoutAlign.Stretch)` | `box-config-align="Stretch"` |
+| 主轴排列 | `boxConfigPosition: 'start'` | `BoxConfigPosition="Start"` / `.BoxConfigPosition(BoxLayoutPosition.Start)` | `box-config-position="Start"` |
+| 子项间距 | `boxConfigChildMargin: '0 5 0 0'` | `BoxConfigChildMargin="0 5 0 0"` | `box-config-child-margin="0 5 0 0"` |
+| 子项间隔 | `boxConfigSpace: 10` | `BoxConfigSpace="10"` | `box-config-space="10"` |
+
+> Java 的 `box-config-align` 值与 C# 一致：`Stretch`（默认）/ `Center` / `End` / `Start` / `StretchMax` / `StretchMaxCenter` / `StretchMaxEnd`。
 
 ## 常见坑
 

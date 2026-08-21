@@ -3,10 +3,12 @@ name: fineui-panel
 description: >
   帮助开发者使用 FineUI 的容器组件：Panel（面板，含工具栏/折叠/标题工具图标/ContentPanel）、
   TabStrip（选项卡，含 iframe 页、动态增删）、Accordion（手风琴）。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 面板", "F.Panel", "Panel", "ContentPanel", "工具栏面板",
   "TabStrip", "选项卡", "标签页", "动态选项卡", "iframe 选项卡", "Accordion", "手风琴", "AccordionPane",
-  "折叠面板", "Tools 标题图标".
+  "折叠面板", "Tools 标题图标", "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage",
+  "f:panel", "f:tab-strip", "f:accordion", "f:region-panel".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -25,7 +27,7 @@ metadata:
 
 ## 开始前（Before You Start）
 
-1. **哪种写法？** F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages（判定见 `fineui-foundation`）。
+1. **哪种写法？** F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java（判定见 `fineui-foundation`）。
 2. **要哪种容器？** Panel（通用）/ TabStrip（分页）/ Accordion（折叠面板组）。
 
 ## 各写法速览（带顶部工具栏的面板）
@@ -58,6 +60,19 @@ F.create({ type: 'Panel', isFluid: true, id: 'Panel1', renderTo: '#wrap', title:
     <Items><f:Panel Title="内容面板" Height="200" AutoScroll="true"></f:Panel></Items>
 </f:Panel>
 ```
+```html
+<!-- ⑤ FineUIJava（Thymeleaf 方言：标签/属性全 kebab-case，工具栏用 <f:toolbars>/<f:toolbar>）-->
+<f:panel id="Panel1" is-fluid="true" title="面板" body-padding="10" enable-collapse="true">
+    <f:toolbars>
+        <f:toolbar id="Toolbar1" position="Top">
+            <f:items><f:button id="btn1" text="按钮"></f:button><f:toolbar-fill></f:toolbar-fill></f:items>
+        </f:toolbar>
+    </f:toolbars>
+    <f:items><f:panel title="内容面板" height="200" auto-scroll="true"></f:panel></f:items>
+</f:panel>
+```
+
+> 客户端 F.js 运行时四栈完全相同（`F.ui.Panel1.xxx()`、监听器 JS 一字不差），Java 只是模板语法/大小写与页面类语言不同。详见 `fineui-foundation` 的 stacks.md。
 
 ## 参考文档（Documentation Reference Files）
 
@@ -76,12 +91,14 @@ F.create({ type: 'Panel', isFluid: true, id: 'Panel1', renderTo: '#wrap', title:
 
 ## 约束与规则（Constraints & Rules）
 
-1. **先定写法、不混用**：F.js camelCase（`collapsible`/`bodyPadding`）；C# PascalCase（`EnableCollapse`/`BodyPadding`）。工具栏 F.js 放 `bars`，C# 放 `<Toolbars>`。
-2. **纯内容用 ContentPanel**（C#）：只放内容、无需再嵌套时用 `<f:ContentPanel>`。
-3. **动态选项卡各写法不同**：F.js `F.ui.TabStrip1.addTab({...})`；Core-MVC/RazorPages `UIHelper.TabStrip("id").AddTab(...)`；Pro/RazorForms `RegisterStartupScript(TabStrip1.GetAddTabReference(...))`。详见 [references/tab.md](references/tab.md)。
-4. **Accordion 面板用 `<Panes>`/`AccordionPane`**（不是 `<Items>`/Tab）；面板切换服务端事件（`OnPaneIndexChanged`）仅 Pro 有，Core 三模式读客户端 `getActivePaneIndex()`。详见 [references/accordion.md](references/accordion.md)。
-5. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+1. **先定写法、不混用**：F.js camelCase（`collapsible`/`bodyPadding`）；C# PascalCase（`EnableCollapse`/`BodyPadding`）；**Java kebab-case（`enable-collapse`/`body-padding`）**。工具栏 F.js 放 `bars`，C# 放 `<Toolbars>`，**Java 放 `<f:toolbars>`/`<f:toolbar>`/`<f:items>`（内含 `<f:toolbar-text>`/`<f:toolbar-separator>`/`<f:button>`/`<f:toolbar-fill>`）**。
+2. **纯内容用 ContentPanel**：只放内容、无需再嵌套时用 `<f:ContentPanel>`（C#）/ **`<f:content-panel>`（Java）**。
+3. **动态选项卡各写法不同**：F.js `F.ui.TabStrip1.addTab({...})`；Core-MVC/RazorPages `UIHelper.TabStrip("id").AddTab(...)`；Pro/RazorForms `RegisterStartupScript(TabStrip1.GetAddTabReference(...))`；**Java 直接在控件字段上调 `TabStrip1.addTab(id, url, title, iconUrl, closable)` / `TabStrip1.hideTab(id)`**。详见 [references/tab.md](references/tab.md)。
+4. **Accordion 面板用 `<Panes>`/`AccordionPane`**（Java `<f:panes>`/`<f:accordion-pane>`；不是 `<Items>`/Tab）；面板切换**服务端事件** `OnPaneIndexChanged`（Java `on-pane-index-changed`）在 **Pro（配 `AutoPostBack`）/ Core-RazorForms / Java** 上都能直接声明，Core-MVC/RazorPages 读客户端 `getActivePaneIndex()`。详见 [references/accordion.md](references/accordion.md)。
+5. **Java 折叠事件直接写属性**：`on-collapse`/`on-expand`（不像 Pro 需 `EnableCollapseEvent`/`EnableExpandEvent` 开关）。Region 布局 Java 另有 `<f:region-panel>`/`<f:regions>`/`<f:region>` 便捷控件（见 `fineui-layout`）。
+6. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc；Java 属性名 = Core 属性名转 kebab-case，属性「值」（枚举/图标）仍 PascalCase。
 
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
+- **FineUIJava**：控件属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js API 与 JS 端完全相同；查属性先看 Core API 再按命名约定转写。

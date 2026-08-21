@@ -27,6 +27,21 @@ F.FileUpload().ID("fu1").Label("上传头像").Accept("image/*").ButtonText("选
 <!-- Core-TagHelper -->
 <f:FileUpload ID="fu1" Label="上传头像" Accept="image/*" ButtonText="选择图片"></f:FileUpload>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：button-icon/button-text；多文件 multiple="true"；仅按钮 button-only="true" -->
+<f:file-upload id="filePhoto" label="上传头像" empty-text="请选择一张照片" button-icon="Add" button-text="选择图片" required="true" show-red-star="true"></f:file-upload>
+```
+```java
+// FineUIJava 页面类：服务端保存（按钮事件）——控件字段用全限定名消歧
+public void btnSubmit_Click(Object sender, EventArgs e) {
+    if (filePhoto.hasFile()) {
+        String originalName = filePhoto.getShortFileName();   // 原始文件名
+        // …校验扩展名白名单 + 大小后，保存到静态资源之外的目录…
+        // 保存出错或提交完成后务必 reset，否则下次提交会再次上传：
+        filePhoto.reset();
+    }
+}
+```
 ```csharp
 // Pro 服务端保存（Page_Load 或按钮事件）
 if (fu1.PostedFile != null) {
@@ -67,10 +82,26 @@ F.TriggerBox().ID("tbx1").Label("选择节点").TriggerCls("f-triggericon-search
 <!-- Core-TagHelper（RazorForms）-->
 <f:TriggerBox ID="tbx1" Label="选择节点" TriggerCls="f-triggericon-search" OnTriggerClick="tbx1_TriggerClick"></f:TriggerBox>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：触发图标用 trigger-icon="Search"（不是 TriggerCls）；示例用客户端 triggerclick 监听打开窗口 -->
+<f:trigger-box id="TriggerBox1" show-label="false" trigger-icon="Search" empty-text="打开弹出窗口" enable-click-action="true">
+    <f:listeners>
+        <f:listener event="triggerclick" handler="onTriggerBox1TriggerClick"></f:listener>
+    </f:listeners>
+</f:trigger-box>
+<!-- 脚本槽：function onTriggerBox1TriggerClick(event) { F.ui.Window1.show(); }（同 F.js）-->
+```
 ```csharp
 // Pro / RazorForms 后台
 protected void tbx1_TriggerClick(object sender, EventArgs e) {
     // 打开选择窗口等
+}
+```
+```java
+// FineUIJava 页面类：设值 setValue(...)（弹窗选完后回填）
+public void btnCloseWindow_Click(Object sender, EventArgs e) {
+    Window1.setHidden(true);
+    TriggerBox1.setValue("弹出窗口被关闭了");
 }
 ```
 
@@ -86,6 +117,8 @@ protected void tbx1_TriggerClick(object sender, EventArgs e) {
 - `MultiSelect`：多选模式；`MultiSelectMode="Tags"` 标签形态
 - `MatchFieldWidth`：弹出面板宽度是否跟随输入框
 - `MaxPopHeight`：弹出面板最大高度（默认 300）
+
+> **FineUIJava 属性名对照**（kebab-case，个别语义有差异）：`PopPanel`→`<f:pop-panel>`、`MultiSelect`→`enable-multi-select`、`DataControl`→`data-control-id`、单选初值 `Value`→`value`、多选初值 → `values`（逗号分隔）。
 
 ### 下拉树（最常见）
 
@@ -133,10 +166,28 @@ F.DropDownBox().ID("ddb1").Label("所属省份").MatchFieldWidth(false)
     </PopPanel>
 </f:DropDownBox>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：弹出面板标签是 <f:pop-panel>；单选 enable-multi-select="false" -->
+<f:drop-down-box id="DropDownBox1" value="henan" enable-multi-select="false">
+    <f:pop-panel>
+        <f:tree id="Tree1" show-header="false" hidden="true">
+            <f:nodes>
+                <f:tree-node text="河南省" node-id="henan" expanded="true"></f:tree-node>
+                <f:tree-node text="安徽省" node-id="anhui"></f:tree-node>
+            </f:nodes>
+        </f:tree>
+    </f:pop-panel>
+</f:drop-down-box>
+```
 ```csharp
 // 服务端读值（Pro / RazorForms）
 string nodeId = ddb1.Value;    // 选中节点 id
 string text   = ddb1.Text;     // 显示文本
+```
+```java
+// FineUIJava 页面类：单选读值 getValue()/getText()
+String nodeId = DropDownBox1.getValue();
+String text   = DropDownBox1.getText();
 ```
 
 ### 多选下拉（挂 CheckBoxList）
@@ -150,6 +201,28 @@ F.create({ type: 'DropDownBox', id: 'ddb2', fieldLabel: '编程语言',
             data: [['csharp','C#'], ['js','JavaScript'], ['java','JAVA'], ['php','PHP']] }] }
 });
 // 读值：F.ui.ddb2.getValue()  → ['js', 'php']
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：多选 enable-multi-select="true"；data-control-id 指向面板内的 CheckBoxList；初值 values="js,php" -->
+<f:drop-down-box id="DropDownBox1" data-control-id="CheckBoxList1" enable-multi-select="true" values="js,php">
+    <f:pop-panel>
+        <f:simple-form id="SimpleForm2" body-padding="10px" auto-scroll="true" show-header="false" hidden="true">
+            <f:items>
+                <f:check-box-list id="CheckBoxList1" column-number="3">
+                    <f:check-item text="C#" value="csharp"></f:check-item>
+                    <f:check-item text="JavaScript" value="js"></f:check-item>
+                    <f:check-item text="PHP" value="php"></f:check-item>
+                </f:check-box-list>
+            </f:items>
+        </f:simple-form>
+    </f:pop-panel>
+</f:drop-down-box>
+```
+```java
+// FineUIJava 页面类：多选读值 getValues()（List）；后台更新需同时设文本与值
+java.util.List<String> vals = DropDownBox1.getValues();          // 如 ["js", "php"]
+DropDownBox1.setTexts(java.util.Arrays.asList("PHP", "Basic"));
+DropDownBox1.setValues(java.util.Arrays.asList("php", "basic"));
 ```
 
 ---
@@ -179,11 +252,21 @@ F.HtmlEditor().ID("he1").Label("内容").Editor(HtmlEditorType.CKEditor).Height(
 <!-- Core-TagHelper -->
 <f:HtmlEditor ID="he1" Label="内容" Editor="CKEditor" Height="300" EditorBasePath="~/ckeditor/"></f:HtmlEditor>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：资源路径是 base-path（不是 EditorBasePath）；toolbar-set 指定工具栏；编辑器 JS 由脚本槽引入 -->
+<f:html-editor id="HtmlEditor1" label="文本编辑器" editor="CKEditor" base-path="~/res/third-party/ckeditor/" toolbar-set="Full" height="350"></f:html-editor>
+<!-- 脚本槽：<th:block layout:fragment="script"><script src="/res/third-party/ckeditor/ckeditor.js"></script></th:block> -->
+```
 ```csharp
 // 读值（Pro / RazorForms）
 string html = he1.Value;   // 返回 HTML 字符串
 // 赋值
 he1.Value = "<p>初始内容</p>";
+```
+```java
+// FineUIJava 页面类：读/写用 getText()/setText()（不是 getValue/setValue）；客户端切只读 F.ui.HtmlEditor1.setReadonly(true)
+String html = HtmlEditor1.getText();          // 返回 HTML 字符串
+HtmlEditor1.setText("<p>初始内容</p>");
 ```
 
 > **安全提示**：HtmlEditor 的值是用户输入的 HTML，**不要**直接声明为 RawHtml 输出；如需展示，先做 HTML 净化（白名单过滤）。

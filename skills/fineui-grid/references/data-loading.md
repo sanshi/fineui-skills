@@ -35,6 +35,20 @@ F.create({
 <!-- Core-TagHelper（RazorForms/RazorPages）：RazorPages 内联全量 DataSource，RazorForms 后台 DataBind -->
 <f:Grid ID="Grid1" AllowPaging="true" PageSize="10" ShowPageSizeSelector="true" DataSource="@Model.GetAll()"> ... </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：同 RazorForms，标签不写 data-source，页面类 Page_Load 一次性绑全量 -->
+<f:grid id="Grid1" allow-paging="true" page-size="10" show-page-size-selector="true"> ... </f:grid>
+```
+```java
+// FineUIJava 页面类：内存分页首屏绑一次，回发无需重绑
+@FineUIPage("grid-paging/paging")
+public class Paging extends FineUIPageBase {
+    com.fineui.java.core.controls.Grid Grid1;
+    public void Page_Load(Object sender, EventArgs e) {
+        if (!isPostBack()) { Grid1.setDataSource(getAll()); Grid1.dataBind(); }
+    }
+}
+```
 
 ---
 
@@ -133,19 +147,44 @@ public IActionResult OnPostGrid1_PageIndexChanged(string[] Grid1_fields, int Gri
 }
 ```
 
+### FineUIJava（Thymeleaf 方言，后台事件）
+
+结构与 RazorForms 一致：`on-page-index-changed` 指向页面类 `void` 处理器；处理器读 `Grid1.getPageIndex()` 按页取数、每次都 `setRecordCount(...)`。
+
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid id="Grid1" allow-paging="true" is-database-paging="true" page-size="5"
+        data-id-field="Id" on-page-index-changed="Grid1_PageIndexChanged"> <f:columns> ... </f:columns> </f:grid>
+```
+```java
+// FineUIJava 页面类
+@FineUIPage("grid-paging/database")
+public class Database extends FineUIPageBase {
+    com.fineui.java.core.controls.Grid Grid1;
+    public void Page_Load(Object sender, EventArgs e) { if (!isPostBack()) loadData(); }
+    private void loadData() {
+        Grid1.setRecordCount(getTotalCount());                                     // ① 每次绑定都设总记录数
+        Grid1.setDataSource(getPaged(Grid1.getPageIndex(), Grid1.getPageSize()));  // ② 按当前页取数
+        Grid1.dataBind();
+    }
+    public void Grid1_PageIndexChanged(Object sender, GridPageEventArgs e) { loadData(); }  // ③ 翻页重绑（void）
+}
+```
+
 ---
 
 ## 关键约束
 
-1. **数据库分页必须设总记录数**：F.js 由服务端随数据返回；C# 三模式每次绑定都 `RecordCount = 总数`（Fluent `.RecordCount(...)` / TagHelper `RecordCount="..."` / 属性 `Grid1.RecordCount`）。漏设 → 分页栏页数不对。
-2. **开关属性名**：F.js `databasePaging: true`；C# 三模式 `IsDatabasePaging="true"`（不开则为内存分页）。
-3. **翻页事件三模式不同**：
+1. **数据库分页必须设总记录数**：F.js 由服务端随数据返回；C# 三模式每次绑定都 `RecordCount = 总数`（Fluent `.RecordCount(...)` / TagHelper `RecordCount="..."` / 属性 `Grid1.RecordCount`）；**Java 每次绑定都 `Grid1.setRecordCount(总数)`**。漏设 → 分页栏页数不对。
+2. **开关属性名**：F.js `databasePaging: true`；C# 三模式 `IsDatabasePaging="true"`；**Java `is-database-paging="true"`**（不开则为内存分页）。
+3. **翻页事件各栈不同**：
    - Core-MVC：`.OnPageIndexChanged(Url.Action("..."), "Grid1")` → Controller `Xxx(string[] Grid1_fields, int Grid1_pageIndex)`。
    - Core-RazorForms：`OnPageIndexChanged="方法名"` → 后台 `方法名(object sender, GridPageEventArgs e)`（服务端事件，读 `Grid1.PageIndex`）。
    - Core-RazorPages：`OnPageIndexChanged="@Url.Handler(\"方法名\")"` + `OnPageIndexChangedFields="Grid1"` → `OnPost方法名(string[] Grid1_fields, int Grid1_pageIndex)`。
    - Pro：`OnPageIndexChanged="方法名"` → `方法名(object sender, GridPageEventArgs e)`。
-4. **回发按页取数用 `Grid1_pageIndex`（MVC/RazorPages）或 `Grid1.PageIndex`（Pro/RazorForms）**，配合 `Grid1_fields`（MVC/RazorPages）保持列。
-5. **“加载更多/流式追加”**（Core-MVC）：翻页处理器里用 `grid1.AppendData(dataSource, Grid1_fields)` 代替 `DataSource(...)`。
+   - **Java**：`on-page-index-changed="方法名"` → 页面类 `public void 方法名(Object sender, GridPageEventArgs e)`（服务端事件，读 `Grid1.getPageIndex()`；**返回 void**）。
+4. **回发按页取数用 `Grid1_pageIndex`（MVC/RazorPages）或 `Grid1.PageIndex`/`Grid1.getPageIndex()`（Pro/RazorForms/Java）**，配合 `Grid1_fields`（MVC/RazorPages）保持列。
+5. **“加载更多/流式追加”**：Core-MVC 翻页处理器里用 `grid1.AppendData(dataSource, Grid1_fields)` 代替 `DataSource(...)`；**Java 用 `Grid1.appendData(nextPageList)` 追加下一页**（可把已加载页码存进 `Grid1.setAttribute("data-index", ...)` 随回发往返）。
 
 ## See also
 

@@ -3,10 +3,11 @@ name: fineui-theming
 description: >
   帮助开发者使用 FineUI 的主题系统（v15 起基于 CSS Variables）：设置全局主题、运行时切换主题、
   自定义主题（theme.config + generate-theme）。覆盖 F.js（JavaScript）、Pro（WebForms）、
-  FineUICore 的 MVC / RazorForms / RazorPages。
+  FineUICore 的 MVC / RazorForms / RazorPages，以及 FineUIJava（Spring Boot）。
   Trigger phrases（触发词）: "FineUI 主题", "换主题", "切换主题", "Theme", "Pure_Black",
   "深色主题", "dark theme", "自定义主题", "theme.config", "generate-theme", "CSS Variables 主题",
-  "PageManager Theme", "CustomTheme".
+  "PageManager Theme", "CustomTheme", "FineUIJava 主题", "Spring Boot", "Thymeleaf", "fineui.theme",
+  "application.properties", "FineUIPageManagerInitializer", "pm.theme".
 compatibility: FineUI v15+（主题系统重构为 CSS Variables）
 metadata:
   author: FineUI
@@ -45,6 +46,13 @@ F.init({ theme: 'pure_black' });
 // ③ Core（MVC / RazorForms / RazorPages 三套一致）—— appsettings.json
 "FineUI": { "Theme": "Pure_Black", "EnableAnimation": true }
 ```
+```properties
+# ④ FineUIJava（Spring Boot）—— application.properties 的 fineui.* 键（键名 kebab-case、主题名小写）
+fineui.theme=pure_black
+fineui.enable-animation=true
+```
+
+> Java 全局默认在 `application.properties`；页面级/按用户切换实现 `FineUIPageManagerInitializer` bean（`pm.theme(...)`），详见 [references/set-theme.md](references/set-theme.md)。**主题 CSS 变量与 F.js 完全一致**（同一套 `themes/{主题}/theme.css`）。
 
 ## 参考文档（Documentation Reference Files）
 
@@ -59,10 +67,10 @@ F.init({ theme: 'pure_black' });
 
 ## 约束与规则（Constraints & Rules）
 
-1. **主题名大小写**：配置/枚举用 `Pure_Black`（帕斯卡 + 下划线）；F.js `F.init({ theme: 'pure_black' })` 用小写。
-2. **全局默认入口**：Pro 走 `Web.config` 的 `<FineUIPro Theme=".."/>`；Core 三套走 `appsettings.json` 的 `"FineUI":{"Theme":".."}`。
-3. **运行时切换没有纯客户端 `setTheme`**：仓库统一做法是**写 `Theme` Cookie → 刷新页面 → 服务端读 Cookie 设 PageManager**。详见 [references/set-theme.md](references/set-theme.md)。
-4. **自定义主题不要手改 `theme.css`**：它由 `theme.config` 经 `generate-theme` 自动生成；改配色改 `theme.config` 再重新生成。详见 [references/custom-theme.md](references/custom-theme.md)。
+1. **主题名大小写**：C# 配置/枚举用 `Pure_Black`（帕斯卡 + 下划线）；F.js `F.init({ theme: 'pure_black' })` 用小写；**Java `application.properties` 用小写 `fineui.theme=pure_black`**（`themes/` 目录名即小写，大小写不敏感）。
+2. **全局默认入口**：Pro 走 `Web.config` 的 `<FineUIPro Theme=".."/>`；Core 三套走 `appsettings.json` 的 `"FineUI":{"Theme":".."}`；**Java 走 `application.properties` 的 `fineui.theme=..`（`fineui.*` 键，kebab-case）**。
+3. **运行时切换没有纯客户端 `setTheme`**：仓库统一做法是**写 `Theme` Cookie → 刷新页面 → 服务端读 Cookie 设 PageManager**（Java：`FineUIPageManagerInitializer` bean 读 cookie 调 `pm.theme(...)`）。详见 [references/set-theme.md](references/set-theme.md)。
+4. **自定义主题不要手改 `theme.css`**：它由 `theme.config` 经 `generate-theme` 自动生成；改配色改 `theme.config` 再重新生成。**Java 端自定义主题机制与 F.js 一致**——同一套 `res/themes/{名}/`（`theme.config` + 生成的 `theme.css`）；Java 制品内不含独立生成脚本，`theme.css` 仍由 F.js 的 `generate-theme` 生成后随资源分发，再用 `fineui.theme={名}`（全局）或 `pm.theme("{名}")`（按用户）引用。详见 [references/custom-theme.md](references/custom-theme.md)。
 5. **深色主题**：`theme.config` 里 `is-dark-background = true`；框架会给 body 加 `f-theme-darkbg` 类。
 
 ## 官方资源（Official Resources）

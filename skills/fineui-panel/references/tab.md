@@ -2,6 +2,8 @@
 
 容器：`Height`、`TabPosition="Top"`、`ActiveTabIndex`（默认激活）、`EnableTabCloseMenu`、`ShowBorder`。每个 `Tab` 有 `Title`/`TitleRawHtml`、`BodyPadding`、`Layout`、`Closable`、`Disabled`、`Icon`；内容用 `<Items>`/`items`，简单文本可用 `content`(F.js)/`Content`。
 
+> **Java（Thymeleaf 方言）**：`<f:tab-strip tab-position= active-tab-index= enable-tab-close-menu= show-border= height= is-fluid=>`，选项卡集合放 `<f:tabs>`，每个 `<f:tab title= title-raw-html= body-padding= layout= enable-iframe= iframe-url= content=>`，内容放 `<f:items>`。自定义属性用 `<f:attributes>`/`<f:attribute key= value=>`。
+
 ## 静态选项卡
 
 ```javascript
@@ -33,6 +35,17 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
         F.Tab().TitleRawHtml(new RawHtml("<span class='hot'>标签二</span>")).BodyPadding(10).Items(F.Button().Text("按钮"))
     ))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:tab-strip id="TabStrip1" is-fluid="true" height="350" tab-position="Top" active-tab-index="1" enable-tab-close-menu="false" show-border="true">
+    <f:tabs>
+        <f:tab title="标签一" body-padding="10" layout="Fit"><f:items> ... </f:items></f:tab>
+        <f:tab title-raw-html="<span class='hot'>标签二</span>" body-padding="10">
+            <f:items><f:button id="Button1" text="按钮"></f:button></f:items>
+        </f:tab>
+    </f:tabs>
+</f:tab-strip>
+```
 
 ## Tab 内嵌 iframe
 
@@ -45,6 +58,12 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
 ```csharp
 // Core-MVC（Fluent）
 F.Tab().Title("标签二（IFrame）").EnableIFrame(true).IFrameUrl(Url.Content("~/Panel/Group")).Listener("iframeload", "onTabIFrameLoad")
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：enable-iframe + iframe-url，iframeload 处理器是客户端 JS（同 F.js）-->
+<f:tab id="Tab2" title="标签二（IFrame）" enable-iframe="true" iframe-url="~/panel/group">
+    <f:listeners><f:listener event="iframeload" handler="onTabIFrameLoad" /></f:listeners>
+</f:tab>
 ```
 
 ## 动态增删选项卡
@@ -68,6 +87,16 @@ UIHelper.TabStrip("TabStrip1").CloseTab("tab_x");
 // Pro / Core-RazorForms —— 注册脚本 + GetAddTabReference
 PageContext.RegisterStartupScript(TabStrip1.GetAddTabReference("tab_x", "https://x.com/", "新标签", IconHelper.GetIconUrl(Icon.Application), true));
 // RazorForms 用 RegisterStartupScript(TabStrip1.GetAddTabReference(...))
+```
+```java
+// FineUIJava 页面类 —— 直接在控件字段上调 addTab / hideTab（框架下发运行时命令，无需注册脚本）
+public void btnAddTab_Click(Object sender, EventArgs e) {
+    TabStrip1.addTab("dynamic_tab", "https://deepseek.com/", "新标签",
+            IconHelper.namedIconUrl("Application"), true);   // 参数：id, url, title, iconUrl, closable
+}
+public void btnRemoveTab_Click(Object sender, EventArgs e) {
+    TabStrip1.hideTab("dynamic_tab");
+}
 ```
 
 > **相同 `id` 会复用同一个选项卡**（再次打开不新建）。动态 Tab 是客户端加的，服务端控件树取不到——非 Ajax 回发会丢失。

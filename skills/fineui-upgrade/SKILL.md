@@ -3,6 +3,7 @@ name: fineui-upgrade
 description: >
   把现有 FineUI 项目升级到更高的大版本（**仅 v10 及以上**），识别破坏性变更、生成迁移清单并逐项应用。
   适用于 F.js（JavaScript）、Pro（WebForms）、以及 FineUICore 的 MVC / RazorForms / RazorPages。
+  （FineUIJava 首发即 v15.2，无历史升级路径；仅其共用的 F.js 客户端破坏性变更适用，见下。）
   Trigger phrases（触发词）: "FineUI 升级", "升级 FineUI", "FineUI upgrade", "升级到 v1x",
   "破坏性变更", "不兼容", "迁移 FineUI", "EncodeText", "raw 标签", "DateParseString".
   当用户要把 FineUI 从旧版本升级到新版本、或问“升级会不会有不兼容”时使用本技能。
@@ -27,7 +28,7 @@ metadata:
 按顺序执行，不要跳步。**每一步用中括号标注是「告知用户后继续」还是「询问用户并等待」。**
 
 1. **确定版本区间** —— [询问用户] 当前 FineUI 版本、目标版本。若用户不确定当前版本，从项目里的 `FineUI.js` 版本注释、NuGet 包版本或 `web.config`/`csproj` 判断，并 [告知用户] 你的判断。
-2. **确定写法** —— [告知用户] 项目属于哪种写法（F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages）。判定线索见 `fineui-foundation` 技能。**只需处理该写法相关的破坏性变更**（清单里 `[JS]`/`[Pro]`/`[Core]` 标注的按需取用）。
+2. **确定写法** —— [告知用户] 项目属于哪种写法（F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java）。判定线索见 `fineui-foundation` 技能。**只需处理该写法相关的破坏性变更**（清单里 `[JS]`/`[Pro]`/`[Core]` 标注的按需取用）。**若项目是 FineUIJava**：它首发即 v15.2，不存在「从旧版本升级」的场景；只有其复用的 **F.js 客户端**破坏性变更（清单里 `[JS]` 标注、且体现在客户端 API/渲染上的项）才与之相关，**C#/.NET 专属的 `[Pro]`/`[Core]` 服务端变更不适用**。
 3. **对照破坏性变更** —— 读 [references/breaking-changes.md](references/breaking-changes.md)，把**版本区间内**每一条与项目代码比对。跨多个大版本时，逐版本过一遍，**优先处理“HTML 编码安全主线”**（v10 EncodeText → v15 提示 → v15.2 菜单/RawHtml），这是最容易导致页面显示异常的一类。
 4. **生成迁移清单** —— 产出一个 Markdown 文件（如 `FINEUI_UPGRADE_PLAN.md`），逐项列出：受影响的文件/代码位置、变更点、**具体怎么改**（给出改前/改后）。**先写清单，不要直接改代码。**
 5. **逐项确认** —— [询问用户] 对“行为变更类”（如 HBox 高度填充、行高定义、DropDownList.Text 语义）逐项确认是接受新行为还是保持旧行为；对“改名类”（DateParseString、closeArgument、Active→Activate 等）默认直接改。

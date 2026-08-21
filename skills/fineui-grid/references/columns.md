@@ -2,16 +2,16 @@
 
 各写法并列，概念相同、属性名不同；每段为最小代码。
 
-> 列定义属于**前台写法**：**Core-RazorForms 与 Core-RazorPages 的列标签完全一致**（都是 TagHelper），故本文合称 **Core-TagHelper**。两者的差异在数据初始化/事件（见 [selection.md](selection.md) 与 SKILL.md 约束 5、6），与列定义无关。
+> 列定义属于**前台写法**：**Core-RazorForms 与 Core-RazorPages 的列标签完全一致**（都是 TagHelper），故本文合称 **Core-TagHelper**。两者的差异在数据初始化/事件（见 [selection.md](selection.md) 与 SKILL.md 约束 5、6），与列定义无关。**Java 列标签 = Core 标签转 kebab-case**（`<f:render-field>` / `<f:row-number-field>` / `<f:render-check-field>`），结构与 Core-TagHelper 完全一致，故下文只在末尾追加一段 Java 块，不重复其余。
 
 ## 列类型一览
 
-| 用途 | F.js `columnType` | Pro / Core-TagHelper 标签 | Core-MVC (Fluent API) |
-|------|-------------------|---------------------------|------------------------|
-| 普通渲染列（默认） | `'renderfield'`（默认，可省） | `<f:RenderField>` | `F.RenderField()` |
-| 行号列 | `'rownumberfield'` | `<f:RowNumberField>` | `F.RowNumberField()` |
-| 布尔展示列 | `'checkboxfield'` | `<f:RenderCheckField>` | `F.RenderCheckField()` |
-| 行展开列 | `'rowexpanderfield'` | `<f:RowExpanderField>` | `F.RowExpanderField()` |
+| 用途 | F.js `columnType` | Pro / Core-TagHelper 标签 | Core-MVC (Fluent API) | Java（Thymeleaf 方言） |
+|------|-------------------|---------------------------|------------------------|------------------------|
+| 普通渲染列（默认） | `'renderfield'`（默认，可省） | `<f:RenderField>` | `F.RenderField()` | `<f:render-field>` |
+| 行号列 | `'rownumberfield'` | `<f:RowNumberField>` | `F.RowNumberField()` | `<f:row-number-field>` |
+| 布尔展示列 | `'checkboxfield'` | `<f:RenderCheckField>` | `F.RenderCheckField()` | `<f:render-check-field>` |
+| 行展开列 | `'rowexpanderfield'` | `<f:RowExpanderField>` | `F.RowExpanderField()` | `<f:render-field render-as-row-expander="true">`（见 [row-features.md](row-features.md)） |
 
 > Pro 另有服务端渲染的声明式列：`<f:BoundField>`、`<f:TemplateField>`、`<f:CheckBoxField>`、`<f:HyperLinkField>`（Core 不提供，用 `RenderField` + 渲染函数替代）。为保持一致，优先用 `RenderField`。
 
@@ -65,6 +65,18 @@ columns: [
 </Columns>
 ```
 
+### FineUIJava（Thymeleaf 方言）
+
+```html
+<!-- FineUIJava（Thymeleaf 方言）：标签/属性 kebab-case，宽度值不带 px -->
+<f:columns>
+    <f:row-number-field></f:row-number-field>
+    <f:render-field header-text="姓名" data-field="Name" width="120"></f:render-field>
+    <f:render-field header-text="性别" data-field="Gender" text-align="Center"></f:render-field>
+    <f:render-field header-text="所学专业" data-field="Major" expand-unused-space="true" min-width="150"></f:render-field>
+</f:columns>
+```
+
 ---
 
 ## 格式化列：日期与数字
@@ -104,6 +116,11 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 <f:RenderField HeaderText="入学日期" DataField="EntranceDate" FieldType="Date" Renderer="Date" RendererArgument="yyyy/MM/dd" Width="150" />
 <f:RenderField HeaderText="工资" DataField="Salary" FieldType="Double" Renderer="Number" RendererArgument="N2" Width="150" />
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：属性名 kebab-case，值 Date/Number/N2/yyyy/MM/dd 保持不变 -->
+<f:render-field header-text="入学日期" data-field="EntranceDate" field-type="Date" renderer="Date" renderer-argument="yyyy/MM/dd" width="150"></f:render-field>
+<f:render-field header-text="工资" data-field="Salary" field-type="Double" renderer="Number" renderer-argument="N2" width="150"></f:render-field>
+```
 
 > Pro 声明式 `BoundField` 也可格式化日期：`<f:BoundField DataField="LogTime" DataFormatString="{0:yyyy/MM/dd}" HeaderText="注册日期" />`。
 
@@ -140,7 +157,11 @@ F.RenderField().HeaderText("状态").DataField("Status").RendererFunction("rende
 <f:RenderField HeaderText="状态" DataField="Status" RendererFunction="renderStatus" />
 ```
 ```html
-<!-- 页面内定义 JS（三模式通用），签名与 F.js renderer 一致 -->
+<!-- FineUIJava（Thymeleaf 方言）：renderer-function 指向页面里同名 JS 函数（函数体与 F.js 完全相同，不重复贴） -->
+<f:render-field header-text="状态" data-field="Status" renderer-function="renderStatus"></f:render-field>
+```
+```html
+<!-- 页面内定义 JS（各栈通用，Java 放在 layout:fragment="script" 槽内），签名与 F.js renderer 一致 -->
 <script>
     function renderStatus(value, params) {
         var color = value === '在职' ? 'green' : 'gray';
@@ -173,6 +194,10 @@ F.RenderCheckField().HeaderText("是否在校").DataField("AtSchool").RenderAsSt
 <!-- Core-TagHelper（RazorForms / RazorPages）-->
 <f:RenderCheckField HeaderText="是否在校" DataField="AtSchool" RenderAsStaticField="true" />
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：render-as-static-field="true" 表示只读展示（不可编辑） -->
+<f:render-check-field header-text="是否在校" data-field="AtSchool" render-as-static-field="true"></f:render-check-field>
+```
 
 ---
 
@@ -195,6 +220,10 @@ F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(t
 ```html
 <!-- Core-TagHelper（RazorForms / RazorPages）-->
 <f:RenderField HeaderText="姓名" DataField="Name" EnableLock="true" Locked="true" />
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：列锁定需 Grid 上 allow-column-locking="true"（见 advanced.md） -->
+<f:render-field header-text="姓名" data-field="Name" enable-lock="true" locked="true"></f:render-field>
 ```
 
 ---
@@ -219,6 +248,8 @@ F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(t
 | `summaryType` / `summaryRenderer` | sum/avg / fn | 合计行 | 见 [summary.md](summary.md) |
 | `sortable` / `sorter` | boolean / fn | 排序 | 见 [sorting.md](sorting.md) |
 | `filter` | boolean / object | 表头过滤 | 见 [filter.md](filter.md) |
+
+> **Java 命名**：上表「C# 对照」列的属性名转 kebab-case 即 Java 标签属性名（`HeaderText`→`header-text`、`DataField`→`data-field`、`FieldType`→`field-type`、`RendererFunction`→`renderer-function`、`ExpandUnusedSpace`→`expand-unused-space`…），值（`Int`/`Date`/`N2`…）保持不变。**服务端动态建列**时用 Java Bean：`new RenderField()` + `setHeaderText(...)`/`setDataField(...)`/`setFieldType(FieldType.Int)`/`setRendererFunction(...)`，加进 `Grid1.addColumn(col)`（详见 [header.md](header.md) §7）。
 
 ## See also
 

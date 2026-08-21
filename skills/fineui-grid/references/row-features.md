@@ -4,15 +4,15 @@
 
 ## 概念 → 各写法属性名对照
 
-| 概念 | F.js | Pro (WebForms) | Core-MVC / TagHelper |
-|------|------|----------------|----------------------|
-| 行扩展列 | Grid `rowExpander: { field, renderer }` | `<f:TemplateField RenderAsRowExpander="true">` | `RenderField` + `RenderAsRowExpander="true"` + `RendererFunction` |
-| 展开全部扩展列 | `grid.expandRowExpanders()` | `ExpandAllRowExpanders="true"` | 同 Pro 属性 |
-| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | 专用 `<f:WindowField>` | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` |
-| 行命令列 | 列 `renderer` 返 `<a class>` | `<f:LinkButtonField CommandName>` | `RendererFunction` / RF 用 `<f:Command CommandName>` |
-| 行单击/双击/选中事件 | listener `rowclick`/`rowdblclick`/`rowselect` | `EnableRowClickEvent`+`OnRowClick` 等 | 客户端 listener + 回发 / RF 服务端 `OnRowClick` |
-| 整行样式 | `rowRenderer` / `rowDataBound` | 服务端 `OnRowDataBound` → `e.RowCssClass` | 客户端 `RowRendererFunction` / `RowDataBoundFunction` |
-| 固定行高 / 行高行数 | `fixedRowHeight` / `rowHeightLines` | `FixedRowHeight` / `RowHeightLines` | `.FixedRowHeight()` / `.RowHeightLines()` |
+| 概念 | F.js | Pro (WebForms) | Core-MVC / TagHelper | Java（Thymeleaf 方言） |
+|------|------|----------------|----------------------|------------------------|
+| 行扩展列 | Grid `rowExpander: { field, renderer }` | `<f:TemplateField RenderAsRowExpander="true">` | `RenderField` + `RenderAsRowExpander="true"` + `RendererFunction` | `<f:render-field render-as-row-expander="true" renderer-function="fn">` |
+| 展开全部扩展列 | `grid.expandRowExpanders()` | `ExpandAllRowExpanders="true"` | 同 Pro 属性 | `expand-all-row-expanders="true"` |
+| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | 专用 `<f:WindowField>` | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` | `<f:command window-id="Window1" window-iframe-url-format-string=…>`（同 RazorForms） |
+| 行命令列 | 列 `renderer` 返 `<a class>` | `<f:LinkButtonField CommandName>` | `RendererFunction` / RF 用 `<f:Command CommandName>` | `<f:commands><f:command command-name=…>` |
+| 行单击/双击/选中事件 | listener `rowclick`/`rowdblclick`/`rowselect` | `EnableRowClickEvent`+`OnRowClick` 等 | 客户端 listener + 回发 / RF 服务端 `OnRowClick` | `on-row-click` / `on-row-double-click` 服务端事件 |
+| 整行样式 | `rowRenderer` / `rowDataBound` | 服务端 `OnRowDataBound` → `e.RowCssClass` | 客户端 `RowRendererFunction` / `RowDataBoundFunction` | 客户端 `row-renderer-function` / `row-data-bound-function`；服务端 `on-row-data-bound` |
+| 固定行高 / 行高行数 | `fixedRowHeight` / `rowHeightLines` | `FixedRowHeight` / `RowHeightLines` | `.FixedRowHeight()` / `.RowHeightLines()` | `fixed-row-height` / `row-height-lines` |
 
 ---
 
@@ -43,8 +43,13 @@ rowExpander: {
 F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   // MVC
 // TagHelper: <f:RenderField RenderAsRowExpander="true" RendererFunction="renderExpander" />
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— render-as-row-expander + renderer-function（函数体同 F.js） -->
+<f:render-field data-field="Desc" render-as-row-expander="true" renderer-function="renderExpander"></f:render-field>
+<!-- 展开全部：<f:grid expand-all-row-expanders="true">；客户端 F.ui.Grid1.rowExpander.toggleVisible() -->
+```
 
-> Pro 用服务端 `<ItemTemplate>`；F.js/Core 用客户端 `renderer`/`RendererFunction` 返回 HTML。**行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
+> Pro 用服务端 `<ItemTemplate>`；F.js/Core/Java 用客户端 `renderer`/`RendererFunction`/`renderer-function` 返回 HTML。**行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
 
 ---
 
@@ -74,6 +79,18 @@ F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   /
 { text: '窗口列', field: 'Id', renderer: function (v, params) { return '<a class="mywindowfield">编辑</a>'; } }
 // 页面 JS：$(grid.el).on('click', 'a.mywindowfield', function(){ F.ui.Window1.show(url, title); });
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— 同 RazorForms：命令列 + Window 绑定（url 字段以逗号列出，无下划线前缀） -->
+<f:render-field header-text="窗口列">
+    <f:commands>
+        <f:command command-name="Action1" text="编辑" css-class="mywindowfield" window-id="Window1"
+            window-iframe-url-format-string="/grid/iframe-window?id={0}&amp;name={1}" window-iframe-url-fields="Id,Name"
+            window-title-format-string="编辑 - {0}" window-title-fields="Name"></f:command>
+    </f:commands>
+</f:render-field>
+<f:window id="Window1" title="编辑" hidden="true" enable-iframe="true" close-action="HidePostBack" on-close="Window1_Close"
+          target="Top" is-modal="true" width="850" height="500"></f:window>
+```
 
 **双击行打开**：Pro `EnableRowDoubleClickEvent="true" OnRowDoubleClick="Grid1_RowDoubleClick"` →
 
@@ -84,6 +101,13 @@ protected void Grid1_RowDoubleClick(object sender, GridRowClickEventArgs e) {
     PageContext.RegisterStartupScript(GetEditUrl(keys[0], keys[1]));
 }
 // RazorForms 同名事件但参数是 GridRowEventArgs：Grid1_RowDoubleClick(object sender, GridRowEventArgs e)
+```
+```java
+// FineUIJava —— <f:grid data-key-names="Id,Name" on-row-double-click="Grid1_RowDoubleClick">；参数 GridRowEventArgs
+public void Grid1_RowDoubleClick(Object sender, GridRowEventArgs e) {
+    Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());   // keys[0]=Id, keys[1]=Name
+    // 窗体通信在被弹页面类里用 ActiveWindow.hidePostBack() / hideRefresh() / hideCallParentFunction("removeActiveTab")
+}
 ```
 
 ---
@@ -140,6 +164,29 @@ public IActionResult Grid1_RowCommand(string rowId, string rowText, int rowIndex
 // RazorPages: public IActionResult OnPostGrid1_RowCommand(string rowId, string rowText, int rowIndex, int columnIndex)
 ```
 
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— <f:commands> 声明式命令；服务端事件用 on-row-command -->
+<f:grid ... data-key-names="Id,Name" on-row-command="Grid1_RowCommand">
+    <f:columns>
+        <f:render-field header-text="">
+            <f:commands>
+                <f:command command-name="Action1" text="编辑"></f:command>
+                <f:command command-name="Action3" icon-font="Remove" confirm-text="确定删除？" confirm-target="Top"></f:command>
+            </f:commands>
+        </f:render-field>
+    </f:columns>
+</f:grid>
+```
+```java
+// FineUIJava —— 注意：行命令参数是 GridCommandEventArgs（同 Pro，不是 RazorForms 的 GridRowCommandEventArgs）
+public void Grid1_RowCommand(Object sender, GridCommandEventArgs e) {
+    Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());
+    showNotify(String.format("第 %d 行，命令 %s，ID %s", e.getRowIndex() + 1, e.getCommandName(), keys[0]));
+    // e.getColumnIndex() 取命令所在列
+}
+```
+> 纯客户端命令（不回发）：`<f:grid>` 上 `<f:listeners><f:listener event="rowcommand" handler="onGrid1RowCommand">`，JS 签名与 F.js 相同：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName)`。
+
 客户端 `rowcommand` listener 签名：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName)`。
 
 ---
@@ -176,6 +223,16 @@ public IActionResult Grid1_RowClick(string rowId, string rowText, int rowIndex, 
 public IActionResult Grid1_RowSelect(string rowId, string rowText, int rowIndex, string columnText, bool isDeselect) { return UIHelper.Result(); }
 // RazorPages: OnPostGrid1_RowClick(string rowId, string rowText, int rowIndex, string columnText)
 ```
+```java
+// FineUIJava —— 服务端属性 on-row-click（需 data-key-names），参数 GridRowEventArgs（同 RazorForms）
+// 标签：<f:grid data-key-names="Id,Name" on-row-click="Grid1_RowClick">（双击 on-row-double-click，选中 on-row-select）
+public void Grid1_RowClick(Object sender, GridRowEventArgs e) {
+    int rowIndex = e.getRowIndex();
+    Object[] keys = Grid1.getDataKeys().get(rowIndex);
+    String[] selectedCell = Grid1.getSelectedCell();   // [rowId, columnId]，可取当前单元格所在列
+    showNotify("单击第 " + (rowIndex + 1) + " 行，ID：" + keys[0]);
+}
+```
 
 ---
 
@@ -198,6 +255,15 @@ protected void Grid1_RowDataBound(object sender, GridRowEventArgs e) {
 }
 // RazorForms 服务端同名事件，但参数是 GridRowDataBoundEventArgs（不是 GridRowEventArgs）：
 //   protected void Grid1_RowDataBound(object sender, GridRowDataBoundEventArgs e) { e.RowCssClass = "color1"; }
+```
+```java
+// FineUIJava —— 服务端 on-row-data-bound，参数 GridRowDataBoundEventArgs（同 RazorForms）
+// 标签：<f:grid on-row-data-bound="Grid1_RowDataBound">
+public void Grid1_RowDataBound(Object sender, GridRowDataBoundEventArgs e) {
+    int year = ((Number) e.getFieldValue("EntranceYear")).intValue();   // 读本行字段值
+    if (year == 2008) e.setRowCssClass("color1");                        // 整行样式
+    // 客户端方式（同 F.js）：row-renderer-function / row-data-bound-function 设 params.rowCls / rowData.cls
+}
 ```
 
 **单元格样式**（客户端）：在列 `renderer` 内 `params.cellCls = 'special'` / `params.cellAttrs['data-color'] = 'x'`。纯 CSS 命中：`.f-grid-cell-<字段/ColumnID>`。
@@ -231,18 +297,23 @@ function onRowDensityChange(event) {
 // Core-MVC（Fluent）
 @(F.Grid().FixedRowHeight(true).RowHeightLines(3) ...)
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid ... fixed-row-height="true" row-height-lines="3"> ... </f:grid>
+```
 
+> 行密度菜单项 click 里 `F.ui.Grid1.setRowDensity(...)`（`small`/`normal`/`large`/`xlarge`）与 F.js 完全相同。
 > Pro 另有像素级行高属性（`RowHeight` / `RowHeightCompact` / `RowHeightSmall` / `RowHeightLarge` / `RowHeightLargeSpace`），Core/F.js 示例未用。
 
 ---
 
 ## 关键约束
 
-1. **C# 事件 EventArgs 按栈不同**：行单击 Pro `GridRowClickEventArgs` / RazorForms `GridRowEventArgs`；行选中 Pro `GridRowSelectEventArgs` / RazorForms `GridRowEventArgs`；行命令 Pro `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`；行数据绑定 Pro `GridRowEventArgs` / RazorForms `GridRowDataBoundEventArgs`。别照抄错类名。
-2. **行命令服务端仅 Pro / RazorForms**：MVC/RazorPages 基础版纯客户端，服务端走 `F.doPostBack` 自定义参数（非 `OnRowCommand`）。
-3. **弹窗列三套机制**：Pro `<f:WindowField>`；RazorForms `<f:Command WindowID=...>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
+1. **事件 EventArgs 按栈不同**：行单击 Pro `GridRowClickEventArgs` / RazorForms 与 **Java** `GridRowEventArgs`；行选中 Pro `GridRowSelectEventArgs` / RazorForms `GridRowEventArgs`；行命令 Pro 与 **Java** `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`；行数据绑定 Pro `GridRowEventArgs` / RazorForms 与 **Java** `GridRowDataBoundEventArgs`（getter 取值：`e.getRowIndex()`/`e.getCommandName()`/`e.getFieldValue("列")`/`e.setRowCssClass(...)`）。别照抄错类名。
+2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`）；MVC/RazorPages 基础版纯客户端，服务端走 `F.doPostBack` 自定义参数（非 `OnRowCommand`）。
+3. **弹窗列多套机制**：Pro `<f:WindowField>`；RazorForms 与 **Java** `<f:Command WindowID=…>` / `<f:command window-id=…>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
 4. **行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
-5. **行样式服务端事件仅 Pro / RazorForms**；MVC/RazorPages 用客户端 `RowDataBoundFunction`。
+5. **行样式服务端事件仅 Pro / RazorForms / Java**（`on-row-data-bound` → `GridRowDataBoundEventArgs`）；MVC/RazorPages 用客户端 `RowDataBoundFunction`。
 
 ## See also
 

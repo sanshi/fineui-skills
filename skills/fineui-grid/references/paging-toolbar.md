@@ -24,6 +24,12 @@ paging: true, pageSize: 10, showPageSizeSelector: true   // 可选：pageSizeOpt
 <!-- Core-TagHelper（RazorForms/RazorPages）-->
 <f:Grid ... AllowPaging="true" ShowPageSizeSelector="true" PageSizeOptions="5,10,15,20"> ... </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：未设 page-size-options 时用默认 10,20,50,100 -->
+<f:grid ... allow-paging="true" show-page-size-selector="true" page-size-options="5,10,15,20"> ... </f:grid>
+```
+
+> 页大小变更事件：Java 用 `on-page-size-changed="Grid1_PageSizeChanged"` → 页面类 `public void Grid1_PageSizeChanged(Object sender, EventArgs e)`（数据库分页时按新页大小重取数；新页大小/页码已随回发就位）。
 
 ---
 
@@ -49,6 +55,12 @@ pagerAutoSimpleMode: true
 <!-- Core-TagHelper -->
 <f:Grid ... PagerAutoSimpleMode="true"> ... </f:Grid>
 ```
+```java
+// FineUIJava —— 页面类 Page_Load 里经 PageManager 开启（本页生效）
+public void Page_Load(Object sender, EventArgs e) {
+    if (!isPostBack()) { getPageManager().gridPagerAutoSimpleMode(true); loadData(); }
+}
+```
 
 ### 全局（一次开启，所有 Grid 生效）
 
@@ -64,6 +76,11 @@ F.init({ gridPagerAutoSimpleMode: true });
 // Core 三模式通用 —— 页面顶部流式（F = Html.F()）
 @{ F.PageManager.GridPagerAutoSimpleMode(true); }
 ```
+```properties
+# FineUIJava —— application.properties 全站默认（fineui. + kebab-case）
+fineui.grid-pager-auto-simple-mode=true
+```
+> Java 也可按用户在 `FineUIPageManagerInitializer` bean 的 `init(pm, request)` 里按 cookie 决定（渲染前回调）。
 
 ---
 
@@ -99,6 +116,25 @@ protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e) {
 
 > Core 也有 `PageItems`（Fluent `.PageItems(...)` / TagHelper `<PageItems>`），用法同上。
 
+```html
+<!-- FineUIJava（Thymeleaf 方言）：分页栏内放自定义按钮，<f:page-items> 子标签 -->
+<f:grid id="Grid1" allow-paging="true" page-size="5">
+    <f:columns> ... </f:columns>
+    <f:page-items>
+        <f:button id="btnClearData" text="清空数据" on-click="btnClearData_Click"></f:button>
+        <f:button id="btnRebind" text="重新绑定数据" icon="Reload" on-click="btnRebindData_Click"></f:button>
+        <f:toolbar-separator></f:toolbar-separator>
+        <f:button id="btnSelectAll" text="选中所有行" on-click="btnSelectAll_Click"></f:button>
+    </f:page-items>
+</f:grid>
+```
+```java
+// FineUIJava 页面类：分页栏按钮的 void 处理器
+public void btnClearData_Click(Object sender, EventArgs e) { Grid1.setDataSource(null); Grid1.dataBind(); }
+public void btnRebindData_Click(Object sender, EventArgs e) { Grid1.setDataSource(getAll()); Grid1.dataBind(); }
+public void btnSelectAll_Click(Object sender, EventArgs e) { Grid1.selectAllRows(); }   // 清空选中：Grid1.deselectAllRows()
+```
+
 ---
 
 ## 4. PageManager / 配置文件全局项
@@ -119,17 +155,24 @@ protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e) {
     "GridPagerAutoSimpleMode": true
 }
 ```
+```properties
+# FineUIJava —— application.properties 的 fineui.* 键（全站默认，fineui. + kebab-case）
+fineui.grid-paging-toolbar-visible=true
+fineui.grid-pager-align-right=true
+fineui.grid-paging-type=arrow
+fineui.grid-show-selection-message=true
+```
 
-常用 Grid 全局项：`GridPagingToolbarVisible`（分页栏可见）、`GridPagerAlignRight`（分页栏右对齐）、`GridPagingType`（分页样式，如 `Arrow`）、`GridPagerAutoSimpleMode`（窄屏简洁分页）。页面单控件可用同名实例属性覆盖。
+常用 Grid 全局项：`GridPagingToolbarVisible`（分页栏可见）、`GridPagerAlignRight`（分页栏右对齐）、`GridPagingType`（分页样式，如 `Arrow`）、`GridPagerAutoSimpleMode`（窄屏简洁分页）。页面单控件可用同名实例属性覆盖；**Java 对应键为 `fineui.grid-paging-toolbar-visible` / `fineui.grid-pager-align-right` / `fineui.grid-paging-type` 等**（`fineui.` + Core 名转 kebab-case）。
 
 ---
 
 ## 关键约束
 
 1. **没有“全局每页条数”配置**：`PageSize` **只能逐 Grid 设**。Core **不存在** `GridPageSize` 全局项，Pro 亦无 `GridPageSize` 全局键——不要凭空写。
-2. **`pagerAutoSimpleMode` 全局键名**：F.js `gridPagerAutoSimpleMode`（`F.init`）；Pro/Core 全局 `GridPagerAutoSimpleMode`；实例属性 F.js `pagerAutoSimpleMode` / C# `PagerAutoSimpleMode`（四段命名规律）。
-3. **全局项两处入口**：Pro = `Web.config` 的 `<FineUIPro>` 或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`。
-4. **分页行号**：行号列跨页连续编号用 `EnablePagingNumber="true"`（Core）/ F.js `columnType:'rownumberfield'` + `pagingNumber:true`。
+2. **`pagerAutoSimpleMode` 全局键名**：F.js `gridPagerAutoSimpleMode`（`F.init`）；Pro/Core 全局 `GridPagerAutoSimpleMode`；实例属性 F.js `pagerAutoSimpleMode` / C# `PagerAutoSimpleMode`；**Java 全局 `fineui.grid-pager-auto-simple-mode`，页面级 `getPageManager().gridPagerAutoSimpleMode(true)`**（四段命名规律）。
+3. **全局项两处入口**：Pro = `Web.config` 的 `<FineUIPro>` 或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）或页面类 `getPageManager().gridXxx(...)` / `FineUIPageManagerInitializer` bean（页面级/按用户）**。
+4. **分页行号**：行号列跨页连续编号用 `EnablePagingNumber="true"`（Core）/ **Java `<f:row-number-field enable-paging-number="true">`** / F.js `columnType:'rownumberfield'` + `pagingNumber:true`。
 
 ## See also
 

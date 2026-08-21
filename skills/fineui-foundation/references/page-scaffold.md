@@ -1,14 +1,15 @@
 # 页面骨架（Page Scaffold）—— 从零搭一个 FineUI 页面
 
-一个最小可运行页面在五种写法里的结构。**先看关键差异，再看代码。**
+一个最小可运行页面在各写法里的结构。**先看关键差异，再看代码。**
 
 ## 关键点（务必先知道）
 
 1. **PageManager 是必备控件，但放置位置不同**：
    - **Pro（WebForms）**：`<f:PageManager>` 写在 **aspx 页面内**（`<form runat="server">` 里）。
    - **Core 三模式**：PageManager **不写在业务页**，而是统一放在**共享布局 `_Layout.cshtml`** 里的 `@F.PageManager`。**Core 没有 `<f:PageManager>` TagHelper 写法**——业务页里不要写它。
-2. **Core 的 CSS/JS 引入**：在 `_Layout.cshtml` 里用 `@F.RenderCss()` / `@F.RenderScript()`（Pro 由 PageManager 自动注入）。
-3. **Core 启用 TagHelper**：`_ViewImports.cshtml` 里 `@addTagHelper *, FineUICore` + `@using FineUICore`。
+   - **Java（Spring Boot）**：不写 PageManager 控件；共享母版 `shared/layout.html` 用 `<f:styles>`/`<f:scripts>` 输出 CSS/JS，页面级/按用户配置由实现 `FineUIPageManagerInitializer` bean 完成（渲染前回调）。
+2. **CSS/JS 引入**：Core 在 `_Layout.cshtml` 里用 `@F.RenderCss()` / `@F.RenderScript()`（Pro 由 PageManager 自动注入）；**Java 由母版里的 `<f:styles>`（head）/ `<f:scripts>`（body 末）输出**。
+3. **启用标签**：Core 需 `_ViewImports.cshtml` 里 `@addTagHelper *, FineUICore` + `@using FineUICore`；**Java 在页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，并用 `layout:decorate="~{shared/layout}"` 装饰母版**。
 
 ---
 
@@ -180,20 +181,80 @@ PageManager 同样在 `Pages/Shared/_Layout.cshtml`。
 
 ---
 
+## 6) FineUIJava —— Spring Boot + Thymeleaf 方言（两件套：`.html` + 页面类 `.java`，无 designer）
+
+业务页 `templates/basic/hello.html`（**无 PageManager**，标签/属性全 kebab-case）：
+
+```html
+<!DOCTYPE html>
+<html xmlns:f="http://fineui.com/java" layout:decorate="~{shared/layout}">
+<head><title>FineUIJava · Hello</title></head>
+<body>
+    <th:block layout:fragment="body">
+        <f:button id="btnHello" text="点击弹出对话框" on-click="btnHello_Click"></f:button>
+    </th:block>
+    <!-- 页面专属脚本放这里（须在 f:scripts 之后） -->
+    <th:block layout:fragment="script"></th:block>
+</body>
+</html>
+```
+```java
+// HelloPage.java —— @FineUIPage 路由 + extends FineUIPageBase；控件字段手动声明（同名 = 标签 id）
+package com.fineui.java.examples.basic;
+
+import com.fineui.java.core.*;
+import com.fineui.java.core.controls.Button;
+
+@FineUIPage("basic/hello")
+public class HelloPage extends FineUIPageBase {
+
+    Button btnHello;   // 与标签 id="btnHello" 同名，框架自动绑定
+
+    public void Page_Load(Object sender, EventArgs e) { }
+
+    public void btnHello_Click(Object sender, EventArgs e) {   // 返回 void，无需 UIHelper.Result()
+        showAlert("你好 FineUIJava！", MessageBoxIcon.Warning);
+    }
+}
+```
+
+**共享母版**（PageManager 相当物在此）`templates/shared/layout.html`：唯一写 `html/head/body` 骨架的地方，`<f:styles>` 在 head 输出 CSS、`<f:scripts>` 在 body 末输出 `FineUI.js` + 语言包 + `F.render`：
+
+```html
+<!DOCTYPE html>
+<html f:lang="true" xmlns:f="http://fineui.com/java">
+<head>
+    <meta charset="UTF-8" />
+    <title layout:title-pattern="$CONTENT_TITLE">FineUIJava</title>
+    <f:styles></f:styles>                          <!-- CSS 输出到 head（先行、无 FOUC） -->
+</head>
+<body>
+    <th:block layout:fragment="body"></th:block>   <!-- 各页 body 片段注入这里 -->
+    <f:scripts></f:scripts>                         <!-- JS + 语言包 + F.render 输出到 body 末 -->
+    <th:block layout:fragment="script"></th:block> <!-- 页面专属脚本（在 f:scripts 之后） -->
+</body>
+</html>
+```
+
+页面级/按用户配置（主题/语言/显示模式）实现一个 `FineUIPageManagerInitializer` bean，全站默认走 `application.properties` 的 `fineui.*` 键（见 [stacks.md](stacks.md) 命名约定）。
+
+---
+
 ## 骨架层面对比
 
-| 维度 | Pro (WebForms) | Core-MVC | Core-RazorForms | Core-RazorPages |
-|------|----------------|----------|-----------------|-----------------|
-| 页面语法 | `.aspx` `<f:...>` | `Index.cshtml` Fluent | `.cshtml` TagHelper | `.cshtml` TagHelper |
-| 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） |
-| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` |
-| 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` |
-| **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` |
+| 维度 | Pro (WebForms) | Core-MVC | Core-RazorForms | Core-RazorPages | Java (Spring Boot) |
+|------|----------------|----------|-----------------|-----------------|--------------------|
+| 页面语法 | `.aspx` `<f:...>` | `Index.cshtml` Fluent | `.cshtml` TagHelper | `.cshtml` TagHelper | `.html` Thymeleaf `<f:xxx>` |
+| 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） | 2（html + 页面类 java） |
+| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Load` |
+| 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` | `on-click="方法名"` |
+| 回发结尾 | 无返回（void） | `return UIHelper.Result()` | `return UIHelper.Result()` | `return UIHelper.Result()` | 无返回（void） |
+| **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |
 
-> Region 布局各端一致：顶层 `Layout=Region` 的 Panel（Pro 用 `AutoSizePanelID` 撑满、Core 用 `IsViewPort=true`），子 Panel 用 `RegionPosition = Top/Left/Center/Right/Bottom` 定位。
+> Region 布局各端一致：顶层 `Layout=Region` 的 Panel（Pro 用 `AutoSizePanelID` 撑满、Core/Java 用 `IsViewPort=true` / `is-view-port="true"`），子 Panel 用 `RegionPosition = Top/Left/Center/Right/Bottom`（Java `region-position="Top"`）定位。
 
 ## See also
 
-- [stacks.md](stacks.md)：五写法与命名约定
+- [stacks.md](stacks.md)：各写法与命名约定
 - [rawhtml.md](rawhtml.md)：可信 HTML
 - `fineui-grid` 技能：在骨架里放一个数据表格

@@ -24,6 +24,14 @@ F.create({ type: 'Window', id: 'Window1', title: '窗体', width: 650, height: 3
     .EnableResize(true).EnableMaximize(true).EnableCollapse(true).AutoScroll(true).BodyPadding(10)
     .CloseAction(CloseAction.HidePostBack).OnClose(Url.Action("Window1_Close")).ContentEl("#content1"))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：内联内容直接写在 content 属性里；客户端事件用 <f:listeners> -->
+<f:window id="Window1" width="650" height="300" icon="TagBlue" title="窗体" is-modal="false"
+    enable-maximize="true" enable-collapse="true" enable-resize="true" auto-scroll="true" body-padding="10"
+    close-action="HidePostBack" on-close="Window1_Close" content="<p>窗口内联内容</p>">
+    <f:listeners><f:listener event="resize" handler="onWindowResize" /></f:listeners>
+</f:window>
+```
 
 ## 二、iframe 窗口（编辑弹窗最常用）
 
@@ -58,6 +66,20 @@ F.create({ type: 'Window', id: 'Window1', title: '编辑', width: 850, height: 5
 <f:Window ID="Window1" Title="编辑" EnableIFrame="true" Hidden="true" IsModal="true" Target="Top"
     Width="850" Height="500" CloseAction="HidePostBack" OnClose="Window1_Close"></f:Window>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：enable-iframe + hidden；url 在打开时给（target 常用 Parent/Top） -->
+<f:window id="Window1" title="编辑" enable-iframe="true" hidden="true" is-modal="true" target="Parent"
+    width="850" height="500" enable-maximize="true" enable-resize="true"
+    close-action="HidePostBack" on-close="Window1_Close"></f:window>
+```
+```java
+// FineUIJava 页面类：服务端打开 iframe 窗体（url + 标题）；回写目标控件先登记
+Window Window1;
+public void Button1_Click(Object sender, EventArgs e) {
+    Window1.saveStateControlIds("tbxProvince");          // 登记「回写目标」控件（供子页 writeBackValue）
+    Window1.show("/iframe/pass-value/iframe-window?selected=xx", "编辑");
+}
+```
 
 ## 三、打开 / 关闭窗口
 
@@ -84,6 +106,12 @@ UIHelper.Window("Window1").Show();
 // Core-RazorForms —— 控件属性
 Window1.Hidden = false;
 ```
+```java
+// FineUIJava —— Bean setter（对齐 Core-RazorForms 的控件属性写法）
+Window1.setHidden(false);   // 显示
+Window1.setHidden(true);    // 隐藏
+// 打开 iframe：Window1.show(url, "标题");
+```
 
 ## 四、iframe 子页关闭并回传数据给父页（closeArgument）
 
@@ -97,6 +125,14 @@ PageContext.RegisterStartupScript(ActiveWindow.GetHideReference());            /
 PageContext.RegisterStartupScript(ActiveWindow.GetHidePostBackReference("arg"));// 关闭 + 带参回发父页(触发 OnClose)
 PageContext.RegisterStartupScript(ActiveWindow.GetHideRefreshReference());     // 关闭 + 刷新父页
 PageContext.RegisterStartupScript(ActiveWindow.GetHideExecuteScriptReference("parent.removeActiveTab();")); // 关闭 + 执行 JS
+```
+```java
+// FineUIJava —— ActiveWindow 静态方法直接派发命令（无需 RegisterStartupScript，纯 JSON 命令、无 eval）
+ActiveWindow.hide();                                  // 仅关闭
+ActiveWindow.hidePostBack("arg");                     // 关闭 + 带参回发父页（触发 on-close，参数 → e.getArgument()）
+ActiveWindow.hideRefresh();                           // 关闭 + 刷新父页
+ActiveWindow.writeBackValue(ddlSheng.getSelectedValue()); // 把值写回父页登记控件（配 ActiveWindow.hide()）
+ActiveWindow.hideCallParentFunction("removeActiveTab");   // 关闭 + 按名调父页全局函数（替代「执行 JS」，无 eval）
 ```
 ```javascript
 // 子页客户端（F.activeWindow 方法集）
@@ -134,8 +170,15 @@ public IActionResult Window1_Close(string Window1_closeArgument) {
 }
 // Core-RazorPages —— OnPostWindow1_Close(string Window1_closeArgument)
 ```
+```java
+// FineUIJava —— on-close 处理器读 e.getArgument()（不是 WindowCloseEventArgs.CloseArgument）
+public void Window1_Close(Object sender, EventArgs e) {
+    String arg = String.valueOf(e.getArgument());
+    if (arg != null && arg.startsWith("SelectProvince$")) { /* 用 arg 更新父页 */ }
+}
+```
 
-> 另一种回传：**直接写回发起控件**——子页 `ActiveWindow.GetWriteBackValueReference(值) + ActiveWindow.GetHideReference()`，把值写回父页打开窗口的那个控件（如 TriggerBox），无需 OnClose。
+> 另一种回传：**直接写回发起控件**——子页 `ActiveWindow.GetWriteBackValueReference(值) + ActiveWindow.GetHideReference()`（C#）/ **`ActiveWindow.writeBackValue(值) + ActiveWindow.hide()`（Java，父页先 `Window1.saveStateControlIds("控件id")` 登记目标）**，把值写回父页打开窗口的那个控件（如 TriggerBox），无需 OnClose。
 
 ## 五、窗口内嵌表单
 

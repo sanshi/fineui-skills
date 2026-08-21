@@ -3,10 +3,13 @@ name: fineui-window
 description: >
   帮助开发者使用 FineUI 的窗口与消息框：Window（内联内容 / iframe 弹窗）、打开/关闭窗口、
   iframe 子页回传数据给父页（closeArgument）、以及 MessageBox（Alert 对话框 / Confirm 确认框 / Notify 通知框）。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 窗口", "F.Window", "弹窗", "对话框", "MessageBox",
   "Alert.Show", "F.alert", "F.confirm", "确认框", "通知框", "Notify", "ShowNotify",
-  "iframe 窗口", "关闭窗口", "回传数据", "closeArgument", "GetShowReference", "OnClose".
+  "iframe 窗口", "关闭窗口", "回传数据", "closeArgument", "GetShowReference", "OnClose",
+  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:window", "showAlert", "showNotify",
+  "showConfirm", "ActiveWindow", "setHidden".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -23,9 +26,9 @@ metadata:
 
 ## 开始前（Before You Start）
 
-1. **哪种写法？** F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages（判定见 `fineui-foundation`）。
+1. **哪种写法？** F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java（Spring Boot）（判定见 `fineui-foundation`）。
 2. **窗口内容是内联还是 iframe？**
-   - **内联**：内容写在窗口里（F.js `contentEl` / C# `<Content>` 或 `ContentEl`）。
+   - **内联**：内容写在窗口里（F.js `contentEl` / C# `<Content>` 或 `ContentEl` / **Java `content="..."` 属性**）。
    - **iframe**：加载另一个页面（`EnableIFrame=true` + iframe url），用于独立编辑页。**编辑弹窗基本都用 iframe。**
 3. **只是提示消息**（不是弹页面）→ 直接用 MessageBox（[references/messagebox.md](references/messagebox.md)）。
 
@@ -69,6 +72,21 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '显示窗体',
 <f:Window ID="Window1" Title="窗体" Width="650" Height="300" CloseAction="HidePostBack"
     OnClose="@Url.Handler(&quot;Window1_Close&quot;)"> <Content><p>...</p></Content> </f:Window>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：内联内容用 content 属性；on-close="方法名" -->
+<f:window id="Window1" title="窗体" width="650" height="300" is-modal="false"
+    enable-resize="true" enable-maximize="true" body-padding="10"
+    close-action="HidePostBack" on-close="Window1_Close" content="<p>窗口内联内容</p>"></f:window>
+<f:button id="btnShow" text="显示窗体" on-client-click="F.ui.Window1.show();"></f:button>
+```
+```java
+// FineUIJava 页面类：服务端显隐用 setHidden；on-close 处理器返回 void
+@FineUIPage("window/window")
+public class Window extends FineUIPageBase {
+    com.fineui.java.core.controls.Window Window1;
+    public void Window1_Close(Object sender, EventArgs e) { showAlert("触发了窗体的关闭事件！"); }
+}
+```
 
 ## 参考文档（Documentation Reference Files）
 
@@ -85,11 +103,11 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '显示窗体',
 
 ## 约束与规则（Constraints & Rules）
 
-1. **先定写法、不混用**：F.js camelCase（`modal`/`maximizable`）；C# PascalCase（`IsModal`/`EnableMaximize`）。
-2. **`CloseAction="HidePostBack"` + `OnClose`**：要在窗口关闭时触发服务端事件（如刷新父表格），窗口需设 `CloseAction="HidePostBack"` 并绑定 `OnClose`。
-3. **OnClose 事件签名各写法不同**：Pro / RazorForms `方法名(object sender, WindowCloseEventArgs e)`（读 `e.CloseArgument`）；MVC `[HttpPost] 方法名()`；RazorPages `OnPost方法名()`。
-4. **iframe 窗口回传数据**：子页用 `ActiveWindow.GetHidePostBackReference(参数)`（Pro/带参关闭）或 `F.doPostBack` 回发；**回发参数名 = 窗口ID + "_closeArgument"**（如 `Window1_closeArgument`）。详见 [references/window.md](references/window.md)。
-5. **iframe 内弹消息用 `Alert.ShowInTop` / `target:'_top'`**：iframe 里直接 `Alert.Show` 会显示在小框里，跨到顶层用 `ShowInTop`（C#）或 `target: '_top'`（JS）。
+1. **先定写法、不混用**：F.js camelCase（`modal`/`maximizable`）；C# PascalCase（`IsModal`/`EnableMaximize`）；**Java kebab-case（`is-modal`/`enable-maximize`），内联内容用 `content` 属性而非 `<Content>` 子标签**。
+2. **`CloseAction="HidePostBack"` + `OnClose`**：要在窗口关闭时触发服务端事件（如刷新父表格），窗口需设 `CloseAction="HidePostBack"`（Java `close-action="HidePostBack"`，默认 `Hide` 不触发）并绑定 `OnClose`/`on-close`。
+3. **OnClose 事件签名各写法不同**：Pro / RazorForms `方法名(object sender, WindowCloseEventArgs e)`（读 `e.CloseArgument`）；MVC `[HttpPost] 方法名()`；RazorPages `OnPost方法名()`；**Java `void 方法名(Object sender, EventArgs e)`，关闭参数读 `e.getArgument()`（不是 `WindowCloseEventArgs.CloseArgument`）**。
+4. **iframe 窗口回传数据**：子页用 `ActiveWindow.GetHidePostBackReference(参数)`（Pro/带参关闭）或 `F.doPostBack` 回发；**回发参数名 = 窗口ID + "_closeArgument"**（如 `Window1_closeArgument`）；**Java 子页用 `ActiveWindow.hidePostBack("参数")`，父页 `on-close` 处理器读 `e.getArgument()`**。详见 [references/window.md](references/window.md)。
+5. **iframe 内弹消息用 `Alert.ShowInTop` / `target:'_top'`**：iframe 里直接 `Alert.Show` 会显示在小框里，跨到顶层用 `ShowInTop`（C#）/ **`showAlertInTop(...)`（Java）** / `target: '_top'`（JS）。
 6. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
 
 ## 官方资源（Official Resources）

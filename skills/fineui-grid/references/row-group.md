@@ -2,19 +2,19 @@
 
 按某字段把数据行分组，每组一个分组头（可折叠），并可给每组算合计。**注意与"多表头"（列的分组，见 [header.md](header.md)）、"树表格"（父子层级，见 [tree-grid.md](tree-grid.md)）是三回事。**
 
-> 结构差异：**F.js 把分组选项嵌在 `rowGroup: {}` 对象里**；**四个 .NET 栈把每个选项拍平成 `RowGroup*` / `EnableRowGroup` 独立属性**。
+> 结构差异：**F.js 把分组选项嵌在 `rowGroup: {}` 对象里**；**四个 .NET 栈与 Java 把每个选项拍平成 `RowGroup*` / `EnableRowGroup`（Java kebab-case）独立属性**。
 
 ## 概念 → 各写法属性名对照
 
-| 概念 | F.js | .NET（Pro / Core-MVC / Core-TagHelper） |
-|------|------|------------------------------------------|
-| 开启行分组 | `rowGroupField: 'X'`（+`rowGroup:{collapsible:true}`） | `EnableRowGroup="true"` + `DataRowGroupField="X"` |
-| 分组头渲染 | `rowGroup: { renderer: fn }` | `RowGroupRendererFunction="fn名"` |
-| 初始全部折叠 | `rowGroup: { expanded: false }` | `ExpandAllRowGroups="false"` |
-| 开启分组合计 | `rowGroup: { summary: true }` | `RowGroupSummary="true"` |
-| 列的分组合计类型 | 列 `rowGroupSummaryType: 'avg'` | 列 `RowGroupSummaryType="Avg"` |
-| 列的分组合计文本 | 列 `rowGroupSummaryText: '...'` | 列 `RowGroupSummaryText="..."` |
-| 总合计（配合分组） | Grid `summary: true` | `EnableSummary="true"` |
+| 概念 | F.js | .NET（Pro / Core-MVC / Core-TagHelper） | Java（Thymeleaf 方言） |
+|------|------|------------------------------------------|------------------------|
+| 开启行分组 | `rowGroupField: 'X'`（+`rowGroup:{collapsible:true}`） | `EnableRowGroup="true"` + `DataRowGroupField="X"` | `enable-row-group="true"` + `data-row-group-field="X"` |
+| 分组头渲染 | `rowGroup: { renderer: fn }` | `RowGroupRendererFunction="fn名"` | `row-group-renderer-function="fn名"` |
+| 初始全部折叠 | `rowGroup: { expanded: false }` | `ExpandAllRowGroups="false"` | `expand-all-row-groups="false"` |
+| 开启分组合计 | `rowGroup: { summary: true }` | `RowGroupSummary="true"` | `row-group-summary="true"` |
+| 列的分组合计类型 | 列 `rowGroupSummaryType: 'avg'` | 列 `RowGroupSummaryType="Avg"` | 列 `row-group-summary-type="Avg"` |
+| 列的分组合计文本 | 列 `rowGroupSummaryText: '...'` | 列 `RowGroupSummaryText="..."` | 列 `row-group-summary-text="..."` |
+| 总合计（配合分组） | Grid `summary: true` | `EnableSummary="true"` | `enable-summary="true"` |
 
 ---
 
@@ -35,6 +35,10 @@ F.create({ type: 'Grid', id: 'grid1', isFluid: true, renderTo: '#wrap',
 ```csharp
 // Core-MVC（Fluent）
 @(F.Grid().ID("Grid1").EnableRowGroup(true).DataRowGroupField("EntranceYear").Columns( ... ).DataSource(ViewBag.Grid1DataSource))
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：两个拍平属性，数据在页面类 Page_Load 绑定 -->
+<f:grid id="Grid1" enable-row-group="true" data-row-group-field="EntranceYear"> <f:columns> ... </f:columns> </f:grid>
 ```
 
 ---
@@ -58,6 +62,10 @@ rowGroup: {
 <f:Grid ... EnableRowGroup="true" DataRowGroupField="EntranceYear" RowGroupRendererFunction="onGrid1RowGroupRenderer"> ... </f:Grid>
 <script> function onGrid1RowGroupRenderer(groupValue, rowData) { /* 同 F.js renderer */ } </script>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：renderer-function 指向的 JS 函数体与 F.js 完全相同，不重复贴 -->
+<f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" row-group-renderer-function="onGrid1RowGroupRenderer"> ... </f:grid>
+```
 
 ---
 
@@ -71,8 +79,12 @@ rowGroup: { collapsible: true, expanded: false }
 <%-- Pro / Core-TagHelper —— 全部折叠 --%>
 <f:Grid ... EnableRowGroup="true" DataRowGroupField="EntranceYear" ExpandAllRowGroups="false"> ... </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— 全部折叠 -->
+<f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" expand-all-row-groups="false"> ... </f:grid>
+```
 
-**只折叠某些组**：用 `rowDataBound`（.NET `RowDataBoundFunction`）在分组行上按值设 `expanded`：
+**只折叠某些组**：用 `rowDataBound`（.NET `RowDataBoundFunction`，**Java `row-data-bound-function`**，函数体同 F.js）在分组行上按值设 `expanded`：
 
 ```javascript
 function onGrid1RowDataBound(rowData) {
@@ -111,12 +123,22 @@ columns: [
 // Core-MVC（Fluent）
 F.RenderField().DataField("ChineseScore").ColumnID("ChineseScore").FieldType(FieldType.Int).HeaderText("语文成绩").RowGroupSummaryType(SummaryType.Avg)
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" row-group-summary="true">
+    <f:columns>
+        <f:render-field header-text="所学专业" data-field="Major" column-id="Major" row-group-summary-text="平均（分组）："></f:render-field>
+        <f:render-field header-text="语文成绩" data-field="ChineseScore" column-id="ChineseScore" field-type="Int" row-group-summary-type="Avg"></f:render-field>
+        <f:render-field header-text="数学成绩" data-field="MathScore" column-id="MathScore" field-type="Int" row-group-summary-type="Avg"></f:render-field>
+    </f:columns>
+</f:grid>
+```
 
 **总合计（页脚总计，与分组合计并用）**：Grid 开 `EnableSummary="true"` + `SummaryPosition="Bottom"`，列上用 `SummaryType` / `SummaryText`（注意这套是"总合计"属性，与 `RowGroup*` 那套并列，见 [summary.md](summary.md)）。
 
-**多行合计**：`RowGroupSummaryRowCount="3"`（F.js `rowGroup:{ summaryRowCount:3 }`）+ 列 `RowGroupSummaryRendererFunction`，渲染签名 `(summaryRowIndex, cellValue, params)`，值用 `grid.calcSummaryValue('ChineseScore', 'min', params.rowGroupData)` 算。
+**多行合计**：`RowGroupSummaryRowCount="3"`（F.js `rowGroup:{ summaryRowCount:3 }`；**Java `row-group-summary-row-count="3"`**）+ 列 `RowGroupSummaryRendererFunction`（**Java `row-group-summary-renderer-function`**），渲染签名 `(summaryRowIndex, cellValue, params)`，值用 `grid.calcSummaryValue('ChineseScore', 'min', params.rowGroupData)` 算（函数体各栈相同）。
 
-**隐藏某些组的合计**（如单行组）：用 `RowRendererFunction`，`if (params.rowData.isRowGroupSummary) params.rowCls = 'f-hidden';`。
+**隐藏某些组的合计**（如单行组）：用 `RowRendererFunction`（**Java `row-renderer-function`**），`if (params.rowData.isRowGroupSummary) params.rowCls = 'f-hidden';`。
 
 ---
 
@@ -136,6 +158,12 @@ rowGroupField: 'EntranceYear', rowGroup: { collapsible: true }
         AllowSorting="true" SortField="Name" SortDirection="ASC" OnSort="Grid1_Sort"
         EnableRowGroup="true" DataRowGroupField="EntranceYear"> ... </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— 数据库分页 + 服务端排序 + 行分组（on-page-index-changed / on-sort 指向 void 处理器）-->
+<f:grid ... allow-paging="true" page-size="10" is-database-paging="true" on-page-index-changed="Grid1_PageIndexChanged"
+        allow-sorting="true" sort-field="Name" sort-direction="ASC" on-sort="Grid1_Sort"
+        enable-row-group="true" data-row-group-field="EntranceYear"> ... </f:grid>
+```
 
 > 排序/分页事件的 C# 处理见 [sorting.md](sorting.md) 与 [data-loading.md](data-loading.md)（分组不改变这套回发范式）。
 
@@ -143,7 +171,7 @@ rowGroupField: 'EntranceYear', rowGroup: { collapsible: true }
 
 ## 关键约束
 
-1. **F.js 嵌套 vs .NET 拍平**：F.js 所有分组选项在 `rowGroup:{}` 内（`collapsible`/`expanded`/`summary`/`summaryRowCount`/`renderer`）；.NET 是一堆 `RowGroup*` / `EnableRowGroup` / `ExpandAllRowGroups` 独立属性。
+1. **F.js 嵌套 vs .NET/Java 拍平**：F.js 所有分组选项在 `rowGroup:{}` 内（`collapsible`/`expanded`/`summary`/`summaryRowCount`/`renderer`）；.NET 与 Java 是一堆 `RowGroup*` / `EnableRowGroup` / `ExpandAllRowGroups` 独立属性（**Java 全 kebab-case**：`row-group-summary` / `enable-row-group` / `data-row-group-field` / `expand-all-row-groups`）。
 2. **两套合计属性别混**：组内小计 `RowGroupSummary*`；页脚总计 `EnableSummary` + `Summary*`（见 [summary.md](summary.md)）。
 3. **渲染函数**：F.js 内联函数；.NET 用 `*RendererFunction` 字符串指向页面 JS 函数。
 4. **RazorForms 与 RazorPages 的 `.cshtml` 几乎逐字节相同**（仅 `@model` 与后台命名空间不同）。

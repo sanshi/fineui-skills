@@ -21,6 +21,18 @@ F.create({ type: 'Tree', id: 'Tree1', checkbox: true, rootNode: { ... },
 // Core-MVC（Fluent）
 @(F.Tree().ID("Tree1").EnableCheckBox(true).CascadeCheck(true).Nodes( /* ... */ ))
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：enable-check-box + cascade-check；节点 checked 设初始勾选 -->
+<f:tree id="Tree1" is-fluid="true" show-header="true" title="树" enable-check-box="true" cascade-check="true">
+    <f:nodes>
+        <f:tree-node text="河南省" checked="true">
+            <f:tree-node text="遂平县" node-id="suiping" checked="true"></f:tree-node>
+        </f:tree-node>
+    </f:nodes>
+</f:tree>
+```
+
+> 复选框相关容器属性（Java kebab-case）：`enable-check-box`、`cascade-check`（级联）、`only-leaf-check`（只叶子可勾）、`only-folder-check`（只目录可勾）。
 
 ## 二、读取选中的复选框节点
 
@@ -42,6 +54,25 @@ protected void btnGetChecked_Click(object sender, EventArgs e) {
     labResult.Text = sb.ToString();
 }
 ```
+
+### FineUIJava —— 控件字段 `getCheckedNodes()`（同 RazorForms，返回 `List<TreeNode>`）
+
+```java
+// FineUIJava 页面类
+com.fineui.java.core.controls.Tree Tree1;   // 页面类同名与 Tree 重名时用全限定
+Label labResult;
+
+public void btnGetCheckedValues_Click(Object sender, EventArgs e) {
+    List<TreeNode> nodes = Tree1.getCheckedNodes();   // List<TreeNode>（不是数组）
+    StringBuilder sb = new StringBuilder("<ul>");
+    for (TreeNode node : nodes)
+        sb.append(String.format("<li>%s（%s）</li>", node.getText(), node.getId()));  // getId 非 getNodeID
+    sb.append("</ul>");
+    labResult.setTextRawHtml(new RawHtml(sb.toString()));   // 输出 HTML：标签 encode-text="false" + RawHtml
+}
+```
+
+> Label 输出 HTML：模板 `<f:label id="labResult" encode-text="false">`，服务端 `setTextRawHtml(new RawHtml(...))`（对应 C# 的 `EncodeText="false"` + `Text=html`）。
 
 ### Core-MVC / RazorPages —— 客户端收集回发 `JArray`
 
@@ -90,13 +121,26 @@ public IActionResult Tree1_NodeClick(string nodeId, string nodeText) {
 }
 ```
 ```csharp
-// Core-RazorForms —— Listener + __customEvent + Page_CustomEvent
-// JS: __customEvent('Tree1_NodeClick', nodeId);
+// Core-RazorForms —— Listener + F.customEvent + Page_CustomEvent
+// JS: F.customEvent('Tree1_NodeClick', nodeId);
 protected void Page_CustomEvent(object sender, CustomEventArgs e) {
     if (e.EventName == "Tree1_NodeClick")
         labResult.Text = $"点击了：{Tree1.FindNode(e.EventArguments).Text}";   // 控件字段 FindNode
 }
 ```
+```java
+// FineUIJava 页面类 —— 与 Core-RazorForms 同构：Listener + F.customEvent + Page_CustomEvent
+// 模板：<f:listeners><f:listener event="nodeclick" handler="onTree1NodeClick"></f:listener></f:listeners>
+// 页面脚本（同 F.js，不重复）：function onTree1NodeClick(event, nodeId){ ... F.customEvent('Tree1_NodeClick', nodeId); }
+public void Page_CustomEvent(Object sender, CustomEventArgs e) {
+    if ("Tree1_NodeClick".equals(e.getEventName())) {
+        String nodeId = e.getArgument();
+        labResult.setText(String.format("点击了：%s（%s）", nodeId, Tree1.findNode(nodeId).getText()));
+    }
+}
+```
+
+> 客户端 `nodeclick` 处理函数（`F.customEvent(...)` 触发后台）四栈完全相同，**不重复**——见上面 F.js 段。Java 侧只有后台入口不同：`Page_CustomEvent(Object, CustomEventArgs)`，读值用 `e.getEventName()` / `e.getArgument()`，节点查找 `Tree1.findNode(id).getText()`。
 
 ## 四、展开 / 折叠事件
 
@@ -113,6 +157,16 @@ public IActionResult Tree1_NodeExpand(JObject nodeInfo) {
     return UIHelper.Result();
 }
 // Core-RazorPages —— OnNodeExpand="@Url.Handler("Tree1_NodeExpand")" → OnPostTree1_NodeExpand(...)
+```
+```java
+// FineUIJava 页面类 —— 容器 on-node-expand / on-node-collapse 直接指向同名方法（同 RazorForms）
+// 模板：<f:tree ... on-node-expand="Tree1_NodeExpand" on-node-collapse="Tree1_NodeCollapse">
+public void Tree1_NodeExpand(Object sender, TreeNodeEventArgs e) {
+    labResult.setText(String.format("展开节点：%s（%s）", e.getNodeID(), e.getNode().getText()));
+}
+public void Tree1_NodeCollapse(Object sender, TreeNodeEventArgs e) {
+    labResult.setText(String.format("折叠节点：%s（%s）", e.getNodeID(), e.getNode().getText()));
+}
 ```
 
 ## 五、异步懒加载（展开时动态加子节点）
@@ -151,6 +205,24 @@ protected void Tree1_NodeLazyLoad(object sender, TreeNodeEventArgs e) {
 protected void Tree1_NodeLazyLoad(object sender, TreeNodeEventArgs e) {
     e.Node.Nodes.Clear();
     foreach (var n in DynamicAppendNode(e.Node.NodeID)) e.Node.Nodes.Add(n);
+}
+```
+```java
+// FineUIJava 页面类 —— 容器 auto-leaf-identification="false" + on-node-lazy-load="Tree1_NodeLazyLoad"
+// 用 Tree1.loadData(nodeId, 子节点列表) 回灌（对应 RazorForms 的 GetLoadDataReference / MVC 的 UIHelper.Tree().LoadData）
+public void Tree1_NodeLazyLoad(Object sender, TreeNodeEventArgs e) {
+    Tree1.loadData(e.getNodeID(), dynamicAppendNode(e.getNodeID()));
+}
+
+// 生成子节点：TreeNode setter；leaf=false 还能展开（再次懒加载），leaf=true 为叶子
+static List<TreeNode> dynamicAppendNode(String nodeId) {
+    List<TreeNode> nodes = new ArrayList<>();
+    if ("zhumadian".equals(nodeId)) {
+        TreeNode n1 = new TreeNode(); n1.setText("遂平县"); n1.setId("suiping"); n1.setLeaf(false);
+        TreeNode n2 = new TreeNode(); n2.setText("西平县"); n2.setId("xiping");  n2.setLeaf(true);
+        nodes.add(n1); nodes.add(n2);
+    }
+    return nodes;
 }
 ```
 

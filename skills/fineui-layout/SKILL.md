@@ -3,10 +3,12 @@ name: fineui-layout
 description: >
   帮助开发者使用 FineUI 的布局系统——容器的 `Layout` 属性如何排布子控件：
   Fit（填充）/ Region（区域上下左右中）/ HBox·VBox（弹性盒子）/ Block（响应式栅格）/ Column / Anchor，
-  以及视口自适应（IsViewPort / AutoSizePanelID）。覆盖 F.js、Pro、FineUICore（MVC/RazorForms/RazorPages）。
+  以及视口自适应（IsViewPort / AutoSizePanelID）。覆盖 F.js、Pro、FineUICore（MVC/RazorForms/RazorPages）、
+  FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case，含 `<f:region-panel>` 便捷控件）。
   Trigger phrases（触发词）: "FineUI 布局", "Layout", "Region 布局", "区域布局", "RegionPosition",
   "HBox", "VBox", "BoxFlex", "弹性布局", "Fit 布局", "Block 响应式", "BlockMD", "栅格布局",
-  "IsViewPort", "视口自适应", "Column 布局", "Anchor 布局".
+  "IsViewPort", "视口自适应", "Column 布局", "Anchor 布局", "FineUIJava", "Spring Boot", "Thymeleaf",
+  "region-panel", "region-position", "box-flex", "is-view-port".
 compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
@@ -54,6 +56,15 @@ metadata:
 @(F.Panel().Layout(LayoutType.HBox).BoxConfigAlign(BoxLayoutAlign.Stretch)
     .Items(F.Panel().Width(200).Title("左固定"), F.Panel().BoxFlex(1).Title("右弹性")))
 ```
+```html
+<!-- ⑤ FineUIJava（Thymeleaf 方言：标签/属性全 kebab-case，布局值 layout="HBox" 保持 PascalCase）-->
+<f:panel layout="HBox" box-config-align="Stretch">
+    <f:items>
+        <f:panel width="200" title="左固定"></f:panel>
+        <f:panel box-flex="1" title="右弹性"></f:panel>
+    </f:items>
+</f:panel>
+```
 
 ## 参考文档（Documentation Reference Files）
 
@@ -70,14 +81,15 @@ metadata:
 
 ## 约束与规则（Constraints & Rules）
 
-1. **先定写法、不混用**：F.js camelCase（`layout:'hbox'`/`boxFlex`）；C# PascalCase（`Layout="HBox"`/`BoxFlex`）。
-2. **Fit 只放一个子控件**：`Layout="Fit"` 时容器只应有一个子控件（它铺满）。
-3. **Region 的 Center 必填**：区域布局必须有一个 `RegionPosition="Center"` 的面板占满剩余；左右用 `Width`、上下用 `Height`；`RegionSplit="true"` 加拖动条。
-4. **视口自适应两种入口**：根面板 `IsViewPort="true"`，或 Pro `<f:PageManager AutoSizePanelID="Panel1">`。
-5. **Block 一行总和 12**：子项 `Block/BlockSM/BlockMD/BlockLG` 值 1–12，行内和为 12（超出换行）；`InlineBlock` 是另一种布局，别与 `Block` 混淆。
-6. **HBox/VBox 弹性用 `BoxFlex`**：弹性子项 `BoxFlex`，固定子项用 `Width`/`Height`；"撑满 + 放 Grid"给弹性子项加 `Layout="Fit"`。见 [references/hbox-vbox.md](references/hbox-vbox.md)。
-7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+1. **先定写法、不混用**：F.js camelCase（`layout:'hbox'`/`boxFlex`）；C# PascalCase（`Layout="HBox"`/`BoxFlex`）；**Java 属性名 kebab-case（`layout="HBox"`/`box-flex`/`region-position`/`box-config-align`），但布局值/枚举值仍 PascalCase（`layout="HBox"`、`region-position="Center"`、`box-config-align="Stretch"`）**。
+2. **Fit 只放一个子控件**：`Layout="Fit"`（Java `layout="Fit"`）时容器只应有一个子控件（它铺满）。
+3. **Region 的 Center 必填**：区域布局必须有一个 `RegionPosition="Center"`（Java `region-position="Center"`）的面板占满剩余；左右用 `Width`、上下用 `Height`；`RegionSplit="true"`（Java `region-split="true"`，分隔条宽度 `region-split-width="3"`）加拖动条。**Java 另有便捷控件 `<f:region-panel>`/`<f:regions>`/`<f:region region-position=...>`**（等价于 `<f:panel layout="Region">` + 子 `<f:panel region-position=...>`）。
+4. **视口自适应两种入口**：根面板 `IsViewPort="true"`（Java `is-view-port="true"`），或 Pro `<f:PageManager AutoSizePanelID="Panel1">`。
+5. **Block 一行总和 12**：子项 `Block/BlockSM/BlockMD/BlockLG`（Java `block/block-sm/block-md/block-lg`）值 1–12，行内和为 12（超出换行）；间距 `BlockConfigSpace`（Java `block-config-space`）；`InlineBlock` 是另一种布局，别与 `Block` 混淆。
+6. **HBox/VBox 弹性用 `BoxFlex`**（Java `box-flex`）：弹性子项 `BoxFlex`，固定子项用 `Width`/`Height`；"撑满 + 放 Grid"给弹性子项加 `Layout="Fit"`。见 [references/hbox-vbox.md](references/hbox-vbox.md)。
+7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc；Java 属性名 = Core 属性名转 kebab-case。
 
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
+- **FineUIJava**：布局属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js 布局引擎与 JS 端完全相同；Region 另有 `<f:region-panel>` 便捷控件。

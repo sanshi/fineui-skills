@@ -16,7 +16,7 @@
 ## 选择模式
 
 - **多选**（默认）：开启复选框选择即多选。
-- **单选**：C# 端 `EnableCheckBoxSelect(true)` + `EnableMultiSelect(false)`。
+- **单选**：C# 端 `EnableCheckBoxSelect(true)` + `EnableMultiSelect(false)`；**Java `enable-check-box-select="true"` + `enable-multi-select="false"`**。
 
 ---
 
@@ -62,6 +62,18 @@ F.create({
 </f:Grid>
 ```
 
+### FineUIJava（Thymeleaf 方言）
+
+> **注意**：服务端读取所需主键，Java 用 **`data-key-names`**（kebab-case，**不是** RazorForms 那个带下划线的 `_DataKeyNames`）。
+
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid id="Grid1" is-fluid="true" title="表格" enable-check-box-select="true"
+        data-id-field="Id" data-text-field="Name" data-key-names="Id,Name,Gender,Major">
+    <f:columns> <!-- ... --> </f:columns>
+</f:grid>
+```
+
 ---
 
 ## 2. 默认选中行
@@ -85,6 +97,10 @@ Grid1.SelectedRowIndexArray = new int[] { 4, 9 };
 ```html
 <!-- Core-RazorPages —— 标签内联 -->
 <f:Grid ... SelectedRowIndexArray="@(new int[] { 4, 9 })">
+```
+```java
+// FineUIJava 页面类 —— Page_Load（!isPostBack()）内，dataBind() 之后
+Grid1.setSelectedRowIndexArray(new int[] { 4, 9 });
 ```
 
 ---
@@ -115,6 +131,30 @@ protected void Button1_Click(object sender, EventArgs e)
 // Page_Load 内（!IsPostBack）
 Button1.OnClientClick = Grid1.GetNoSelectionAlertInTopReference("没有选中项！");
 ```
+
+### 方式 A（Java）：服务端按索引读取（同 RazorForms 范式）
+
+前提：声明了 `data-key-names`，且数据在服务端 `dataBind()`。Java 用 Bean getter：`getSelectedRowIndexArray()`（0 基索引 `int[]`）、`getDataKeys()`（`List<Object[]>`）、`getDataKeyNames()`。
+
+```java
+// FineUIJava 页面类
+public void Button1_Click(Object sender, EventArgs e) {
+    int[] indices = Grid1.getSelectedRowIndexArray();        // 0 基索引
+    if (indices.length == 0) { showNotify("没有选中项！"); return; }
+    List<Object[]> dataKeys = Grid1.getDataKeys();
+    for (int rowIndex : indices) {
+        // 内存分页时 dataKeys 存全部数据，需按页偏移对齐：
+        int idx = (Grid1.isAllowPaging() && !Grid1.isDatabasePaging())
+                ? Grid1.getPageIndex() * Grid1.getPageSize() + rowIndex : rowIndex;
+        Object[] keys = dataKeys.get(idx);
+        Object id = keys[0];   // 对应 data-key-names 第 1 个字段
+        Object name = keys[1]; // 第 2 个字段
+        // ... 用 id / name 处理业务
+    }
+}
+```
+
+> 客户端读取（如 `notifySelectedRows('Grid1')`、`F.ui.Grid1.getSelectedRows(true)`、`getCheckedRows(true)`）与 F.js 完全相同；需回发服务端时用 `F.customEvent('事件名', 数据)` 触发页面类的 `Page_CustomEvent`。
 
 ### 方式 B：客户端收集 JSON 回发（Core-MVC / RazorPages）
 
@@ -183,6 +223,10 @@ Grid1.SelectedRowIndexArray = new int[] { 1, 5, 7 };
 // Core-MVC / RazorPages（回发处理器内，用 UIHelper）
 UIHelper.Grid("Grid1").SelectedRowIndexArray(1, 5, 7);
 return UIHelper.Result();
+```
+```java
+// FineUIJava 页面类（处理器内直接用控件字段，void）
+Grid1.setSelectedRowIndexArray(new int[] { 1, 5, 7 });
 ```
 ```javascript
 // F.js

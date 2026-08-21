@@ -2,11 +2,13 @@
 
 三类：**Alert**（确认对话框，需点击关闭）、**Confirm**（确认/取消）、**Notify**（自动消失的通知）。
 
-> 消息框在 C# 服务端与 JS 客户端调用方式基本一致；跨写法的唯一差异是**触发按钮怎么绑事件**（MVC `OnClick(Url.Action)` / RazorForms `OnClick="方法名"` / RazorPages `OnClick="@Url.Handler(...)"`）。
+> 消息框在 C# 服务端与 JS 客户端调用方式基本一致；跨写法的唯一差异是**触发按钮怎么绑事件**（MVC `OnClick(Url.Action)` / RazorForms `OnClick="方法名"` / RazorPages `OnClick="@Url.Handler(...)"` / **Java `on-click="方法名"`**）。
+>
+> **FineUIJava 服务端方法名首字母小写**：`Alert.Show(...)`→`showAlert(...)`、`ShowNotify(...)`→`showNotify(...)`、`Confirm`→`showConfirm(...)`；均是 `FineUIPageBase` 上的方法，处理器里直接调用。可信 HTML 变体加 `Raw` 后缀（`showAlertRaw`/`showNotifyRaw`/`showConfirmRaw`）。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
 
 ## 图标值（MessageBoxIcon）
 
-`None` / `Information` / `Warning` / `Error` / `Success` / `Question`。F.js 用小写字符串：`'information'`/`'warning'`/`'error'`/`'success'`/`'question'`。
+`None` / `Information` / `Warning` / `Error` / `Success` / `Question`。F.js 用小写字符串：`'information'`/`'warning'`/`'error'`/`'success'`/`'question'`。Java 用 `MessageBoxIcon` 枚举（`MessageBoxIcon.Warning` 等，同 C#）。
 
 ## 一、Alert 对话框
 
@@ -21,6 +23,13 @@ Alert.ShowInTop("保存成功！", MessageBoxIcon.Success);  // iframe 内推荐
 Alert alert = new Alert { Message = "内容", Title = "标题",
     MessageBoxIcon = MessageBoxIcon.Information, Target = Target.Top, Width = 300, EnableClose = false };
 alert.Show();
+```
+```java
+// FineUIJava —— FineUIPageBase 方法（处理器里直接调用）
+showAlert("操作成功！");                                 // 无标题无图标
+showAlert("请先选择一行！", null, MessageBoxIcon.Warning); // 带图标
+showAlertInTop("保存成功！", null, MessageBoxIcon.Success);// iframe 内推荐：弹到顶层
+// 子页「提示 → 确定后关闭窗体并带参回发父页」：showAlertInTopHidePostBack(msg, title, icon, closeArg)
 ```
 
 ### 客户端（F.js，或 C# 页面内 JS）
@@ -67,6 +76,27 @@ btn.OnClientClick = Confirm.GetShowReference("确认执行？", String.Empty, Me
 // 后台用 GetRequestEventArgument() 区分：if (arg == "Cancel") ...
 ```
 
+### FineUIJava —— 三种「先确认再操作」
+
+```html
+<!-- ① 声明式 confirm-text（点击先弹确认，确认后才回发 on-click 处理器）—— 同 Core -->
+<f:button text="操作一" confirm-text="确认执行操作一？" confirm-target="Top" on-click="btnOperation1_Click"></f:button>
+```
+```javascript
+// ② 客户端 F.confirm 的 ok 回调里用 F.customEvent 触发后台事件（同 F.js，Java 客户端不改）
+F.confirm({ message: '确认执行操作二？', messageIcon: 'question',
+    ok: function () { F.customEvent('Operation2'); },
+    cancel: function () { F.customEvent('Operation2_cancel'); } });   // 取消也可回发
+```
+```java
+// ③ 后台：确认按钮直接进 on-click 处理器；F.customEvent 统一进 Page_CustomEvent，按事件名分派
+public void btnOperation1_Click(Object sender, EventArgs e) { showNotify("执行了操作一！"); }
+public void Page_CustomEvent(Object sender, CustomEventArgs e) {
+    if ("Operation2".equals(e.getEventName())) { showNotify("执行了操作二！"); }
+}
+// 服务端也可只「显示」确认框：showConfirm("确定要删除吗？")；生成客户端引用脚本用 Confirm.getShowReference(...)
+```
+
 ## 三、Notify 通知框（自动消失）
 
 ### 服务端（Pro / Core，`ShowNotify` 便捷方法）
@@ -83,6 +113,14 @@ Notify notify = new Notify { Message = "内容", Title = "标题", ShowHeader = 
     PositionX = Position.Center, PositionY = Position.Top, IsModal = false };
 notify.Show();
 ```
+```java
+// FineUIJava —— FineUIPageBase 方法
+showNotify("这是一条通知");
+showNotify("成功登录！", MessageBoxIcon.Success);
+showNotify("提示", "标题", MessageBoxIcon.Information);  // 带标题头
+showNotifyRaw("<ul><li>含 HTML 列表的通知</li></ul>");   // 可信 HTML 变体
+// 位置/停留时长/进度条等完整参数用 showNotify(...) 的长参重载
+```
 
 ### 客户端（F.js）
 
@@ -94,9 +132,9 @@ F.notify({ message: '添加成功！', messageIcon: 'information', target: '_top
 
 ## 关键约束
 
-1. **iframe 内的消息要跨到顶层**：Alert 用 `Alert.ShowInTop(...)`（C#）或 `top.F.alert(...)`；Confirm/Notify 用 `target: '_top'`。否则消息只显示在小 iframe 框里。
-2. **消息内容含 HTML**：默认转义。要输出可信 HTML 用 `ShowNotify(new RawHtml("..."))`（C#）或 `F.rawHtml(...)`（JS）——见 `fineui-foundation` 的 rawhtml.md。**用户输入不要声明为可信**。
-3. **确认框的“确认后动作”**：F.js/客户端用 `ok` 回调或按钮 handler 里 `F.doPostBack`；Pro 用 `Confirm.GetShowReference` 把确认脚本设为按钮回发。
+1. **iframe 内的消息要跨到顶层**：Alert 用 `Alert.ShowInTop(...)`（C#）/ `showAlertInTop(...)`（Java）或 `top.F.alert(...)`；Confirm/Notify 用 `target: '_top'`。否则消息只显示在小 iframe 框里。
+2. **消息内容含 HTML**：默认转义。要输出可信 HTML 用 `ShowNotify(new RawHtml("..."))`（C#）/ `showNotifyRaw(...)`（Java）或 `F.rawHtml(...)`（JS）——见 `fineui-foundation` 的 rawhtml.md。**用户输入不要声明为可信**。
+3. **确认框的“确认后动作”**：F.js/客户端用 `ok` 回调或按钮 handler 里 `F.doPostBack`/`F.customEvent`；Pro 用 `Confirm.GetShowReference` 把确认脚本设为按钮回发；**Java 用声明式 `confirm-text`（确认后进 `on-click` 处理器），或客户端 `F.confirm` 的 `ok` 里 `F.customEvent(...)` 进 `Page_CustomEvent`**。
 
 ## See also
 

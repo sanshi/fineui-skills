@@ -2,12 +2,13 @@
 
 ## Form vs SimpleForm
 
-| | 用途 | C# 写法 | F.js 写法 |
-|--|------|---------|-----------|
-| **SimpleForm** | 单列表单 | `<f:SimpleForm><Items>字段…</Items></f:SimpleForm>` | `type:'Form'` + `layout:'anchor'` |
-| **Form** | 多列表单 | `<f:Form><Rows><f:FormRow><Items>…</Items></f:FormRow></Rows></f:Form>` | `type:'Form'` + 嵌套 `Panel layout:'column'` |
+| | 用途 | C# 写法 | FineUIJava 写法 | F.js 写法 |
+|--|------|---------|-----------------|-----------|
+| **SimpleForm** | 单列表单 | `<f:SimpleForm><Items>字段…</Items></f:SimpleForm>` | `<f:simple-form><f:items>字段…</f:items></f:simple-form>` | `type:'Form'` + `layout:'anchor'` |
+| **Form** | 多列表单 | `<f:Form><Rows><f:FormRow><Items>…</Items></f:FormRow></Rows></f:Form>` | `<f:form><f:rows><f:form-row><f:items>…</f:items></f:form-row></f:rows></f:form>` | `type:'Form'` + 嵌套 `Panel layout:'column'` |
 
 > F.js 没有单独的 `SimpleForm` 类型；单列用 `Form` + `layout:'anchor'`，多列用嵌套的列布局 Panel。C# 的 `SimpleForm` 渲染到前端也是一个 Form。
+> **FineUIJava**：全 kebab-case；`<f:form>` 的行既可包在 `<f:rows>` 里（对齐 Core 的 `<Rows>`），也可直接放在 `<f:items>` 下——两种示例都存在。
 
 ## 容器属性
 
@@ -38,6 +39,12 @@ F.create({
 <f:Form ID="Form1" IsFluid="true" BodyPadding="10" LabelWidth="100" RedStarPosition="AfterText" Title="表单">
     <Rows> ... </Rows>
 </f:Form>
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：属性值 Left/Right/Top、AfterText 保持 PascalCase -->
+<f:form id="Form1" is-fluid="true" body-padding="10" label-width="100" label-align="Left" red-star-position="AfterText" title="表单">
+    <f:rows> ... </f:rows>
+</f:form>
 ```
 
 ## 多列布局（Form + FormRow）
@@ -99,6 +106,28 @@ F.create({
 </f:Form>
 ```
 
+```html
+<!-- FineUIJava（Thymeleaf 方言）：每个 <f:form-row> = 一行，行内 <f:items> 放几个字段就是几列；列宽 column-widths -->
+<f:form id="Form1" is-fluid="true" label-width="100" title="表单">
+    <f:rows>
+        <f:form-row column-widths="50% 50%">
+            <f:items>
+                <f:drop-down-list id="ddl1" label="下拉列表" required="true" show-red-star="true">
+                    <f:list-item text="A" value="0"></f:list-item>
+                </f:drop-down-list>
+                <f:text-box id="TextBox1" label="文本框" required="true" show-red-star="true"></f:text-box>
+            </f:items>
+        </f:form-row>
+        <f:form-row column-widths="20px 100%">   <!-- 20px + 占满剩余 -->
+            <f:items>
+                <f:label text="1."></f:label>
+                <f:text-box id="TextBox2" label="备注"></f:text-box>
+            </f:items>
+        </f:form-row>
+    </f:rows>
+</f:form>
+```
+
 F.js 多列用嵌套列布局：
 
 ```javascript
@@ -113,11 +142,11 @@ items: [{
 
 ## 全局标签配置
 
-标签分隔符、对齐等可全局设：Pro 在 `Web.config` 的 `<FineUIPro>` 段（`FormLabelSeparator="："`、`FormLabelAlign="Left"`）；Core 在 `appsettings.json` 的 `FineUI` 段。单表单可用容器属性覆盖。
+标签分隔符、对齐等可全局设：Pro 在 `Web.config` 的 `<FineUIPro>` 段（`FormLabelSeparator="："`、`FormLabelAlign="Left"`）；Core 在 `appsettings.json` 的 `FineUI` 段；**FineUIJava 在 `application.properties` 的 `fineui.*` 键（kebab-case，如 `fineui.form-label-width=100`、`fineui.form-label-align=Left`）**。单表单可用容器属性覆盖。
 
 ## 表格样式表单
 
-`EnableTableStyle="true"` 让表单以表格线样式呈现（**用它时要去掉 `BodyPadding`**）。
+`EnableTableStyle="true"`（Java：`enable-table-style="true"`）让表单以表格线样式呈现（**用它时要去掉 `BodyPadding`/`body-padding`**）。
 
 ## See also
 

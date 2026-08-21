@@ -17,6 +17,21 @@ F.init({ theme: 'pure_black' });
   "FineUI": { "DebugMode": false, "Theme": "Pure_Black", "EnableAnimation": true }
 }
 ```
+```properties
+# FineUIJava（Spring Boot）—— application.properties（fineui.* 全站默认，主题名小写）
+fineui.theme=pure_black
+fineui.enable-animation=true
+fineui.custom-scrollbar=true
+```
+
+### 全局配置入口对照
+
+| 部署栈 | 全局默认入口 | 页面级/按用户 |
+|--------|-------------|--------------|
+| F.js | `F.init({ theme:'pure_black' })` | 同上（前端） |
+| Pro | `Web.config` `<FineUIPro Theme="Pure_Black" .../>` | 页面/基类 `pm.Theme = ...` |
+| Core（三模式） | `appsettings.json` 的 `"FineUI":{ "Theme":"Pure_Black" }` | `_InitPageManagerPartial.cshtml` 里 `pm.Theme(...)` |
+| **Java（Spring Boot）** | **`application.properties` 的 `fineui.theme=pure_black`（`fineui.*` 键）** | **`FineUIPageManagerInitializer` bean 的 `init(pm, request)` 里 `pm.theme(...)`** |
 
 ## 二、PageManager 覆盖（页面级 / 动态）
 
@@ -32,6 +47,18 @@ var pm = F.PageManager;
 pm.CustomTheme(String.Empty);
 pm.Theme(Theme.Pure_Blue);           // 内置主题
 // 自定义主题：pm.CustomTheme("my_theme");
+```
+```java
+// FineUIJava —— 实现 FineUIPageManagerInitializer 的 @Component，渲染前回调、可读 request/cookie
+// 注意：Java 不分 Theme / CustomTheme——pm.theme(名) 对内置主题和自定义主题名统一处理
+@Component
+public class AppPageManagerInitializer implements FineUIPageManagerInitializer {
+    @Override
+    public void init(PageManager pm, HttpServletRequest request) {
+        pm.theme("pure_blue");        // 内置或自定义主题名都走同一个方法
+        // pm.language("zh_CN"); pm.displayMode("normal");
+    }
+}
 ```
 
 ## 三、运行时切换主题（Cookie + 刷新）
@@ -67,8 +94,22 @@ if (!String.IsNullOrEmpty(themeCookie)) {
     else                            { pm.CustomTheme(themeCookie); }
 }
 ```
+```java
+// FineUIJava —— FineUIPageManagerInitializer bean（渲染前回调，读 cookie 设主题）
+@Component
+public class AppPageManagerInitializer implements FineUIPageManagerInitializer {
+    @Override
+    public void init(PageManager pm, HttpServletRequest request) {
+        String theme = cookie(request, "Theme");   // Cookie 名：Theme（另有 Language / DisplayMode）
+        if (theme != null && !theme.isEmpty()) {
+            pm.theme(theme);   // 无需区分内置/自定义——内置名（如 Pure_Blue）与自定义名（如 image_blue_sky）都传给 pm.theme
+        }
+    }
+    // cookie(request, name)：遍历 request.getCookies() 取值
+}
+```
 
-> `IsSystemTheme(name)`：`Enum.GetNames(typeof(Theme))` 里（忽略大小写）匹配到即内置主题，走 `pm.Theme`；否则当自定义主题名走 `pm.CustomTheme`。
+> **Java 比 Core 简单**：不需要 `IsSystemTheme` 判断、不分 `pm.Theme` / `pm.CustomTheme`——内置主题名和自定义主题名都直接传给 `pm.theme(名)`，框架按 `themes/{名}/theme.css` 解析。客户端写 Cookie + 刷新的那段 JS（`F.cookie('Theme', ...)` + `top.window.location.reload()`）四栈完全相同，见上。
 
 ## See also
 

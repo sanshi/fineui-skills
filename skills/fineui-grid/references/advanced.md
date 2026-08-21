@@ -4,14 +4,14 @@
 
 ## 概念 → 各写法属性名对照
 
-| 概念 | F.js | Pro (WebForms) | Core-MVC (Fluent) | Core-TagHelper |
-|------|------|----------------|-------------------|----------------|
-| 启用列锁定 | `columnLocking: true` | `AllowColumnLocking="true"` | `.AllowColumnLocking(true)` | `AllowColumnLocking="true"` |
-| 允许锁到右侧 | `columnLockingRight: true` | `ColumnLockingRight="true"` | `.ColumnLockingRight(true)` | `ColumnLockingRight="true"` |
-| 列可锁 / 初始锁 | 列 `lockable` / `locked` | `EnableLock` / `Locked` | `.EnableLock().Locked()` | `EnableLock` / `Locked` |
-| 列锁到右侧 | 列 `lockedPosition:'right'` | `LockedPosition="Right"` | `.LockedPosition(LockedPosition.Right)` | `LockedPosition="Right"` |
-| 启用列拖拽 | `columnMoving: true` | `EnableColumnMove="true"` | `.EnableColumnMove(true)` | `EnableColumnMove="true"` |
-| 启用大数据 | `bigData: true` | `EnableBigData="true"` | `.EnableBigData(true)` | `EnableBigData="true"` |
+| 概念 | F.js | Pro (WebForms) | Core-MVC (Fluent) | Core-TagHelper | Java（Thymeleaf 方言） |
+|------|------|----------------|-------------------|----------------|------------------------|
+| 启用列锁定 | `columnLocking: true` | `AllowColumnLocking="true"` | `.AllowColumnLocking(true)` | `AllowColumnLocking="true"` | `allow-column-locking="true"` |
+| 允许锁到右侧 | `columnLockingRight: true` | `ColumnLockingRight="true"` | `.ColumnLockingRight(true)` | `ColumnLockingRight="true"` | `column-locking-right="true"` |
+| 列可锁 / 初始锁 | 列 `lockable` / `locked` | `EnableLock` / `Locked` | `.EnableLock().Locked()` | `EnableLock` / `Locked` | `enable-lock` / `locked` |
+| 列锁到右侧 | 列 `lockedPosition:'right'` | `LockedPosition="Right"` | `.LockedPosition(LockedPosition.Right)` | `LockedPosition="Right"` | `locked-position="Right"` |
+| 启用列拖拽 | `columnMoving: true` | `EnableColumnMove="true"` | `.EnableColumnMove(true)` | `EnableColumnMove="true"` | `enable-column-move="true"` |
+| 启用大数据 | `bigData: true` | `EnableBigData="true"` | `.EnableBigData(true)` | `EnableBigData="true"` | `enable-big-data="true"` |
 
 ---
 
@@ -41,6 +41,15 @@ Grid 级开 `AllowColumnLocking`（**不是 `EnableLock`**），列级用 `Enabl
 @(F.Grid().AllowColumnLocking(true).ColumnLockingRight(true)
     .Columns(F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(true)) ...)
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）-->
+<f:grid ... allow-column-locking="true" column-locking-right="true">
+    <f:columns>
+        <f:render-field data-field="Name" header-text="姓名" enable-lock="true" locked="true"></f:render-field>
+        <f:render-field data-field="EntranceYear" header-text="入学年份" enable-lock="true" locked="true" locked-position="Right"></f:render-field>
+    </f:columns>
+</f:grid>
+```
 
 > 列锁定可与**行展开、多表头、合计行**共存，无需额外属性——同时配置即可。
 
@@ -64,6 +73,12 @@ function onGrid1ColumnMove(event, targetColumnId, sourceColumnId, operation) {
     <Listeners><f:Listener Event="columnmove" Handler="onGrid1ColumnMove" /></Listeners>
 </f:Grid>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）—— 监听 columnmove（handler 的 JS 体同 F.js，不重复贴）-->
+<f:grid ... enable-column-move="true">
+    <f:listeners><f:listener event="columnmove" handler="onGrid1ColumnMove" /></f:listeners>
+</f:grid>
+```
 
 **服务端持久化列顺序**（Core 用自定义事件 `Page_CustomEvent`；应用保存的顺序用列的 `ColumnOrder`）：
 
@@ -77,8 +92,20 @@ protected void Page_CustomEvent(object sender, CustomEventArgs e) {
 }
 // 回显：Grid1.FindColumn(columnId).ColumnOrder = order;
 ```
+```java
+// FineUIJava —— 同样用 Page_CustomEvent 接收前端上报的列布局；回显用列的 setColumnOrder/setWidth/setHidden
+public void Page_CustomEvent(Object sender, CustomEventArgs e) {
+    if ("Grid1_ColumnMove".equals(e.getEventName())) {
+        session().setAttribute(KEY, e.getArgument());   // 保存 JSON（含各列 columnId/width/hidden）
+    }
+}
+// 回显（Page_Load 里）：GridColumn col = Grid1.getColumnById(columnId);
+//                       col.setColumnOrder(order); col.setWidth(w); col.setHidden(true);
+```
 
-> 只允许同组内移动：`EnableSameGroupColumnMove="true"`（配合多表头）。
+> **注**：Java 示例里的 `session()` 是**页面类里自定义的私有辅助方法**（`return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();`），**不是** `FineUIPageBase` 内置方法——照抄时需自行定义，或直接注入/获取 `HttpSession`。
+
+> 只允许同组内移动：`EnableSameGroupColumnMove="true"`（配合多表头）。Java 侧多表头列拖拽示例仅见 `enable-column-move="true"`（同组限制属性未在示例中出现，用时以官网 API 为准）。
 
 ---
 
@@ -113,7 +140,17 @@ protected void Page_CustomEvent(object sender, CustomEventArgs e) {
 }
 ```
 
-> Pro 用 `__doPostBack('', 'RowMove_' + rowIds.join('#'))`，在 `Page_Load` 里 `GetRequestEventArgument()` 解析。
+```java
+// FineUIJava —— 同 Core：客户端 F.customEvent('Grid1_RowMove', {rowIds:[...]}) 触发，页面类 Page_CustomEvent 接收保存
+public void Page_CustomEvent(Object sender, CustomEventArgs e) {
+    if ("Grid1_RowMove".equals(e.getEventName())) {
+        session().setAttribute(KEY, e.getArgument());   // 按上报的 rowIds 顺序重排数据源
+        showNotify("数据保存成功！");
+    }
+}
+```
+
+> Pro 用 `__doPostBack('', 'RowMove_' + rowIds.join('#'))`，在 `Page_Load` 里 `GetRequestEventArgument()` 解析。`moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 等客户端方法与 F.js 完全相同。
 
 ---
 
@@ -140,13 +177,22 @@ listeners: {
 }
 ```
 
-> **`mergeCells`（手动、可跨列）≠ `mergeColumns`（自动、按列纵向）**。**单元格合并与行扩展列不能同时用**（行扩展时每行是独立 `<table>`）。Core 有独立 `GridMerge` 示例区；Pro 合并示例在 `grid` 目录（`grid_mergecells.aspx` / `grid_mergecolumns.aspx`）。
+```html
+<!-- FineUIJava（Thymeleaf 方言）：dataload 监听 + 客户端方法（JS 与 F.js 完全相同，不重复贴） -->
+<f:grid id="Grid1" ... enable-column-lines="true">
+    <f:columns> ... </f:columns>
+    <f:listeners><f:listener event="dataload" handler="onGridDataLoad"></f:listener></f:listeners>
+</f:grid>
+<!-- script 槽：function onGridDataLoad(event){ this.mergeCells([...]); }（或 this.mergeColumns(['Major','Group']);） -->
+```
+
+> **`mergeCells`（手动、可跨列）≠ `mergeColumns`（自动、按列纵向）**。**单元格合并与行扩展列不能同时用**（行扩展时每行是独立 `<table>`）。Core 有独立 `GridMerge` 示例区；Java 对应 `grid-merge/` 目录（`cells.html` / `columns.html`），合并均为客户端方法，无服务端属性。
 
 ---
 
 ## 5. 大数据表格（Big Data，虚拟化）
 
-海量行虚拟渲染。开 `EnableBigData="true"` + `FixedRowHeight="true"`（固定行高是前提）+ 通常隐藏分页栏 `PagingToolbarVisible="false"`，可开行提示 `EnableBigDataRowTip="true"`。**五个栈都有大数据示例，不是 Pro 专属。**
+海量行虚拟渲染。开 `EnableBigData="true"` + `FixedRowHeight="true"`（固定行高是前提）+ 通常隐藏分页栏 `PagingToolbarVisible="false"`，可开行提示 `EnableBigDataRowTip="true"`。**各栈（含 Java）都有大数据示例，不是 Pro 专属。**
 
 ```javascript
 // F.js —— 万级数据
@@ -163,6 +209,13 @@ listeners: {
 // Core-MVC（Fluent）
 @(F.Grid().EnableBigData(true).FixedRowHeight(true).EnableBigDataRowTip(true).PagingToolbarVisible(false) ...)
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：网址数据源用 data-url；大数据 + 分页再加 allow-paging + page-size -->
+<f:grid id="Grid1" height="500" data-url="/grid-big-data/big-data-url-data?total=10000&amp;type=simple"
+        enable-big-data="true" fixed-row-height="true" enable-big-data-row-tip="true" paging-toolbar-visible="false">
+    <f:columns> ... </f:columns>
+</f:grid>
+```
 
 > **大数据模式限制**（示例注释）：不支持树表格、行分组、单元格编辑、列锁定、单元格合并、模板列放输入字段；要求每行行高相同（`FixedRowHeight="true"`）且表格高度固定/在布局中。
 
@@ -170,8 +223,8 @@ listeners: {
 
 ## 关键约束
 
-1. **Grid 级 vs 列级锁定名字不同**：Grid `AllowColumnLocking`；列 `EnableLock`+`Locked`。别互换。
-2. **列/行拖拽无服务端事件**：`columnmove` 客户端签名 `(event, targetColumnId, sourceColumnId, operation)`；持久化靠自定义回发（Core `Page_CustomEvent`，Pro `__doPostBack`）。行拖拽本身是 `moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 客户端方法，无 `EnableRowDragDrop` 属性。
+1. **Grid 级 vs 列级锁定名字不同**：Grid `AllowColumnLocking`（Java `allow-column-locking`）；列 `EnableLock`+`Locked`（Java `enable-lock`+`locked`）。别互换。
+2. **列/行拖拽无服务端事件**：`columnmove` 客户端签名 `(event, targetColumnId, sourceColumnId, operation)`；持久化靠自定义回发（Core 与 **Java** `Page_CustomEvent`——Java 读 `e.getEventName()`/`e.getArgument()`，回显用列 `setColumnOrder(...)`；Pro `__doPostBack`）。行拖拽本身是 `moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 客户端方法，无 `EnableRowDragDrop` 属性。
 3. **合并是客户端方法**：`mergeCells`（手动跨行列）/ `mergeColumns`（自动纵向），在 `dataload` 里调，无服务端属性；与行扩展列互斥。
 4. **大数据前提是固定行高**，且与树/分组/编辑/锁定/合并互斥。
 

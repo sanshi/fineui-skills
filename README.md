@@ -1,12 +1,12 @@
 # FineUI Agent Skills
 
-官方 AI 技能（Agent Skills）集合，让 **Claude Code / GitHub Copilot / Cursor / OpenCode / Codex** 等 AI 编程助手**准确生成使用 FineUI 的代码**——用对 API、用对版本、不瞎编、不混用竞品，并覆盖 FineUI 的各种写法（F.js、Pro，以及 Core 的 MVC / RazorForms / RazorPages）。
+官方 AI 技能（Agent Skills）集合，让 **Claude Code / GitHub Copilot / Cursor / OpenCode / Codex** 等 AI 编程助手**准确生成使用 FineUI 的代码**——用对 API、用对版本、不瞎编、不混用竞品，并覆盖 FineUI 的各种写法（F.js、Pro、Core 的 MVC / RazorForms / RazorPages，以及 Java 的 Spring Boot）。
 
 > **这些技能是给 AI 编程助手用的，不是给人直接阅读的运行时库。** 内容全部是「如何使用 FineUI」的公开知识（等同官网文档/示例），**不含 FineUI 源码或内部实现**。
 
 ## FineUI 部署栈与开发模式
 
-FineUI 有 **3 部署栈**，其中 **Core 含 3 种开发模式**。本技能集为每种写法给出可运行的最小代码：
+FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能集为每种写法给出可运行的最小代码：
 
 | 部署栈 | 开发模式 | 前台写法 |
 |--------|---------|---------|
@@ -15,8 +15,10 @@ FineUI 有 **3 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 | **Core** | **MVC** | `Html.F().Grid()...`（**Fluent API**） |
 | **Core** | **RazorForms**（Core 推荐） | `<f:Grid>` **TagHelper**（数据在后台 `Page_Load` 绑定） |
 | **Core** | **RazorPages** | `<f:Grid>` **TagHelper**（数据在标签内联 `DataSource`） |
+| **Java** | Spring Boot | `<f:grid>` **Thymeleaf 方言标签**（kebab-case，数据在页面类 `Page_Load` 绑定） |
 
 > RazorForms 与 RazorPages 共用 TagHelper 标签，差异在数据初始化与事件（见 `fineui-grid` 技能）。
+> **FineUIJava 是 Core-RazorForms 的「孪生栈」**：同为「标签式有状态服务端组件」，但基于 Spring Boot + Thymeleaf 方言，标签/属性全 kebab-case、页面类用 Java；客户端 F.js 运行时四栈完全相同。
 
 ## 前置要求
 

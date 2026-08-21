@@ -2,15 +2,15 @@
 
 ## 菜单项类型
 
-| 用途 | F.js | C#（Pro / Core） |
-|------|------|------------------|
-| 可点击菜单项 / 子菜单入口 | `type: 'MenuItem'` / `MenuButton` | `<f:MenuButton>`（带 `<Menu>` 即子菜单） |
-| 超链接菜单项 | `type: 'MenuHyperLink'` | `<f:MenuHyperLink NavigateUrl Target>` |
-| 可勾选菜单项 | `type: 'MenuCheckBox'` | `<f:MenuCheckBox>` |
-| 标题/不可点 | `type: 'MenuText'` | `<f:MenuText HideOnClick="false">` |
-| 分隔线 | `type: 'MenuSeparator'` | `<f:MenuSeparator>` |
+| 用途 | F.js | C#（Pro / Core） | Java（Thymeleaf 方言） |
+|------|------|------------------|------------------------|
+| 可点击菜单项 / 子菜单入口 | `type: 'MenuItem'` / `MenuButton` | `<f:MenuButton>`（带 `<Menu>` 即子菜单） | `<f:menu-button>`（带 `<f:menu>` 即子菜单） |
+| 超链接菜单项 | `type: 'MenuHyperLink'` | `<f:MenuHyperLink NavigateUrl Target>` | `<f:menu-hyper-link navigate-url target>` |
+| 可勾选菜单项 | `type: 'MenuCheckBox'` | `<f:MenuCheckBox>` | `<f:menu-check-box>` |
+| 标题/不可点 | `type: 'MenuText'` | `<f:MenuText HideOnClick="false">` | `<f:menu-text hide-on-click="false">` |
+| 分隔线 | `type: 'MenuSeparator'` | `<f:MenuSeparator>` | `<f:menu-separator>` |
 
-> **C# 没有 `<f:MenuItem>` 标签**——可点击菜单项用 `<f:MenuButton>`（它带 `<Menu>` 时即成为子菜单入口）。F.js 才有 `type: 'MenuItem'`。
+> **C#/Java 没有 `MenuItem` 标签**——可点击菜单项用 `<f:MenuButton>`/`<f:menu-button>`（它带子菜单集合时即成为子菜单入口）。F.js 才有 `type: 'MenuItem'`。
 
 ## Button + 下拉菜单（含子菜单）
 
@@ -62,6 +62,17 @@
     </Menu>
 </f:Button>
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：<f:menu> 内嵌，全 kebab-case；子菜单再挂一层 <f:menu> -->
+<f:button id="btnMenu" text="中国科学技术大学" icon-font="_Bicycle">
+    <f:menu>
+        <f:menu-hyper-link icon="TagGreen" target="_blank" navigate-url="http://scms.ustc.edu.cn/" text="化学与材料科学学院"></f:menu-hyper-link>
+        <f:menu-button icon="TagBlue" text="管理学院">
+            <f:menu><f:menu-hyper-link target="_blank" navigate-url="http://is.ustc.edu.cn/" text="工商管理系"></f:menu-hyper-link></f:menu>
+        </f:menu-button>
+    </f:menu>
+</f:button>
+```
 
 ## 菜单项点击事件（MenuButton）
 
@@ -71,6 +82,13 @@
 <f:MenuButton runat="server" Text="反选" EnablePostBack="false">
     <Listeners><f:Listener Event="click" Handler="onSelectInverse" /></Listeners>
 </f:MenuButton>
+```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：on-click 服务端，或 <f:listeners> 客户端 -->
+<f:menu-button text="打开官网" on-click="menuOpen_Click"></f:menu-button>
+<f:menu-button text="反选">
+    <f:listeners><f:listener event="click" handler="onSelectInverse" /></f:listeners>
+</f:menu-button>
 ```
 
 ## 可勾选菜单项（MenuCheckBox）
@@ -100,8 +118,20 @@ public IActionResult OnPostMenuLang_CheckedChanged(string checkedValue) {   // R
     UIHelper.Label("labResult").Text("语言：" + checkedValue); return UIHelper.Result();
 }
 ```
+```html
+<!-- FineUIJava（Thymeleaf 方言）：group-name 单选组、checked 初始勾选、on-checked-changed 勾选即回发 -->
+<f:menu-check-box id="MenuLangEN" text="English" group-name="MenuLang" checked="true"
+    on-checked-changed="MenuLang_CheckedChanged"></f:menu-check-box>
+```
+```java
+// FineUIJava 页面类：处理器 (Object sender, EventArgs e)，直接读控件字段的 isChecked()（无 CheckedEventArgs）
+com.fineui.java.core.controls.MenuCheckBox MenuLangEN;
+public void MenuLang_CheckedChanged(Object sender, EventArgs e) {
+    if (MenuLangEN.isChecked()) { /* ... */ }
+}
+```
 
-客户端读取勾选项：`F.ui.btnMenu.menu.getCheckedItems()`，逐项 `item.isChecked()`。
+客户端读取勾选项（各栈同 F.js）：`F.ui.btnMenu.menu.getCheckedItems()`，逐项 `item.isChecked()`。
 
 ## See also
 
