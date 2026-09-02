@@ -114,7 +114,7 @@ protected void Tree1_NodeCommand(object sender, TreeCommandEventArgs e) {
 ```csharp
 // Core-MVC —— Listener("nodeclick") + F.doPostBack
 // @(F.Tree().Listener("nodeclick", "onTree1NodeClick"))
-// JS: F.doPostBack('@Url.Action("Tree1_NodeClick")', { nodeId: nodeId, nodeText: this.getNodeData(nodeId).text });
+// JS: F.doPostBack({ url: '@Url.Action("Tree1_NodeClick")', params: { nodeId: nodeId, nodeText: this.getNodeData(nodeId).text } });
 public IActionResult Tree1_NodeClick(string nodeId, string nodeText) {
     UIHelper.Label("labResult").Text($"点击了：{nodeId}（{nodeText}）");
     return UIHelper.Result();

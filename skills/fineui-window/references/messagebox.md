@@ -61,7 +61,7 @@ F.create({
     title: '确认退出', message: '尚未保存，确定退出？',
     buttons: [{ buttonId: 'ok', text: '直接退出' }, { buttonId: 'cancel', text: '不退出' }],
     handler: function (event, buttonId) {
-        if (buttonId === 'ok') { F.doPostBack('/Xxx/ConfirmOK'); }   // 回发到服务端
+        if (buttonId === 'ok') { F.doPostBack({ url: '/Xxx/ConfirmOK' }); }   // 回发到服务端
     }
 });
 ```
