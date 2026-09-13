@@ -32,10 +32,10 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 ```bash
 # GitHub（主仓）
-npx skills add fineui/fineui-skills
+npx skills add sanshi/fineui-skills
 
 # 指定 agent（自动拷到对应目录）
-npx skills add fineui/fineui-skills -a claude-code -a cursor -a opencode -a codex
+npx skills add sanshi/fineui-skills -a claude-code -a cursor -a opencode -a codex
 
 # 国内镜像 Gitee（用完整 git URL）
 npx skills add https://gitee.com/fineui/fineui-skills.git
