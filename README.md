@@ -35,7 +35,16 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 npx skills add sanshi/fineui-skills
 ```
 
-该命令会交互选择需要的技能、目标 Agent 和安装方式。默认安装到当前项目；如需在个人的所有项目中使用，请添加 `-g`：
+这是**项目级安装**。请先在终端进入需要使用这些技能的项目根目录，再执行安装命令。例如，要为 `D:\FineUI` 项目安装：
+
+```powershell
+cd D:\FineUI
+npx skills add sanshi/fineui-skills
+```
+
+CLI 会检测可用的 Agent，并在需要时提示你选择技能、目标 Agent 和安装方式。安装结果只对当前项目生效。
+
+如果不想在每个项目中分别安装，可以在任意目录执行全局安装：
 
 ```bash
 npx skills add sanshi/fineui-skills -g
