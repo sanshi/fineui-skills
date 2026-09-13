@@ -83,6 +83,17 @@ public partial class Hello : PageBase {
 ```
 全屏布局：`<f:PageManager AutoSizePanelID="Panel1" />` + `<f:Panel Layout="Region"><Items><f:Panel RegionPosition="Top" .../></Items></f:Panel>`。
 
+新项目在 `Web.config` 的 `<FineUIPro>` 节点采用推荐模式：
+
+```xml
+<FineUIPro EnableImplicitPostBack="false"
+           EnableImplicitChangeEvents="false"
+           AllowDangerousRawTag="false"
+           AllowDangerousScriptTag="false" />
+```
+
+这样声明服务端事件即可自动回发，纯客户端控件只写 `ClickHandler`；完整规则见 [events-postback.md](events-postback.md)。
+
 ---
 
 ## 3) Core-MVC —— Fluent API（Index.cshtml + Controller）
@@ -128,6 +139,17 @@ public class HelloController : BaseController {
 </body>
 </html>
 ```
+
+Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
+
+```json
+"FineUI": {
+    "AllowDangerousRawTag": false,
+    "AllowDangerousScriptTag": false
+}
+```
+
+服务注册只调用一次 `services.AddFineUI(Configuration)`。它会登记 FineUI 模型绑定器，并在 `EnableRazorForms=true` 时自动加入 RazorForms 所需过滤器；不要再在 `AddRazorPages(...)` 中手工添加 `RazorFormsFilter`，该配置已经多余。FineUICore v16.0 的最低运行环境是 .NET 8，Newtonsoft.Json 使用 13.x。
 
 ---
 

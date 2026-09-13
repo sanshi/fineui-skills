@@ -316,7 +316,7 @@ F.Label().ID("labResult").Label("结果").Text("初始文本")
 labResult.Text = "新文本";
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：只读结果标签常配 encode-text="false" show-label="false"；HTML 原样输出用 text-raw-html -->
+<!-- FineUIJava（Thymeleaf 方言）：普通文本用 text；可信 HTML 用 text-raw-html -->
 <f:label id="labResult" label="结果" text="初始文本"></f:label>
 <f:label id="labHtml" text-raw-html="<span style='color:red'>红字</span>"></f:label>
 ```

@@ -5,15 +5,15 @@ description: >
   FineUICore 的三种开发模式 MVC（Fluent API）/ RazorForms（TagHelper）/ RazorPages（TagHelper），
   以及 FineUIJava（Spring Boot + Thymeleaf 方言标签）。
   用于：判定项目属于哪种写法、F.create 工厂、PageManager、页面骨架与布局（Region/ViewPort）、
-  可信 HTML（RawHtml）安全模型、属性命名约定、全局配置项。**做任何 FineUI 页面前先看本技能。**
+  客户端事件与回发、可信 HTML（RawHtml）安全模型、属性命名约定、全局配置项。**做任何 FineUI 页面前先看本技能。**
   Trigger phrases（触发词）: "FineUI", "F.create", "PageManager", "FineUIPro", "FineUICore",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "Fluent API", "TagHelper",
   "RazorForms", "RazorPages", "RawHtml", "F.rawHtml", "TextRawHtml",
   "FineUI 布局", "Region 布局", "ViewPort", "页面骨架", "FineUI 怎么用".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0（客户端事件、回发语义与 RawHtml 安全模型）
 ---
 
 # FineUI 地基技能（Foundation）
@@ -75,6 +75,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 |------|--------|
 | [references/stacks.md](references/stacks.md) | 各写法差异总表、判定线索、命名约定、全局配置 |
 | [references/page-scaffold.md](references/page-scaffold.md) | 最小页面骨架、PageManager 位置、Region/ViewPort 布局、共享 `_Layout` |
+| [references/events-postback.md](references/events-postback.md) | `ClickHandler`、服务端事件、`F.customEvent`、Pro 两个兼容开关与 Grid 行命令 |
 | [references/rawhtml.md](references/rawhtml.md) | 可信 HTML：`F.rawHtml` / `XxxRawHtml` / `new RawHtml(...)` |
 
 ## 相关技能（Related Skills）
@@ -91,6 +92,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 4. **绝不编造 API**：不确定的属性/方法去查官网 API 或 `F/doc/` 的 JSDoc。不同写法名称不同，别硬套（如 Grid 列 F.js `text`/`field` ↔ C# `HeaderText`/`DataField` ↔ Java `header-text`/`data-field`）。
 5. **各栈启用标签**：Core 启用 TagHelper 需 `_ViewImports.cshtml` 的 `@addTagHelper *, FineUICore`，CSS/JS 用 `@F.RenderCss()` / `@F.RenderScript()`；**Java 页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，CSS/JS 由母版里的 `<f:styles>` / `<f:scripts>` 输出**。
 6. **消息框与回发**：F.js `F.alert({ message: ... })` / `showNotify(...)`；C# `Alert.Show(...)` / `ShowNotify(...)`，Core 回发处理器结尾 `return UIHelper.Result();`；**Java `showAlert(...)` / `showNotify(...)`，处理器返回 `void`（纯 JSON 增量回发，无需 `UIHelper.Result()`）**。
+7. **客户端动作只写具名函数**：Pro/Core 用 `ClickHandler="onXxxClick"`，Java 用 `click-handler="onXxxClick"`，函数首参为 `event`。不要在新代码中使用 `OnClientClick` / `on-client-click` 或把脚本塞进 Handler；详见 [references/events-postback.md](references/events-postback.md)。
 
 ## 官方资源（Official Resources）
 

@@ -100,13 +100,15 @@ pageItems: [
     <Columns> ... </Columns>
     <PageItems>
         <f:ToolbarText runat="server" Text="每页记录数：" />
-        <f:DropDownList runat="server" ID="ddlPageSize" Width="100px" AutoPostBack="true"
+        <f:DropDownList runat="server" ID="ddlPageSize" Width="100px"
             OnSelectedIndexChanged="ddlPageSize_SelectedIndexChanged">
             <f:ListItem Text="5" Value="5" /><f:ListItem Text="10" Value="10" /><f:ListItem Text="20" Value="20" />
         </f:DropDownList>
     </PageItems>
 </f:Grid>
 ```
+
+> FineUIPro 项目推荐全局设置 `EnableImplicitChangeEvents="false"`；声明 `OnSelectedIndexChanged` 即自动回发，不需要重复写 `AutoPostBack="true"`。显式设置仍可覆盖推导结果。
 ```csharp
 // Pro 后台：改 PageSize
 protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e) {

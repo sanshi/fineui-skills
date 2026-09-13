@@ -68,11 +68,11 @@ public void btnGetCheckedValues_Click(Object sender, EventArgs e) {
     for (TreeNode node : nodes)
         sb.append(String.format("<li>%s（%s）</li>", node.getText(), node.getId()));  // getId 非 getNodeID
     sb.append("</ul>");
-    labResult.setTextRawHtml(new RawHtml(sb.toString()));   // 输出 HTML：标签 encode-text="false" + RawHtml
+    labResult.setTextRawHtml(new RawHtml(sb.toString()));   // 仅可信 HTML 使用 RawHtml
 }
 ```
 
-> Label 输出 HTML：模板 `<f:label id="labResult" encode-text="false">`，服务端 `setTextRawHtml(new RawHtml(...))`（对应 C# 的 `EncodeText="false"` + `Text=html`）。
+> Label 输出 HTML：模板可保持 `<f:label id="labResult">`，服务端调用 `setTextRawHtml(new RawHtml(...))`。不要再用 `encode-text="false"` 作为通用写法；用户输入与数据库内容必须按普通文本输出。
 
 ### Core-MVC / RazorPages —— 客户端收集回发 `JArray`
 

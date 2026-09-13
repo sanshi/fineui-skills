@@ -68,6 +68,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 
 - **属性大小写**：JS 用 camelCase（`bodyPadding`、`showHeader`）；C# 三模式用 PascalCase（`BodyPadding`、`ShowHeader`）；**Java 标签属性用 kebab-case（`body-padding`、`show-header`）**。
 - **属性「值」在 Java 里保持原样**：枚举/图标/类型等值仍是 PascalCase，如 `text-mode="Password"`、`icon="TagBlue"`、`field-type="Int"`、`renderer="Date"`——只有属性「名」转 kebab-case。
+- **Java URL 不写 `~/`**：模板属性使用应用路径（如 `/res/icon/add.png`），Thymeleaf 需要上下文路径时用 `@{...}`，页面脚本中动态地址用 `F.resolveUrl('/...')`。
 - **少数名称不是简单大小写映射**（按组件而定），如 Grid 列：F.js `text`/`field` ↔ C# `HeaderText`/`DataField` ↔ Java `header-text`/`data-field`。不确定就查该组件的 API/JSDoc，别硬套。
 - **可信 HTML**：`Xxx` → `XxxRawHtml`（C#）/ `xxx-raw-html`（Java）（见 [rawhtml.md](rawhtml.md)）。
 - **“全局可设、单控件可覆盖”的配置项（如 Grid 级）多段命名**：
@@ -76,9 +77,11 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
   - C# 全局：`Grid` 前缀（`GridPagerAutoSimpleMode`，PageManager 或 `Web.config`/`appsettings.json` 设）
   - Java 全局：`application.properties` 的 `fineui.grid-pager-auto-simple-mode`（`fineui.` + kebab-case）
 - **全局配置入口**：Pro = `Web.config` 的 `<FineUIPro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
+- **新项目安全默认值**：Pro/Core 设置 `AllowDangerousRawTag=false` 与 `AllowDangerousScriptTag=false`。Pro 另设置 `EnableImplicitPostBack=false`、`EnableImplicitChangeEvents=false`，使用“声明服务端事件才自动回发”的统一心智模型。完整规则见 [events-postback.md](events-postback.md) 与 [rawhtml.md](rawhtml.md)。
 
 ## See also
 
 - [page-scaffold.md](page-scaffold.md)：一个最小页面的完整骨架（含 PageManager）
 - [rawhtml.md](rawhtml.md)：可信 HTML 声明式写法
+- [events-postback.md](events-postback.md)：客户端事件、服务端事件、自定义回发与 Pro 兼容开关
 - `fineui-grid` 技能：以 Grid 为例的各写法完整对照（含 Java）

@@ -8,8 +8,8 @@
 |------|------|----------------|----------------------|------------------------|
 | 行扩展列 | Grid `rowExpander: { field, renderer }` | `<f:TemplateField RenderAsRowExpander="true">` | `RenderField` + `RenderAsRowExpander="true"` + `RendererFunction` | `<f:render-field render-as-row-expander="true" renderer-function="fn">` |
 | 展开全部扩展列 | `grid.expandRowExpanders()` | `ExpandAllRowExpanders="true"` | 同 Pro 属性 | `expand-all-row-expanders="true"` |
-| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | 专用 `<f:WindowField>` | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` | `<f:command window-id="Window1" window-iframe-url-format-string=…>`（同 RazorForms） |
-| 行命令列 | 列 `renderer` 返 `<a class>` | `<f:LinkButtonField CommandName>` | `RendererFunction` / RF 用 `<f:Command CommandName>` | `<f:commands><f:command command-name=…>` |
+| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | 推荐 `RenderField.Commands`（旧页仍可用 `WindowField`） | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` | `<f:command window-id="Window1" window-iframe-url-format-string=…>`（同 RazorForms） |
+| 行命令列 | 列 `renderer` 返 `<a class>` | 推荐 `RenderField.Commands`（旧页仍可用 `LinkButtonField`） | `RendererFunction` / RF 用 `<f:Command CommandName>` | `<f:commands><f:command command-name=…>` |
 | 行单击/双击/选中事件 | listener `rowclick`/`rowdblclick`/`rowselect` | `EnableRowClickEvent`+`OnRowClick` 等 | 客户端 listener + 回发 / RF 服务端 `OnRowClick` | `on-row-click` / `on-row-double-click` 服务端事件 |
 | 整行样式 | `rowRenderer` / `rowDataBound` | 服务端 `OnRowDataBound` → `e.RowCssClass` | 客户端 `RowRendererFunction` / `RowDataBoundFunction` | 客户端 `row-renderer-function` / `row-data-bound-function`；服务端 `on-row-data-bound` |
 | 固定行高 / 行高行数 | `fixedRowHeight` / `rowHeightLines` | `FixedRowHeight` / `RowHeightLines` | `.FixedRowHeight()` / `.RowHeightLines()` | `fixed-row-height` / `row-height-lines` |
@@ -55,13 +55,17 @@ F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   /
 
 ## 2. 弹出窗体列（点击行内链接开 iframe 窗口）
 
-机制各栈差别大：**Pro 有专用 `<f:WindowField>` 声明式**；**RazorForms 用 `<f:Command WindowID=...>`**；**F.js / MVC / RazorPages 手写 `renderer` + `F.ui.Window1.show(url, title)`**。
+机制各栈差别大：**Pro 与 RazorForms 新代码都用 `<f:Command WindowID=...>`**；Pro 的 `<f:WindowField>` 只作为旧页面兼容列保留；**F.js / MVC / RazorPages 手写 `renderer` + `F.ui.Window1.show(url, title)`**。
 
 ```aspx
-<%-- Pro —— WindowField 声明式绑定 iframe 地址与标题 --%>
-<f:WindowField ColumnID="myWindowField" WindowID="Window1" HeaderText="窗口列" Text="编辑"
-    DataIFrameUrlFields="Id,Name" DataIFrameUrlFormatString="grid_iframe_window.aspx?id={0}&name={1}"
-    DataWindowTitleField="Name" DataWindowTitleFormatString="编辑 - {0}" />
+<%-- Pro —— RenderField.Commands 声明式绑定 iframe 地址与标题 --%>
+<f:RenderField ColumnID="Actions" HeaderText="操作">
+    <Commands>
+        <f:Command CommandName="Edit" Text="编辑" WindowID="Window1"
+            WindowIFrameUrlFields="Id,Name" WindowIFrameUrlFormatString="grid_iframe_window.aspx?id={0}&amp;name={1}"
+            WindowTitleFields="Name" WindowTitleFormatString="编辑 - {0}" />
+    </Commands>
+</f:RenderField>
 <f:Window ID="Window1" runat="server" EnableIFrame="true" IsModal="true" CloseAction="HidePostBack" />
 ```
 ```html
@@ -114,14 +118,18 @@ public void Grid1_RowDoubleClick(Object sender, GridRowEventArgs e) {
 
 ## 3. 行内命令按钮（RowCommand）
 
-行里放"编辑/删除"等按钮，点击回发命令。**Pro/RazorForms 有真正的服务端命令事件；MVC/RazorPages 基础版是纯客户端，服务端交互走 `F.doPostBack` 自定义参数。**
+行里放“编辑/删除”等按钮，点击回发命令。**Pro/RazorForms/Java 使用 `RenderField.Commands` 和真正的服务端命令事件；MVC/RazorPages 基础版是纯客户端，服务端交互走明确 action/handler。**
 
 ```aspx
-<%-- Pro —— LinkButtonField + OnRowCommand --%>
+<%-- Pro —— RenderField.Commands + OnRowCommand（Command 只属于 RenderField） --%>
 <f:Grid ... OnRowCommand="Grid1_RowCommand">
     <Columns>
-        <f:LinkButtonField CommandName="Action1" Text="按钮" Width="60px" />
-        <f:LinkButtonField CommandName="Action3" IconFont="_Close" ConfirmText="确定要删除本行？" ConfirmTarget="Top" />
+        <f:RenderField ColumnID="Actions" HeaderText="操作">
+            <Commands>
+                <f:Command CommandName="Action1" Text="编辑" />
+                <f:Command CommandName="Action3" IconFont="_Close" ConfirmText="确定要删除本行？" ConfirmTarget="Top" />
+            </Commands>
+        </f:RenderField>
     </Columns>
 </f:Grid>
 ```
@@ -185,9 +193,9 @@ public void Grid1_RowCommand(Object sender, GridCommandEventArgs e) {
     // e.getColumnIndex() 取命令所在列
 }
 ```
-> 纯客户端命令（不回发）：`<f:grid>` 上 `<f:listeners><f:listener event="rowcommand" handler="onGrid1RowCommand">`，JS 签名与 F.js 相同：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName)`。
+> 纯客户端命令（不回发）：`<f:grid>` 上 `<f:listeners><f:listener event="rowcommand" handler="onGrid1RowCommand">`，JS 签名与 F.js 相同：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName, commandArgument)`。
 
-客户端 `rowcommand` listener 签名：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName)`。
+客户端 `rowcommand` listener 签名：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName, commandArgument)`。有服务端 `OnRowCommand` 时，监听器显式返回 `false` 可阻止后续回发。
 
 ---
 
@@ -310,8 +318,8 @@ function onRowDensityChange(event) {
 ## 关键约束
 
 1. **事件 EventArgs 按栈不同**：行单击 Pro `GridRowClickEventArgs` / RazorForms 与 **Java** `GridRowEventArgs`；行选中 Pro `GridRowSelectEventArgs` / RazorForms `GridRowEventArgs`；行命令 Pro 与 **Java** `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`；行数据绑定 Pro `GridRowEventArgs` / RazorForms 与 **Java** `GridRowDataBoundEventArgs`（getter 取值：`e.getRowIndex()`/`e.getCommandName()`/`e.getFieldValue("列")`/`e.setRowCssClass(...)`）。别照抄错类名。
-2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`）；MVC/RazorPages 基础版纯客户端，服务端走 `F.doPostBack` 自定义参数（非 `OnRowCommand`）。
-3. **弹窗列多套机制**：Pro `<f:WindowField>`；RazorForms 与 **Java** `<f:Command WindowID=…>` / `<f:command window-id=…>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
+2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`），新代码统一用 `RenderField.Commands`。`Command` 只属于 `RenderField`；`LinkButtonField` / `WindowField` 不支持该子标签，只为旧页面兼容保留。MVC/RazorPages 基础版纯客户端，服务端走明确 action/handler（非 `OnRowCommand`）。
+3. **弹窗列多套机制**：Pro、RazorForms 与 **Java** 使用 `<f:Command WindowID=…>` / `<f:command window-id=…>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
 4. **行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
 5. **行样式服务端事件仅 Pro / RazorForms / Java**（`on-row-data-bound` → `GridRowDataBoundEventArgs`）；MVC/RazorPages 用客户端 `RowDataBoundFunction`。
 

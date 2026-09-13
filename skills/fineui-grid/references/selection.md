@@ -126,10 +126,20 @@ protected void Button1_Click(object sender, EventArgs e)
 }
 ```
 
-配套：点击时若无选中则不回发——
-```csharp
-// Page_Load 内（!IsPostBack）
-Button1.OnClientClick = Grid1.GetNoSelectionAlertInTopReference("没有选中项！");
+配套：点击时若无选中则不回发。用页面具名函数检查客户端选择状态：
+
+```aspx
+<f:Button ID="Button1" runat="server" Text="处理选中行"
+    ClickHandler="onProcessSelectedClick" OnClick="Button1_Click" />
+<script>
+    var Grid1ClientID = '<%= Grid1.ClientID %>';
+    function onProcessSelectedClick(event) {
+        if (!F(Grid1ClientID).hasSelection()) {
+            F.alert({ message: '没有选中项！', target: '_top' });
+            return false;
+        }
+    }
+</script>
 ```
 
 ### 方式 A（Java）：服务端按索引读取（同 RazorForms 范式）

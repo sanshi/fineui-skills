@@ -18,9 +18,9 @@ F.create({ type: 'Accordion', isFluid: true, id: 'Accordion1', renderTo: '#wrap'
 // F.ui.Accordion1.getActivePaneIndex()；F.ui.Accordion1.activeNextPane()
 ```
 ```aspx
-<%-- ② Pro（WebForms）：AutoPostBack + OnPaneIndexChanged 服务端切换事件（仅 Pro 有）--%>
+<%-- ② Pro（WebForms）：推荐模式下声明 OnPaneIndexChanged 即自动回发 --%>
 <f:Accordion ID="Accordion1" runat="server" IsFluid="true" Title="手风琴" ShowHeader="false" Height="500px"
-    ShowBorder="true" ActivePaneIndex="1" EnableCollapse="false" AutoPostBack="true" OnPaneIndexChanged="Accordion1_PaneIndexChanged">
+    ShowBorder="true" ActivePaneIndex="1" EnableCollapse="false" OnPaneIndexChanged="Accordion1_PaneIndexChanged">
     <Panes>
         <f:AccordionPane ID="AccordionPane1" runat="server" Title="面板一" IconUrl="~/res/images/16/1.png" BodyPadding="2px 5px">
             <Items><f:Label Text="面板一内容" runat="server" /></Items>
@@ -56,10 +56,10 @@ F.create({ type: 'Accordion', isFluid: true, id: 'Accordion1', renderTo: '#wrap'
 <f:accordion id="Accordion1" is-fluid="true" title="手风琴控件" show-header="false" height="500" show-border="true" active-pane-index="1"
     enable-collapse="false" on-pane-index-changed="Accordion1_PaneIndexChanged">
     <f:panes>
-        <f:accordion-pane id="AccordionPane1" title="面板一" icon-url="~/res/images/16/1.png" body-padding="2px 5px">
+        <f:accordion-pane id="AccordionPane1" title="面板一" icon-url="/res/images/16/1.png" body-padding="2px 5px">
             <f:items><f:label id="Label1" text="面板一中的文本"></f:label></f:items>
         </f:accordion-pane>
-        <f:accordion-pane id="AccordionPane2" title="面板二" icon-url="~/res/images/16/4.png" body-padding="2px 5px">
+        <f:accordion-pane id="AccordionPane2" title="面板二" icon-url="/res/images/16/4.png" body-padding="2px 5px">
             <f:items><f:label id="Label2" text="面板二中的文本"></f:label></f:items>
         </f:accordion-pane>
     </f:panes>
@@ -108,7 +108,7 @@ Accordion1.setActivePaneIndex((idx + 1) % 3);   // 展开下一个
 
 ## 关键差异
 
-- **面板切换服务端事件 `OnPaneIndexChanged`**：**Pro（配 `AutoPostBack="true"`）、Core-RazorForms、Java（`on-pane-index-changed`）都能直接声明**，切换时回发到服务端处理器。Core-MVC / RazorPages 无该声明式事件，改读客户端 `getActivePaneIndex()` 回发，再用 `UIHelper.Accordion(...)` 操作。
+- **面板切换服务端事件 `OnPaneIndexChanged`**：**Pro、Core-RazorForms、Java（`on-pane-index-changed`）都能直接声明**，切换时回发到服务端处理器。Pro 项目推荐全局设置 `EnableImplicitChangeEvents="false"`，因此无需重复设置 `AutoPostBack="true"`；显式 `AutoPostBack` 仍可覆盖。Core-MVC / RazorPages 无该声明式事件，改读客户端 `getActivePaneIndex()` 回发，再用 `UIHelper.Accordion(...)` 操作。
 - **读/写活动面板**：Pro/RazorForms 用控件字段属性（`Accordion1.ActivePaneIndex`）；**Java 用 Bean 方法 `Accordion1.getActivePaneIndex()` / `Accordion1.setActivePaneIndex(n)`**；MVC/RazorPages 用 `UIHelper.Accordion(...)`。
 
 ## See also

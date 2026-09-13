@@ -10,10 +10,10 @@ description: >
   "GetCheckedNodes", "getCheckedNodes", "懒加载", "OnNodeLazyLoad", "on-node-lazy-load",
   "异步加载子节点", "节点点击", "nodeclick", "OnNodeExpand", "on-node-expand",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:tree", "f:tree-node".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0（TreeNode ClickHandler 与统一回发协议）
 ---
 
 # FineUI 树技能（Tree）
@@ -117,7 +117,8 @@ F.create({
 3. **读取选中节点用 `GetCheckedNodes()`**（C# 返回 `TreeNode[]`；**Java `getCheckedNodes()` 返回 `List<TreeNode>`**）；没有 `GetCheckedNodeIDs`。F.js 客户端 `getCheckedNodes(true)`。
 4. **读选中的方式随写法不同**：RazorForms / **Java** 用控件字段 `Tree1.GetCheckedNodes()` / `Tree1.getCheckedNodes()`；MVC/RazorPages 用客户端 `getCheckedNodes(true)` 序列化后回发 `JArray`。详见 [references/checkbox-events.md](references/checkbox-events.md)。
 5. **懒加载用 `OnNodeLazyLoad` / `on-node-lazy-load` + `AutoLeafIdentification="false"` / `auto-leaf-identification="false"` + 节点 `Leaf` / `leaf`**（不是 `EnableAjax`）；`Leaf=false` 的节点展开时触发懒加载，`Leaf=true` 为叶子。
-6. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+6. **节点客户端动作使用 `ClickHandler` / `click-handler`**：值只写页面具名函数，签名为 `(event, nodeId)`；显式返回 `false` 可取消后续默认动作与服务端事件。不要在新代码中写 `OnClientClick` / `on-client-click`。
+7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
 
 ## 官方资源（Official Resources）
 

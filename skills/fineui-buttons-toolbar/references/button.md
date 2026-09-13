@@ -46,7 +46,7 @@ F.Button().Text("右图标").Icon(Icon.Star).IconAlign(IconAlign.Right)
 <f:button text="邮件" icon="Email"></f:button>
 <f:button text="首页" icon-font="_Home"></f:button>
 <f:button text="右图标" icon="Star" icon-align="Right"></f:button>
-<f:button icon-url="~/res/images/16/1.png"></f:button>   <!-- 仅图标 -->
+<f:button icon-url="/res/images/16/1.png"></f:button>   <!-- 仅图标 -->
 ```
 
 ## 尺寸与徽标
@@ -98,29 +98,30 @@ public void btnServer_Click(Object sender, EventArgs e) { showNotify("服务端�
 ### 客户端点击（不回发）
 
 ```javascript
-// F.js —— handler
-{ type: 'Button', text: '客户端', handler: function () { F.alert('客户端事件'); } }
+function onClientClick(event) {
+    F.alert('客户端事件');
+}
+
+// F.js —— 直接传函数对象
+{ type: 'Button', text: '客户端', handler: onClientClick }
 ```
 ```aspx
-<%-- Pro / Core-TagHelper：OnClientClick + EnablePostBack="false"，或 Listener --%>
-<f:Button runat="server" Text="客户端" OnClientClick="alert('客户端事件');" EnablePostBack="false" />
-<f:Button runat="server" Text="客户端2" EnablePostBack="false">
-    <Listeners><f:Listener Event="click" Handler="onBtnClick" /></Listeners>
-</f:Button>
+<%-- Pro：站点设置 EnableImplicitPostBack="false" 后无需逐按钮关闭回发 --%>
+<f:Button runat="server" Text="客户端" ClickHandler="onClientClick" />
+
+<%-- Core-RazorForms / RazorPages --%>
+<f:Button Text="客户端" ClickHandler="onClientClick"></f:Button>
 ```
 ```csharp
 // Core-MVC（Fluent）
-F.Button().Text("客户端").OnClientClick("alert('客户端事件');")
-F.Button().Text("客户端2").Listener("click", "onBtnClick")
+F.Button().Text("客户端").ClickHandler("onClientClick")
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：on-client-click 内联脚本，或 <f:listeners> 挂 click -->
-<f:button text="客户端" on-client-click="alert('客户端事件');"></f:button>
-<f:button text="客户端2">
-    <f:listeners><f:listener event="click" handler="onBtnClick" /></f:listeners>
-</f:button>
+<!-- FineUIJava（Thymeleaf 方言） -->
+<f:button text="客户端" click-handler="onClientClick"></f:button>
 ```
-> 服务端改按钮的客户端事件：`btn.setOnClientClick(Alert.getShowInTopReference("..."))`（`Alert.getShowInTopReference` 生成 iframe 内跨顶层弹框的脚本字符串）。
+
+> 属性只填裸函数名，函数首参固定为 `event`。服务端需要动态改变客户端动作时修改 `ClickHandler` / `setClickHandler(...)`，传空字符串可移除。不要把脚本串写入 Handler，也不要在同一控件上重复声明 click Listener。
 
 ## 确认按钮（点击先弹确认）
 
@@ -163,21 +164,26 @@ F.Button().Type(ButtonType.Reset).Text("重置")
 
 ## LinkButton 超链接按钮
 
-样式像超链接的按钮，同样有 `OnClick`（服务端）/ `OnClientClick`+`EnablePostBack="false"`（客户端）/ `Enabled`。
+样式像超链接的按钮，同样有 `OnClick`（服务端）/ `ClickHandler`（客户端）/ `Enabled`。
 
 ```aspx
-<%-- Pro / Core-TagHelper --%>
+<%-- Pro --%>
 <f:LinkButton runat="server" ID="LinkButton3" Text="服务端事件" OnClick="LinkButton3_Click" />
-<f:LinkButton runat="server" ID="LinkButton1" Text="客户端事件" OnClientClick="clickIt();" EnablePostBack="false" />
+<f:LinkButton runat="server" ID="LinkButton1" Text="客户端事件" ClickHandler="onClientClick" />
+```
+```html
+<!-- Core RazorForms -->
+<f:LinkButton ID="LinkButton3" Text="服务端事件" OnClick="LinkButton3_Click"></f:LinkButton>
+<f:LinkButton ID="LinkButton1" Text="客户端事件" ClickHandler="onClientClick"></f:LinkButton>
 ```
 ```csharp
 // Core-MVC（Fluent）
 F.LinkButton().ID("LinkButton3").Text("服务端事件").OnClick(Url.Action("LinkButton3_Click"))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：<f:link-button>，on-click / on-client-click / enabled / confirm-text -->
+<!-- FineUIJava（Thymeleaf 方言）：<f:link-button>，on-click / click-handler / enabled / confirm-text -->
 <f:link-button id="LinkButton3" text="服务端事件" on-click="LinkButton3_Click"></f:link-button>
-<f:link-button id="LinkButton1" text="客户端事件" on-client-click="clickIt();"></f:link-button>
+<f:link-button id="LinkButton1" text="客户端事件" click-handler="onClientClick"></f:link-button>
 ```
 ```java
 // FineUIJava 页面类：控件字段用全限定名或 import；启用/禁用同 setEnabled

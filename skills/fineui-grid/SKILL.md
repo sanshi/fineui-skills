@@ -6,21 +6,21 @@ description: >
   以及 FineUIJava（Spring Boot + Thymeleaf 方言标签）。
   用于表格配置、列定义与渲染、数据加载与绑定、单元格编辑、行选择（复选框多选/单选）、
   分页、排序、合计行、表头过滤、多表头、行分组、树表格、列锁定、单元格合并、
-  行扩展/行命令/行事件、拖拽排序、大数据表格、工具栏等**表格全部分类功能**。
+  行扩展/行命令/行事件、拖拽排序、大数据表格与工具栏。
   Trigger phrases（触发词）: "FineUI 表格", "F.Grid", "Grid 列", "grid columns",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:grid", "render-field", "data-field",
-  "RenderField", "BoundField", "复选框多选", "EnableCheckBoxSelect", "checkboxSelect",
+  "RenderField", "BoundField", "复选框多选", "EnableCheckBoxSelect",
   "选中行", "SelectedRowIndexArray", "RendererFunction", "RendererArgument",
   "列渲染", "服务端分页", "loadData", "DataKeyNames",
-  "表格排序", "AllowSorting", "SortField", "服务端排序", "合计行", "EnableSummary", "SummaryType",
+  "表格排序", "AllowSorting", "合计行", "EnableSummary", "SummaryType",
   "表头过滤", "AllowFilters", "EnableFilter", "多表头", "GroupField", "行分组", "EnableRowGroup",
   "树表格", "EnableTree", "TreeColumn", "列锁定", "AllowColumnLocking", "单元格合并", "mergeColumns",
   "行扩展列", "RowExpander", "行命令", "RowCommand", "行单击事件", "OnRowClick",
   "拖拽排序", "EnableColumnMove", "大数据表格", "EnableBigData".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0（RenderField.Commands、统一事件与回发协议）
 ---
 
 # FineUI Grid（表格）技能
@@ -226,10 +226,10 @@ public class Grid extends FineUIPageBase {
 
 1. **绝不编造 API**：不确定的属性去查官网 API（见下方 Official Resources）或 `F/doc/` 的 JSDoc，别猜。不同模式属性名不同，尤其别把某模式的名字用到另一模式。
 2. **先定模式、不混用**：一个页面只用一种模式的写法。判定见「开始前」。F.js 用 `text`/`field`，C# 三模式用 `HeaderText`/`DataField`，**Java 用 `header-text`/`data-field`（全 kebab-case）**——不要串；Fluent API（MVC）与 TagHelper（RazorForms/RazorPages）不要混写。
-3. **文本默认 HTML 编码（v15.2 安全模型）**：Grid 单元格/列头文本默认转义。要输出可信 HTML：
+3. **文本默认 HTML 编码（RawHtml 安全模型）**：Grid 单元格/列头文本默认转义。要输出可信 HTML：
    - F.js：列 `renderer` 返回的字符串会作为 HTML 插入（渲染函数内自行保证可信）；普通文本属性用 `F.rawHtml(...)`。
    - C#：给控件文本赋 HTML 用 `xxx.TextRawHtml = new RawHtml("...")`；消息用 `ShowNotify(new RawHtml("..."))`。**绝不手写 `Text` + `TextRaw` 两个属性**。
-   - **Java**：标签上用 `encode-text="false"`（如 `<f:label id="labResult" encode-text="false">`）关掉该控件转义；消息用 `showNotifyRaw("<b>..</b>")`（可信 HTML 通知）。渲染函数返回值与 F.js 一致（客户端插入）。
+   - **Java**：标签使用 `xxx-raw-html`（如 `header-text-raw-html` / `text-raw-html`），服务端使用 `new RawHtml(...)` 与对应 setter；消息用 `showNotifyRaw(new RawHtml(...))`。不要以 `encode-text="false"` 作为新代码的通用逃生口。渲染函数返回值与 F.js 一致（客户端插入）。
 4. **Pro 数据绑定固定套路**：`!IsPostBack` 内 `Grid1.DataSource = table; Grid1.DataBind();`。忘了 `!IsPostBack` 会在每次回发重复绑定、丢失状态。
 5. **Core 三种模式的数据初始化各不相同**：
    - **MVC（Fluent API）**：Controller 设 `ViewBag.Grid1DataSource`，View 里 `.DataSource(ViewBag.Grid1DataSource)`。
@@ -242,7 +242,8 @@ public class Grid extends FineUIPageBase {
 9. **三个"分组/层级"概念别混**：**多表头**（列的分组，`GroupField`，[header.md](references/header.md)）≠ **行分组**（数据行按字段分组，`EnableRowGroup`，[row-group.md](references/row-group.md)）≠ **树表格**（行父子层级，`EnableTree`，[tree-grid.md](references/tree-grid.md)）。用户说"分组"时先确认是哪一种。
 10. **F.js 嵌套配置 vs .NET 拍平属性**：多个高级功能 F.js 把选项收进一个对象（`tree:{...}`/`rowGroup:{...}`/`rowExpander:{...}`/`filter:{...}`），而 Pro/Core 拍平成一堆独立属性（`EnableTree`/`TreeColumn`/...）。转写时注意这种结构差异。
 11. **行事件 EventArgs 类名按栈不同**：同一行事件，Pro 与 RazorForms 的参数类名不一样（如行命令 Pro `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`）。**Java 的类名与 Core 又不完全一致**：行命令用 `GridCommandEventArgs`（同 Pro），行单击/双击用 `GridRowEventArgs`，行数据绑定用 `GridRowDataBoundEventArgs`，翻页 `GridPageEventArgs`、排序 `GridSortEventArgs`（getter 取值，如 `e.getRowIndex()`/`e.getCommandName()`）。详见 [row-features.md](references/row-features.md)，别照抄错。
-12. **合并/拖拽无服务端属性**：单元格合并（`mergeCells`/`mergeColumns`）、行拖拽（`moveRowUp` 等）都是客户端方法；列/行顺序持久化靠自定义回发。详见 [advanced.md](references/advanced.md)。
+12. **合并/拖拽无服务端属性**：单元格合并（`mergeCells`/`mergeColumns`）、行拖拽（`moveRowUp` 等）都是客户端方法；列/行顺序持久化使用 `F.customEvent` + `Page_CustomEvent`，结构化参数传 JSON 对象/数组。详见 [advanced.md](references/advanced.md)。
+13. **Pro 行命令用 `RenderField.Commands`**：与 Core RazorForms / Java 对齐；`Command` 只属于 `RenderField`，不要把它放进 `LinkButtonField` / `WindowField`。客户端附加逻辑监听 Grid 的 `rowcommand`，服务端声明 `OnRowCommand`。
 
 ## 官方资源（Official Resources）
 

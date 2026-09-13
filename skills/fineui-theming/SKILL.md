@@ -8,10 +8,10 @@ description: >
   "深色主题", "dark theme", "自定义主题", "theme.config", "generate-theme", "CSS Variables 主题",
   "PageManager Theme", "CustomTheme", "FineUIJava 主题", "Spring Boot", "Thymeleaf", "fineui.theme",
   "application.properties", "FineUIPageManagerInitializer", "pm.theme".
-compatibility: FineUI v15+（主题系统重构为 CSS Variables）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v15+（主题系统重构为 CSS Variables）
 ---
 
 # FineUI 主题技能（Theming）

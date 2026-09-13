@@ -95,7 +95,7 @@ F.ui.Window1.hidePostBack();               // 隐藏并回发（触发 OnClose�
 ### 服务端触发
 
 ```csharp
-// Pro —— 注册脚本（客户端绑定：btn.OnClientClick = Window1.GetShowReference(url, title);）
+// Pro —— 服务端事件中直接注册一次性显示脚本；普通客户端按钮请用 ClickHandler + 页面具名函数
 PageContext.RegisterStartupScript(Window1.GetShowReference("edit.aspx?id=1", "编辑 - 张三"));
 ```
 ```csharp

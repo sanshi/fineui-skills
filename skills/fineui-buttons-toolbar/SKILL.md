@@ -6,14 +6,14 @@ description: >
   覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
   以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 按钮", "F.Button", "Button", "ButtonColor", "语义颜色按钮",
-  "OnClick", "OnClientClick", "确认按钮", "ConfirmText", "LinkButton", "下拉菜单", "MenuButton",
+  "OnClick", "ClickHandler", "客户端点击", "确认按钮", "ConfirmText", "LinkButton", "下拉菜单", "MenuButton",
   "Menu", "MenuHyperLink", "MenuCheckBox", "徽标", "Badge", "IconFont",
   "ButtonGroup", "按钮分组", "pressGroup", "互斥按下", "EnablePress", "EnablePressGroup",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:button", "button-color", "enable-press-group".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0（ClickHandler 与事件驱动回发）
 ---
 
 # FineUI 按钮与菜单技能（Buttons & Menu）
@@ -30,7 +30,7 @@ metadata:
 ## 开始前（Before You Start）
 
 1. **哪种写法？** F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java（Spring Boot）（判定见 `fineui-foundation`）。
-2. **点击要不要回发服务端？** 服务端事件（OnClick）vs 纯客户端（handler / OnClientClick + `EnablePostBack="false"`）。
+2. **点击要不要回发服务端？** 服务端事件用 `OnClick` / `on-click`；纯客户端用页面具名函数 + `ClickHandler` / `click-handler`。
 
 ## 各写法速览（普通按钮 + 主按钮 + 服务端点击）
 
@@ -87,11 +87,12 @@ public class ButtonClick extends FineUIPageBase {
 
 1. **先定写法、不混用**：F.js `color`/`handler`（camelCase）；C# `ButtonColor`/`OnClick`（PascalCase）；**Java `button-color`/`on-click`（kebab-case），值仍 PascalCase**。
 2. **语义色属性名**：F.js `color: 'primary'`；C# `ButtonColor="Primary"` / `.ButtonColor(ButtonColor.Primary)`；**Java `button-color="Primary"`**（值：Primary/Success/Danger/Warning/Info）。**注意 C# 的 `Type` 是 `ButtonType{Button,Submit,Reset}`（表单提交/重置），不是颜色。**
-3. **服务端 vs 客户端点击**：服务端 `OnClick`（MVC `Url.Action` / RazorForms 方法名 / RazorPages `@Url.Handler`）；客户端 `OnClientClick="js"` + `EnablePostBack="false"`，或 `Listener` click / F.js `handler`。
-4. **确认按钮**：声明式 `ConfirmText="..." ConfirmTarget="Top"`（点击先弹确认，确认后才回发）。`ConfirmTitle`/`ConfirmIcon` 也是控件属性（默认图标 Warning）。
-5. **下拉菜单项用 MenuButton/MenuHyperLink 等，不是 `MenuItem`（C#/Java）**：C# 菜单项是 `MenuButton`（可点/带子菜单）、`MenuHyperLink`（链接）、`MenuCheckBox`（可勾选）、`MenuText`（标题）、`MenuSeparator`（分隔）；**Java 对应 `<f:menu-button>`/`<f:menu-hyper-link>`/`<f:menu-check-box>`/`<f:menu-text>`/`<f:menu-separator>`**。F.js 用 `type: 'MenuItem'`。详见 [references/menu.md](references/menu.md)。
-6. **按钮分组「按下」用 `enablePress`（不是废弃的 `enableToggle`）**：F.js `enablePress`/`pressGroup`；C# `EnablePress`/`EnablePressGroup`（**不是 `PressGroup`**）；Java `enable-press`/`enable-press-group`。
-7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+3. **服务端 vs 客户端点击**：服务端 `OnClick`（MVC `Url.Action` / RazorForms 方法名 / RazorPages `@Url.Handler` / Java `on-click`）；客户端用页面具名函数 + `ClickHandler`（Java `click-handler`）。新代码不使用 `OnClientClick`，也不把脚本串写进 Handler。
+4. **Pro 官方推荐配置**：站点统一设置 `EnableImplicitPostBack="false"` 与 `EnableImplicitChangeEvents="false"`。此时纯客户端按钮无需逐个写 `EnablePostBack="false"`，声明 `OnClick` 的按钮会自动回发；显式控件属性始终优先。
+5. **确认按钮**：声明式 `ConfirmText="..." ConfirmTarget="Top"`（点击先弹确认，确认后才回发）。`ConfirmTitle`/`ConfirmIcon` 也是控件属性（默认图标 Warning）。
+6. **下拉菜单项用 MenuButton/MenuHyperLink 等，不是 `MenuItem`（C#/Java）**：C# 菜单项是 `MenuButton`（可点/带子菜单）、`MenuHyperLink`（链接）、`MenuCheckBox`（可勾选）、`MenuText`（标题）、`MenuSeparator`（分隔）；**Java 对应 `<f:menu-button>`/`<f:menu-hyper-link>`/`<f:menu-check-box>`/`<f:menu-text>`/`<f:menu-separator>`**。F.js 用 `type: 'MenuItem'`。详见 [references/menu.md](references/menu.md)。
+7. **按钮分组「按下」用 `enablePress`（不是废弃的 `enableToggle`）**：F.js `enablePress`/`pressGroup`；C# `EnablePress`/`EnablePressGroup`（**不是 `PressGroup`**）；Java `enable-press`/`enable-press-group`。
+8. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
 
 ## 官方资源（Official Resources）
 

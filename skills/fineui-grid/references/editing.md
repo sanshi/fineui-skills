@@ -131,14 +131,18 @@ console.log(modified);
 grid1.commitChanges();                    // 提交（清除“已改动”标记）
 ```
 
-### Pro（WebForms）—— **方法** `GetModifiedData()` / `GetModifiedDict()` / `GetMergedData()`
+### Pro（WebForms）—— **方法** `GetModifiedData()` / `GetMergedData()`
 
 ```csharp
-// 只取被改动的单元格：行索引 -> (列名 -> 值)
-Dictionary<int, Dictionary<string, object>> dict = Grid1.GetModifiedDict();
-foreach (int rowIndex in dict.Keys) {
-    int id = Convert.ToInt32(Grid1.DataKeys[rowIndex][0]);
-    UpdateRow(id, dict[rowIndex]);   // 仅更新含 key 的列
+// 推荐：一份数据覆盖修改、新增、删除；用 status 分流，id 是行标识。
+foreach (JObject row in Grid1.GetModifiedData()) {
+    string status = row.Value<string>("status");
+    string id = row.Value<string>("id");
+    JObject values = row.Value<JObject>("values");
+
+    if (status == "modified") { /* 用 values 更新 id 对应行 */ }
+    else if (status == "newadded") { /* 用 values 新增 */ }
+    else if (status == "deleted") { /* 删除 id 对应行 */ }
 }
 
 // 或取全部“合并后”数据（含新增/删除，需 IncludeMergedData="true"）
@@ -220,7 +224,7 @@ public void btnSubmit_Click(Object sender, EventArgs e) {
 
 1. **读编辑数据的 API 五套不同，别混**：
    - F.js：`grid.getModifiedData()`（方法）；
-   - **Pro（WebForms）**：`Grid1.GetModifiedData()` / `GetModifiedDict()` / `GetMergedData()`（**方法**）；
+   - **Pro（WebForms）**：`Grid1.GetModifiedData()` / `GetMergedData()`（**方法**）；旧的 `GetModifiedDict()` / `GetDeletedList()` / `GetNewAddedList()` 已废弃；
    - **Core-MVC / RazorPages**：回发参数 `JArray Grid1_mergedData`（**没有** `GetMergedData()` 方法）；
    - **Core-RazorForms**：控件属性 `Grid1.MergedData`（**没有** `GetMergedData()` 方法）；
    - **Java**：**方法** `Grid1.getModifiedData()`（带 `status` 分流新增/改/删）/ `Grid1.getMergedData()`（需 `include-merged-data="true"`），返回 `List<Map<String,Object>>`（**不是 JArray**）。

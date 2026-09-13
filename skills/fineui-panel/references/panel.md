@@ -85,28 +85,22 @@ public void Button3_Click(Object sender, EventArgs e) {
 <f:Panel ... runat="server">
     <Items> ... </Items>
     <Tools>
-        <f:Tool IconFont="_Gear" ToolTip="设置" EnablePostBack="false" runat="server">
-            <Listeners><f:Listener Event="click" Handler="onToolClick" /></Listeners>
-        </f:Tool>
+        <f:Tool IconFont="_Gear" ToolTip="设置" ClickHandler="onToolClick" runat="server" />
     </Tools>
 </f:Panel>
 ```
 ```html
 <!-- FineUIJava（Thymeleaf 方言）：<f:tools> 内放 <f:tool>，可带 text 显示文字 -->
-<f:panel id="Panel1" title="面板" icon-url="~/res/images/16/8.png">
+<f:panel id="Panel1" title="面板" icon-url="/res/images/16/8.png">
     <f:items> ... </f:items>
     <f:tools>
-        <f:tool icon-font="_Gear" tool-tip="设置">
-            <f:listeners><f:listener event="click" handler="onToolClick" /></f:listeners>
-        </f:tool>
-        <f:tool id="Tool4" icon-font="_Save" text="保存" tool-tip="保存">
-            <f:listeners><f:listener event="click" handler="onToolClick" /></f:listeners>
-        </f:tool>
+        <f:tool icon-font="_Gear" tool-tip="设置" click-handler="onToolClick"></f:tool>
+        <f:tool id="Tool4" icon-font="_Save" text="保存" tool-tip="保存" click-handler="onToolClick"></f:tool>
     </f:tools>
 </f:panel>
 ```
 
-> Tools 图标的 `click` 处理器是**客户端 JS**（与 F.js 一致，如 `function onToolClick(){ var iconFont=this.iconFont; ... }`），不重复贴。
+> Tools 图标的 `click` 处理器是**客户端 JS**（与 F.js 一致，如 `function onToolClick(event) { var iconFont = this.iconFont; ... }`）。单个 click 处理器优先用 `ClickHandler`，属性只填具名函数。
 
 ## ContentPanel（纯内容面板）
 

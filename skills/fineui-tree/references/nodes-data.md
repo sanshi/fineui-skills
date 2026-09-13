@@ -10,12 +10,32 @@
 | 叶子（不可展开） | `leaf` | `Leaf` | `leaf=` / `setLeaf(...)` |
 | 子节点 | `children: [...]` | 嵌套 `<f:TreeNode>` / `.Nodes(...)` | 嵌套 `<f:tree-node>`（外层 `<f:nodes>`）/ `node.addChild(child)` |
 | 内置图标 | `icon: 'url'` | `Icon="TagBlue"`（内置枚举） | `icon="TagBlue"`（值保持 PascalCase） |
-| 自定义图标 | `icon: '../x.png'` | `IconUrl="~/res/x.png"` | `icon-url="~/res/x.png"` |
+| 自定义图标 | `icon: '../x.png'` | `IconUrl="~/res/x.png"` | `icon-url="/res/x.png"` |
 | 超链接 | `href` / `hrefTarget` | `NavigateUrl` / `Target` | `navigate-url=` / `target=` |
 | 提示 | `qtip` | `ToolTip` | `tool-tip=` |
 | 初始勾选 | `checked` | `Checked` | `checked=` |
 
 > **命名陷阱（Java）**：模板标签属性叫 `node-id=`，但服务端 `TreeNode` Bean 的方法是 `getId()/setId(...)`（不是 `getNodeID`）。`Tree1.getSelectedNodeId()` 读取当前选中节点 id。
+
+## 节点客户端点击
+
+节点自己的客户端动作使用页面具名函数。属性中只写函数名，回调参数为 `(event, nodeId)`：
+
+```html
+<!-- Pro / Core-TagHelper -->
+<f:TreeNode Text="西平县" NodeID="xiping" ClickHandler="onXipingClick" />
+
+<!-- FineUIJava -->
+<f:tree-node text="西平县" node-id="xiping" click-handler="onXipingClick"></f:tree-node>
+```
+
+```javascript
+function onXipingClick(event, nodeId) {
+    F.notify('点击节点：' + nodeId);
+}
+```
+
+新代码不要使用节点的 `OnClientClick` / `on-client-click`，也不要在 Handler 属性中写一段脚本。回调显式返回 `false` 时，会取消节点后续的默认动作与服务端事件。
 
 ## 节点图标
 
@@ -36,7 +56,7 @@ F.TreeNode().Text("遂平县").NodeID("suiping").Icon(Icon.TagBlue)
 ```html
 <!-- FineUIJava（Thymeleaf 方言）：内置图标 icon（值同 C#）、自定义 icon-url、超链接节点 -->
 <f:tree-node text="遂平县" node-id="suiping" icon="TagBlue"></f:tree-node>
-<f:tree-node text="漯河市" node-id="luohe" icon-url="~/res/icon/tag_orange.png"></f:tree-node>
+<f:tree-node text="漯河市" node-id="luohe" icon-url="/res/icon/tag_orange.png"></f:tree-node>
 <f:tree-node text="科大（链接）" node-id="ustc" navigate-url="http://www.ustc.edu.cn/" target="_blank" tool-tip="跳转科大"></f:tree-node>
 ```
 

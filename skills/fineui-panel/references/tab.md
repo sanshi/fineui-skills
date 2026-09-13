@@ -61,7 +61,7 @@ F.Tab().Title("标签二（IFrame）").EnableIFrame(true).IFrameUrl(Url.Content(
 ```
 ```html
 <!-- FineUIJava（Thymeleaf 方言）：enable-iframe + iframe-url，iframeload 处理器是客户端 JS（同 F.js）-->
-<f:tab id="Tab2" title="标签二（IFrame）" enable-iframe="true" iframe-url="~/panel/group">
+<f:tab id="Tab2" title="标签二（IFrame）" enable-iframe="true" iframe-url="/panel/group">
     <f:listeners><f:listener event="iframeload" handler="onTabIFrameLoad" /></f:listeners>
 </f:tab>
 ```

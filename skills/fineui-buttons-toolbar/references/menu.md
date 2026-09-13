@@ -29,7 +29,7 @@
 ```
 ```aspx
 <%-- Pro / Core-TagHelper —— <Menu> 内嵌 --%>
-<f:Button runat="server" ID="btnMenu" Text="中国科学技术大学" IconFont="_Bicycle" EnablePostBack="false">
+<f:Button runat="server" ID="btnMenu" Text="中国科学技术大学" IconFont="_Bicycle">
     <Menu runat="server">
         <f:MenuHyperLink runat="server" Icon="TagGreen" Target="_blank" NavigateUrl="http://scms.ustc.edu.cn/" Text="化学与材料科学学院" />
         <f:MenuButton runat="server" Icon="TagBlue" Text="管理学院">
@@ -77,27 +77,23 @@
 ## 菜单项点击事件（MenuButton）
 
 ```aspx
-<%-- Pro / Core-TagHelper：服务端 OnClick，或客户端 Listener --%>
+<%-- Pro / Core-TagHelper：服务端 OnClick，或客户端 ClickHandler --%>
 <f:MenuButton runat="server" Text="打开官网" OnClick="menuOpen_Click" />
-<f:MenuButton runat="server" Text="反选" EnablePostBack="false">
-    <Listeners><f:Listener Event="click" Handler="onSelectInverse" /></Listeners>
-</f:MenuButton>
+<f:MenuButton runat="server" Text="反选" ClickHandler="onSelectInverse" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：on-click 服务端，或 <f:listeners> 客户端 -->
+<!-- FineUIJava（Thymeleaf 方言）：on-click 服务端，click-handler 客户端 -->
 <f:menu-button text="打开官网" on-click="menuOpen_Click"></f:menu-button>
-<f:menu-button text="反选">
-    <f:listeners><f:listener event="click" handler="onSelectInverse" /></f:listeners>
-</f:menu-button>
+<f:menu-button text="反选" click-handler="onSelectInverse"></f:menu-button>
 ```
 
 ## 可勾选菜单项（MenuCheckBox）
 
-`GroupName` 相同即单选组（不同则各自多选）；`AutoPostBack="true"` + `OnCheckedChanged` 勾选即回发。**三种模式事件绑定不同：**
+`GroupName` 相同即单选组（不同则各自多选）。FineUIPro 推荐设置 `EnableImplicitChangeEvents="false"`；此时声明 `OnCheckedChanged` 即自动回发，不再重复设置 `AutoPostBack="true"`。**各模式事件绑定不同：**
 
 ```aspx
 <%-- Pro / Core-RazorForms：OnCheckedChanged="方法名" --%>
-<f:MenuCheckBox runat="server" Text="English" ID="MenuLangEN" GroupName="MenuLang" AutoPostBack="true"
+<f:MenuCheckBox runat="server" Text="English" ID="MenuLangEN" GroupName="MenuLang"
     OnCheckedChanged="MenuLang_CheckedChanged" Checked="true" />
 ```
 ```csharp

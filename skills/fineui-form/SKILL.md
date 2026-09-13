@@ -11,10 +11,10 @@ description: >
   "FileUpload", "TriggerBox", "DropDownBox", "HtmlEditor", "MarkInvalid", "字段标签",
   "LabelWidth", "读取表单值", "下拉树", "文件上传", "富文本编辑器",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0（事件驱动变化回发与 RawHtml 安全模型）
 ---
 
 # FineUI 表单技能（Form）
@@ -116,7 +116,8 @@ public class Login extends FineUIPageBase {
 3. **必填红星**：`Required="true"` 需配 `ShowRedStar="true"` 才显示红星。
 4. **整表校验在提交按钮上**：`ValidateForms="表单ID"`（Core-TagHelper 用 `_ValidateForms`；**FineUIJava 直接写 `validate-forms="表单ID"`，逗号分隔多表单，无下划线前缀**）；不是设在 Form 容器上。
 5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUIJava 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
-6. **绝不编造 API**：字段属性不确定就查官网 API 或 `F/doc/` JSDoc。
+6. **Pro 变化事件采用推荐模式**：项目全局设置 `EnableImplicitChangeEvents="false"` 后，声明 `OnTextChanged`、`OnSelectedIndexChanged`、`OnCheckedChanged` 等服务端事件即可自动回发，无需再写 `AutoPostBack="true"`；显式 `AutoPostBack` 始终优先。其他控件回发只同步字段值，不会连带触发该字段的变化事件。
+7. **绝不编造 API**：字段属性不确定就查官网 API 或 `F/doc/` JSDoc。
 
 ## 官方资源（Official Resources）
 

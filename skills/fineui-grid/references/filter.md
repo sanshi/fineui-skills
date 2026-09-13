@@ -239,7 +239,7 @@ public IActionResult OnPostGrid1_FilterChanged(string[] Grid1_fields, JArray Gri
 // FineUIJava 页面类
 public void Grid1_FilterChanged(Object sender, EventArgs e) {
     bindGrid();
-    labResult.setText("过滤数据：" + Grid1.getFilteredData());   // labResult 上 encode-text="false"
+    labResult.setText("过滤数据：" + Grid1.getFilteredData());   // 普通文本保持编码输出
 }
 private void bindGrid() {
     // FilteredTable：仓库辅助类，遍历 Grid1 各列过滤态、逐行调回调判断是否命中

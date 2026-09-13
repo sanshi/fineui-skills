@@ -64,7 +64,7 @@ Grid 开 `EnableColumnMove="true"`（F.js `columnMoving: true`）。列顺序变
 function onGrid1ColumnMove(event, targetColumnId, sourceColumnId, operation) {
     var grid = this;
     var columnIds = $.map(grid.columns, function (c) { return c.columnId; });
-    // 把 columnIds 存后台（自定义回发）
+    F.customEvent('Grid1_ColumnMove', { columnIds: columnIds });
 }
 ```
 ```aspx
@@ -80,7 +80,7 @@ function onGrid1ColumnMove(event, targetColumnId, sourceColumnId, operation) {
 </f:grid>
 ```
 
-**服务端持久化列顺序**（Core 用自定义事件 `Page_CustomEvent`；应用保存的顺序用列的 `ColumnOrder`）：
+**服务端持久化列顺序**（Pro / Core RazorForms / Java 均用 `Page_CustomEvent`；应用保存的顺序用列的 `ColumnOrder`）：
 
 ```csharp
 // Core-RazorForms —— 接收自定义事件
@@ -150,7 +150,13 @@ public void Page_CustomEvent(Object sender, CustomEventArgs e) {
 }
 ```
 
-> Pro 用 `__doPostBack('', 'RowMove_' + rowIds.join('#'))`，在 `Page_Load` 里 `GetRequestEventArgument()` 解析。`moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 等客户端方法与 F.js 完全相同。
+Pro、Core RazorForms 与 Java 统一使用结构化自定义事件：
+
+```javascript
+F.customEvent('Grid1_RowMove', { rowIds: rowIds });
+```
+
+Pro 后台同样在 `Page_CustomEvent` 中通过 `e.EventName` 分派，并从 `e.EventArgumentsAsJObject` 读取 `rowIds`。不要使用 `__doPostBack` 拼接 `$` / `#` 字符串，再在 `Page_Load` 中手工拆分。
 
 ---
 
@@ -224,7 +230,7 @@ listeners: {
 ## 关键约束
 
 1. **Grid 级 vs 列级锁定名字不同**：Grid `AllowColumnLocking`（Java `allow-column-locking`）；列 `EnableLock`+`Locked`（Java `enable-lock`+`locked`）。别互换。
-2. **列/行拖拽无服务端事件**：`columnmove` 客户端签名 `(event, targetColumnId, sourceColumnId, operation)`；持久化靠自定义回发（Core 与 **Java** `Page_CustomEvent`——Java 读 `e.getEventName()`/`e.getArgument()`，回显用列 `setColumnOrder(...)`；Pro `__doPostBack`）。行拖拽本身是 `moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 客户端方法，无 `EnableRowDragDrop` 属性。
+2. **列/行拖拽无服务端事件**：`columnmove` 客户端签名 `(event, targetColumnId, sourceColumnId, operation)`；持久化统一用 `F.customEvent` + `Page_CustomEvent`（C# 读 `e.EventArgumentsAsJObject`，Java 读 `e.getEventName()` / `e.getArgument()`；回显用列 `ColumnOrder` / `setColumnOrder(...)`）。行拖拽本身是 `moveRowUp`/`moveRowDown`/`addNewRecords`/`deleteRows` 客户端方法，无 `EnableRowDragDrop` 属性。
 3. **合并是客户端方法**：`mergeCells`（手动跨行列）/ `mergeColumns`（自动纵向），在 `dataload` 里调，无服务端属性；与行扩展列互斥。
 4. **大数据前提是固定行高**，且与树/分组/编辑/锁定/合并互斥。
 

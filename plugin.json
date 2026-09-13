@@ -1,7 +1,7 @@
 {
   "name": "fineui-skills",
-  "description": "FineUI 组件库 AI 技能：让 AI 编程助手准确生成使用 FineUI 的代码，覆盖 F.js、Pro(WebForms) 与 Core 的 MVC/RazorForms/RazorPages 三种开发模式。",
-  "version": "0.1.0",
+  "description": "FineUI 组件库 AI 技能：让 AI 编程助手准确生成使用 FineUI 的代码，覆盖 F.js、Pro（WebForms）、Core（MVC/RazorForms/RazorPages）与 Java（Spring Boot）。",
+  "version": "0.2.0",
   "license": "MIT",
   "author": {
     "name": "FineUI",
@@ -14,6 +14,8 @@
     "ui-components",
     "webforms",
     "asp-net-core",
+    "spring-boot",
+    "thymeleaf",
     "javascript",
     "jquery",
     "grid",

@@ -254,7 +254,7 @@ F.HtmlEditor().ID("he1").Label("内容").Editor(HtmlEditorType.CKEditor).Height(
 ```
 ```html
 <!-- FineUIJava（Thymeleaf 方言）：资源路径是 base-path（不是 EditorBasePath）；toolbar-set 指定工具栏；编辑器 JS 由脚本槽引入 -->
-<f:html-editor id="HtmlEditor1" label="文本编辑器" editor="CKEditor" base-path="~/res/third-party/ckeditor/" toolbar-set="Full" height="350"></f:html-editor>
+<f:html-editor id="HtmlEditor1" label="文本编辑器" editor="CKEditor" base-path="/res/third-party/ckeditor/" toolbar-set="Full" height="350"></f:html-editor>
 <!-- 脚本槽：<th:block layout:fragment="script"><script src="/res/third-party/ckeditor/ckeditor.js"></script></th:block> -->
 ```
 ```csharp

@@ -61,20 +61,22 @@ F.create({
     title: '确认退出', message: '尚未保存，确定退出？',
     buttons: [{ buttonId: 'ok', text: '直接退出' }, { buttonId: 'cancel', text: '不退出' }],
     handler: function (event, buttonId) {
-        if (buttonId === 'ok') { F.doPostBack({ url: '/Xxx/ConfirmOK' }); }   // 回发到服务端
+        if (buttonId === 'ok') { F.customEvent('ConfirmOK'); }
     }
 });
 ```
 
-### Pro —— Confirm.GetShowReference（绑在按钮 OnClientClick，确认后回发）
+### Pro / Core / Java —— 声明式确认优先
 
-```csharp
-// Page_Load 内：确认后回发按钮事件，取消不操作
-btn.OnClientClick = Confirm.GetShowReference("确认执行？", String.Empty, MessageBoxIcon.Question,
-    btn.GetPostBackEventReference(), String.Empty);
-// 确认/取消分别回发不同参数：cancelScript 传 btn.GetPostBackEventReference("Cancel")
-// 后台用 GetRequestEventArgument() 区分：if (arg == "Cancel") ...
+```aspx
+<%-- Pro：简单确认直接声明 --%>
+<f:Button ID="btnDelete" runat="server" Text="删除"
+    ConfirmText="确定删除？" ConfirmTarget="Top" OnClick="btnDelete_Click" />
 ```
+
+Core RazorForms 使用相同属性名但不写 `runat="server"`；Java 改为 kebab-case：`confirm-text` / `confirm-target` / `on-click`。
+
+需要确认/取消进入不同业务分支时，在 `ClickHandler` 指向的具名函数中调用 `F.confirm`，回调里分别调用 `F.customEvent(...)`；后台统一由 `Page_CustomEvent` 按 `EventName` 分派。不要用 `Confirm.GetShowReference` + `OnClientClick` 生成脚本串。
 
 ### FineUIJava —— 三种「先确认再操作」
 
@@ -94,7 +96,7 @@ public void btnOperation1_Click(Object sender, EventArgs e) { showNotify("执行
 public void Page_CustomEvent(Object sender, CustomEventArgs e) {
     if ("Operation2".equals(e.getEventName())) { showNotify("执行了操作二！"); }
 }
-// 服务端也可只「显示」确认框：showConfirm("确定要删除吗？")；生成客户端引用脚本用 Confirm.getShowReference(...)
+// 服务端也可只“显示”确认框：showConfirm("确定要删除吗？")
 ```
 
 ## 三、Notify 通知框（自动消失）
@@ -134,7 +136,7 @@ F.notify({ message: '添加成功！', messageIcon: 'information', target: '_top
 
 1. **iframe 内的消息要跨到顶层**：Alert 用 `Alert.ShowInTop(...)`（C#）/ `showAlertInTop(...)`（Java）或 `top.F.alert(...)`；Confirm/Notify 用 `target: '_top'`。否则消息只显示在小 iframe 框里。
 2. **消息内容含 HTML**：默认转义。要输出可信 HTML 用 `ShowNotify(new RawHtml("..."))`（C#）/ `showNotifyRaw(...)`（Java）或 `F.rawHtml(...)`（JS）——见 `fineui-foundation` 的 rawhtml.md。**用户输入不要声明为可信**。
-3. **确认框的“确认后动作”**：F.js/客户端用 `ok` 回调或按钮 handler 里 `F.doPostBack`/`F.customEvent`；Pro 用 `Confirm.GetShowReference` 把确认脚本设为按钮回发；**Java 用声明式 `confirm-text`（确认后进 `on-click` 处理器），或客户端 `F.confirm` 的 `ok` 里 `F.customEvent(...)` 进 `Page_CustomEvent`**。
+3. **确认框的“确认后动作”**：普通服务端按钮优先声明 `ConfirmText` / `confirm-text`；需要自定义分支时，用页面具名 `ClickHandler` 调 `F.confirm`，在 `ok` / `cancel` 回调里调用 `F.customEvent(...)`，后台进入 `Page_CustomEvent`。`F.doPostBack(options)` 只留给非 AJAX、loading、命名表单字段或完成回调等完整选项场景。
 
 ## See also
 

@@ -160,17 +160,27 @@ F.ui.tbxUserName.markInvalid('用户名已被占用！');
 ## 四、重置表单
 
 ```javascript
-F.ui.form1.reset();                          // F.js
+function onResetClick(event) {
+    F.ui.SimpleForm1.reset();
+}
 ```
-```csharp
-// Pro —— 客户端重置（Page_Load 内绑定）
-btnReset.OnClientClick = SimpleForm1.GetResetReference();
+```aspx
+<%-- Pro：页面脚本需用渲染后的 ClientID；站点已设置 EnableImplicitPostBack="false" --%>
+<f:Button ID="btnReset" runat="server" Text="重置" ClickHandler="onResetClick" />
+<script>
+    var SimpleForm1ClientID = '<%= SimpleForm1.ClientID %>';
+    function onResetClick(event) { F(SimpleForm1ClientID).reset(); }
+</script>
 ```
 ```html
-<!-- FineUIJava —— 直接在重置按钮的 on-client-click 里调 F.js reset（客户端，无需回发）-->
-<f:button id="btnReset" text="重置" on-client-click="F.ui.SimpleForm1.reset();"></f:button>
-<f:button id="btnResetAll" text="重置两个表单" on-client-click="F.ui.Form1.reset();F.ui.Form2.reset();"></f:button>
+<!-- Core RazorForms / RazorPages -->
+<f:Button ID="btnReset" Text="重置" ClickHandler="onResetClick"></f:Button>
+
+<!-- FineUIJava -->
+<f:button id="btnReset" text="重置" click-handler="onResetClick"></f:button>
 ```
+
+Core-MVC 对应 `.ClickHandler("onResetClick")`。要重置多个表单，在同一个具名函数中依次调用 `.reset()`；不要把多条语句直接塞进属性。
 
 ## See also
 

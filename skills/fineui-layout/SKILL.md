@@ -4,15 +4,15 @@ description: >
   帮助开发者使用 FineUI 的布局系统——容器的 `Layout` 属性如何排布子控件：
   Fit（填充）/ Region（区域上下左右中）/ HBox·VBox（弹性盒子）/ Block（响应式栅格）/ Column / Anchor，
   以及视口自适应（IsViewPort / AutoSizePanelID）。覆盖 F.js、Pro、FineUICore（MVC/RazorForms/RazorPages）、
-  FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case，含 `<f:region-panel>` 便捷控件）。
+  FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case，含 region-panel 便捷控件）。
   Trigger phrases（触发词）: "FineUI 布局", "Layout", "Region 布局", "区域布局", "RegionPosition",
   "HBox", "VBox", "BoxFlex", "弹性布局", "Fit 布局", "Block 响应式", "BlockMD", "栅格布局",
   "IsViewPort", "视口自适应", "Column 布局", "Anchor 布局", "FineUIJava", "Spring Boot", "Thymeleaf",
   "region-panel", "region-position", "box-flex", "is-view-port".
-compatibility: FineUI v15.2+（ESM + ES2022 class；RawHtml 安全模型）
 metadata:
   author: FineUI
-  version: "15.2"
+  version: "16.0"
+  compatibility: FineUI v16.0
 ---
 
 # FineUI 布局技能（Layout System）
