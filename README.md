@@ -29,11 +29,7 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 技能采用开放的 **Agent Skills（`SKILL.md`）格式**，可供多种 AI 编程助手使用。
 
-### 方式一：CLI（推荐）
-
-```bash
-npx skills add sanshi/fineui-skills
-```
+### 项目级安装（推荐）
 
 这是**项目级安装**。请先在终端进入需要使用这些技能的项目根目录，再执行安装命令。例如，要为 `D:\FineUI` 项目安装：
 
@@ -44,25 +40,13 @@ npx skills add sanshi/fineui-skills
 
 CLI 会检测可用的 Agent，并在需要时提示你选择技能、目标 Agent 和安装方式。安装结果只对当前项目生效。
 
+### 全局安装
+
 如果不想在每个项目中分别安装，可以在任意目录执行全局安装：
 
 ```bash
 npx skills add sanshi/fineui-skills -g
 ```
-
-选择多个 Agent 时，CLI 默认推荐通过符号链接共享一份规范副本。只有选择复制方式或使用 `--copy` 时，才会为各 Agent 创建独立副本。
-
-### 方式二：手动复制
-
-也可以把 `skills/` 下需要的技能文件夹复制到 Agent 的技能目录。下表列出 `skills` CLI 当前使用的主要路径：
-
-| Agent | 项目级目录 | 全局目录 |
-|-------|-----------|----------|
-| Claude Code | `.claude/skills/` | `~/.claude/skills/` |
-| GitHub Copilot | `.agents/skills/` | `~/.copilot/skills/` |
-| Cursor | `.agents/skills/` | `~/.cursor/skills/` |
-| OpenCode | `.agents/skills/` | `~/.config/opencode/skills/` |
-| Codex | `.agents/skills/` | `~/.codex/skills/` |
 
 ## 更新
 
