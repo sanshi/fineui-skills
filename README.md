@@ -1,8 +1,8 @@
 # FineUI Agent Skills
 
-官方 AI 技能（Agent Skills）集合，让 **Claude Code / GitHub Copilot / Cursor / OpenCode / Codex** 等 AI 编程助手**准确生成使用 FineUI 的代码**——用对 API、用对版本、不瞎编、不混用竞品，并覆盖 FineUI 的各种写法（F.js、Pro、Core 的 MVC / RazorForms / RazorPages，以及 Java 的 Spring Boot）。
+FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor、OpenCode、Codex** 等 AI 编程助手提供准确的 FineUI API、开发模式和代码示例，减少错误 API、版本混用和技术栈混用。
 
-> **这些技能是给 AI 编程助手用的，不是给人直接阅读的运行时库。** 内容全部是「如何使用 FineUI」的公开知识（等同官网文档/示例），**不含 FineUI 源码或内部实现**。
+> 这些技能供 AI 编程助手使用，不是应用程序的运行时依赖。仓库只包含 FineUI 的公开用法、文档和示例知识，不含 FineUI 源码或内部实现。
 
 ## FineUI 部署栈与开发模式
 
@@ -17,47 +17,43 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 | **Core** | **RazorPages** | `<f:Grid>` **TagHelper**（数据在标签内联 `DataSource`） |
 | **Java** | Spring Boot | `<f:grid>` **Thymeleaf 方言标签**（kebab-case，数据在页面类 `Page_Load` 绑定） |
 
-> RazorForms 与 RazorPages 共用 TagHelper 标签，差异在数据初始化与事件（见 `fineui-grid` 技能）。
-> **FineUIJava 是 Core-RazorForms 的「孪生栈」**：同为「标签式有状态服务端组件」，但基于 Spring Boot + Thymeleaf 方言，标签/属性全 kebab-case、页面类用 Java；客户端 F.js 运行时四栈完全相同。
+> RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见 `fineui-grid`。
+>
+> FineUIJava 与 Core RazorForms 都采用标签式有状态服务端组件。FineUIJava 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
 
 ## 前置要求
 
-- **FineUI v16.0**（客户端事件、回发语义与 RawHtml 安全模型均按当前版本）。旧版本请使用与之匹配的技能 tag。
+- **FineUI v16.0**。技能中的客户端事件、回发语义和 RawHtml 安全模型均以此版本为准。
 
 ## 安装
 
-技能遵循开放的 **Agent Skills（SKILL.md）标准**，一份内容可用于 75+ 个 agent。三种安装方式：
+技能采用开放的 **Agent Skills（`SKILL.md`）格式**，可供多种 AI 编程助手使用。
 
 ### 方式一：CLI（推荐）
 
 ```bash
-# GitHub（主仓）
 npx skills add sanshi/fineui-skills
-
-# 指定 agent（自动拷到对应目录）
-npx skills add sanshi/fineui-skills -a claude-code -a cursor -a opencode -a codex
-
-# 国内镜像 Gitee（用完整 git URL）
-npx skills add https://gitee.com/fineui/fineui-skills.git
 ```
 
-> `npx skills add owner/repo` 简写仅 GitHub 支持；Gitee 用完整 `.git` URL。
+该命令会交互选择需要的技能、目标 Agent 和安装方式。默认安装到当前项目；如需在个人的所有项目中使用，请添加 `-g`：
+
+```bash
+npx skills add sanshi/fineui-skills -g
+```
+
+选择多个 Agent 时，CLI 默认推荐通过符号链接共享一份规范副本。只有选择复制方式或使用 `--copy` 时，才会为各 Agent 创建独立副本。
 
 ### 方式二：手动复制
 
-把 `skills/` 下需要的技能文件夹拷到你所用 agent 的技能目录：
+也可以把 `skills/` 下需要的技能文件夹复制到 Agent 的技能目录。下表列出 `skills` CLI 当前使用的主要路径：
 
 | Agent | 项目级目录 | 全局目录 |
 |-------|-----------|----------|
 | Claude Code | `.claude/skills/` | `~/.claude/skills/` |
-| GitHub Copilot | `.github/skills/` | `~/.copilot/skills/` |
-| Cursor | `.cursor/skills/` | `~/.cursor/skills/` |
-| OpenCode | `.opencode/skills/`（也读 `.claude/skills/`） | `~/.config/opencode/skills/` |
-| Codex | `.codex/skills/` | — |
-
-### 方式三：Claude Code 插件市场
-
-> 规划中（后续补 `.claude-plugin/marketplace.json`）。
+| GitHub Copilot | `.agents/skills/` | `~/.copilot/skills/` |
+| Cursor | `.agents/skills/` | `~/.cursor/skills/` |
+| OpenCode | `.agents/skills/` | `~/.config/opencode/skills/` |
+| Codex | `.agents/skills/` | `~/.codex/skills/` |
 
 ## 更新
 
@@ -69,18 +65,18 @@ npx skills update
 
 ## 已含技能
 
-| 技能 | 说明 | 状态 |
-|------|------|------|
-| `fineui-foundation` | 地基：写法判定 / `F.create` / PageManager / 页面骨架 / 客户端事件与回发 / RawHtml 安全模型 / 命名约定 | ✅ v0.2 |
-| `fineui-grid` | 表格（Grid）：列/数据/编辑/选择/分页、排序、合计行、表头过滤、多表头、行分组、树表格、列锁定、单元格合并、行扩展/命令/事件、拖拽排序、大数据（13 篇分类参考） | ✅ v0.2 |
-| `fineui-form` | 表单：Form/SimpleForm 容器、字段（TextBox/NumberBox/DatePicker/DropDownList/CheckBox/RadioButtonList/CheckBoxList/TimePicker/Label/Hidden）、高级字段（FileUpload/TriggerBox/DropDownBox 下拉树/HtmlEditor）、字段/整表校验、读值 | ✅ v0.2 |
-| `fineui-window` | 窗口与消息框：Window（内联/iframe）、开关、closeArgument 回传、Alert/Confirm/Notify | ✅ v0.2 |
-| `fineui-tree` | 树：节点/图标、后台建树/数据绑定、复选框/级联、节点事件、异步懒加载 | ✅ v0.2 |
-| `fineui-panel` | 容器组件：Panel（工具栏/折叠/Tools）、TabStrip（iframe/动态增删）、Accordion 手风琴 | ✅ v0.2 |
-| `fineui-layout` | 布局系统：Fit/Region、HBox/VBox 弹性盒子、Block 响应式栅格、Column/Anchor、视口自适应 | ✅ v0.1 |
-| `fineui-buttons-toolbar` | 按钮与菜单：语义色/图标/徽标、服务端/客户端点击、确认按钮、LinkButton、ButtonGroup（按钮分组/互斥按下）、下拉菜单 | ✅ v0.2 |
-| `fineui-theming` | 主题（CSS Variables）：全局设置、运行时切换（Cookie）、自定义主题（theme.config/generate-theme） | ✅ v0.1 |
-| `fineui-upgrade` | 版本升级（v10+）：识别破坏性变更、生成迁移清单（源自 release_history） | ✅ v0.2 |
+| 技能 | 说明 |
+|------|------|
+| `fineui-foundation` | 基础：写法判定、`F.create`、PageManager、页面骨架、客户端事件与回发、RawHtml 安全模型、命名约定 |
+| `fineui-grid` | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据 |
+| `fineui-form` | 表单：容器、常用字段、高级字段、字段校验、整表校验和取值 |
+| `fineui-window` | 窗口与消息框：Window、iframe、关闭回传、Alert、Confirm 和 Notify |
+| `fineui-tree` | 树：节点、图标、后台建树、数据绑定、复选框、级联、节点事件和异步加载 |
+| `fineui-panel` | 容器：Panel、工具栏、折叠、Tools、TabStrip 和 Accordion |
+| `fineui-layout` | 布局：Fit、Region、HBox、VBox、Block、Column、Anchor 和视口自适应 |
+| `fineui-buttons-toolbar` | 按钮与菜单：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
+| `fineui-theming` | 主题：CSS Variables、全局设置、运行时切换和自定义主题生成 |
+| `fineui-upgrade` | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
 
 ## 用法
 
@@ -94,7 +90,7 @@ AI 会自动命中相关技能，按 FineUI 官方写法生成对应端的代码
 
 ## 反馈
 
-发现技能内容有误或缺失，欢迎提 issue。
+发现技能内容有误或缺失，欢迎提交 [Issue](https://github.com/sanshi/fineui-skills/issues)。
 
 ## License
 
