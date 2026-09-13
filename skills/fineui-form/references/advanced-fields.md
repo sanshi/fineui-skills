@@ -8,7 +8,7 @@ FileUpload（文件上传）、TriggerBox（触发器输入框）、DropDownBox�
 
 选择文件的输入框 + 浏览按钮。`Accept` 限制文件类型；`Multiple` 允许多文件；`ButtonOnly` 仅显示按钮。
 
-> **服务端保存**：FileUpload 控件本身只负责选择文件，**保存逻辑在服务端**（Pro 用 `filePhoto.PostedFile`；Core 用 `IFormFile` 或 `FileUpload1.PostedFile`）。安全上传范式（白名单扩展名 + 时间戳重命名 + 不可直访目录）见 `fineui-foundation` 的 CLAUDE.md 或官方示例。
+> **服务端保存**：FileUpload 控件本身只负责选择文件，**保存逻辑在服务端**（Pro 用 `filePhoto.PostedFile`；Core 用 `IFormFile` 或 `FileUpload1.PostedFile`）。安全上传范式（白名单扩展名 + 时间戳重命名 + 不可直访目录）见 `fineui-foundation` 的 AGENTS.md 或官方示例。
 
 ```javascript
 // F.js
