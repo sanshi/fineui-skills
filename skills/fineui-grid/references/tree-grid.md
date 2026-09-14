@@ -40,7 +40,7 @@ F.create({
 });
 ```
 ```aspx
-<%-- Pro（叶子列 Pro 用 BoundField；Core 用 RenderField）--%>
+<%-- Pro：叶子列使用 RenderField，与 Core / Java 保持一致 --%>
 <f:Grid ID="Grid1" runat="server" IsFluid="true" Title="树表格" DataKeyNames="Id,Name"
         EnableTree="true" TreeColumn="Name" DataIDField="Id" DataParentIDField="ParentId">
     <Columns>

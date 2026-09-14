@@ -81,7 +81,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 ## 相关技能（Related Skills）
 
 - `fineui-grid`：数据表格（最复杂组件，各写法完整对照（含 Java））
-- `fineui-form` / `fineui-tree` / `fineui-window` / `fineui-panel` / `fineui-layout` / `fineui-buttons-toolbar` / `fineui-theming`：各组件与主题
+- `fineui-form` / `fineui-datalist` / `fineui-tree` / `fineui-window` / `fineui-panel` / `fineui-layout` / `fineui-button` / `fineui-theming`：各组件与主题
 - `fineui-upgrade`：版本升级（识别破坏性变更）
 
 ## 约束与规则（Constraints & Rules）

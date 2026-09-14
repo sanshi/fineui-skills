@@ -62,12 +62,13 @@ npx skills update
 |------|------|
 | `fineui-foundation` | 基础：写法判定、`F.create`、PageManager、页面骨架、客户端事件与回发、RawHtml 安全模型、命名约定 |
 | `fineui-grid` | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据 |
-| `fineui-form` | 表单：容器、常用字段、高级字段、字段校验、整表校验和取值 |
+| `fineui-form` | 表单与日历：容器、常用字段、高级字段、Calendar、字段校验、整表校验和取值 |
+| `fineui-datalist` | 数据列表：静态项、数据绑定、图文内容、单选多选、分组、导航和加载更多 |
 | `fineui-window` | 窗口与消息框：Window、iframe、关闭回传、Alert、Confirm 和 Notify |
 | `fineui-tree` | 树：节点、图标、后台建树、数据绑定、复选框、级联、节点事件和异步加载 |
-| `fineui-panel` | 容器：Panel、工具栏、折叠、Tools、TabStrip 和 Accordion |
+| `fineui-panel` | 容器：Panel、ContentPanel、GroupPanel、工具栏、折叠、Tools、TabStrip 和 Accordion |
 | `fineui-layout` | 布局：Fit、Region、HBox、VBox、Block、Column、Anchor 和视口自适应 |
-| `fineui-buttons-toolbar` | 按钮与菜单：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
+| `fineui-button` | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
 | `fineui-theming` | 主题：CSS Variables、全局设置、运行时切换和自定义主题生成 |
 | `fineui-upgrade` | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
 

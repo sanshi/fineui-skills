@@ -9,7 +9,7 @@ description: >
   行扩展/行命令/行事件、拖拽排序、大数据表格与工具栏。
   Trigger phrases（触发词）: "FineUI 表格", "F.Grid", "Grid 列", "grid columns",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:grid", "render-field", "data-field",
-  "RenderField", "BoundField", "复选框多选", "EnableCheckBoxSelect",
+  "RenderField", "RenderCheckField", "复选框多选", "EnableCheckBoxSelect",
   "选中行", "SelectedRowIndexArray", "GetSelectedDataKeys", "getSelectedDataKeys", "RendererFunction", "RendererArgument",
   "列渲染", "服务端分页", "loadData", "DataKeyNames",
   "表格排序", "AllowSorting", "合计行", "EnableSummary", "SummaryType",
@@ -237,13 +237,13 @@ public class Grid extends FineUIPageBase {
    - **RazorPages**：标签上内联 `DataSource="@Model.GetXxx()"`。
    - **Java（同 RazorForms 范式）**：页面类 `Page_Load`（`!isPostBack()`）里 `Grid1.setDataSource(list); Grid1.dataBind();`，`<f:grid>` 标签**不写** `data-source`；控件字段**手动在类里声明**（`com.fineui.java.core.controls.Grid Grid1;`，字段名 = 标签 `id`）；事件/命令处理器**返回 `void`**（如 `public void Grid1_PageIndexChanged(Object sender, GridPageEventArgs e)`）。
 6. **RazorForms vs RazorPages（同为 TagHelper，但后台模型不同）**：RazorForms 三件套（`.cshtml` + `.cshtml.cs` **partial** + `.designer.cs`），后台继承项目现有的 RazorForms 页面基类（官方示例为 `BaseModel`，它本身可继承 `PageModel`），使用 `Page_Load`/`IsPostBack`、`OnClick="方法名"`；同步控件事件返回 `void`，按钮点击示例为 `protected void 方法名(object sender, EventArgs e)`，分页、排序、行命令等则使用各自的专用 `EventArgs`，**不写 `OnPost`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。RazorPages 两件套（**非** partial、**无** designer）、`OnGet`/`OnPostXxx`、`OnClick="@Url.Handler(\"方法名\")"`，`OnPostXxx` 返回 `IActionResult` 和 `UIHelper.Result()`；**Java 两件套（`.html` + `.java`，无 designer）、`Page_Load`/`isPostBack()`、`on-click="方法名"`、`@FineUIPage("area/page")` 定路由。**
-7. **客户端渲染列优先用 `RenderField`**：Core 三模式与 F.js 一致。Pro 另有声明式 `BoundField`（服务端渲染，日期用 `DataFormatString="{0:yyyy/MM/dd}"`），但为保持一致，除非必要优先 `RenderField`。
+7. **新代码只使用三栈共有列**：普通列用 `RenderField`，布尔展示列用 `RenderCheckField`，另有 `RowNumberField`、`GroupField` 及 `RenderField.Commands`。不要根据 FineUIPro 的历史示例生成仅 Pro 存在的服务端渲染列。
 8. **行选择统一使用稳定行 ID**：初始化、读取与服务端主动选中都先设置 `DataIDField` / `data-id-field`，再使用 `SelectedRowID` / `SelectedRowIDArray` / `getSelectedRowIdArray()`。Pro/Core 的 `SelectedRowIndex` / `SelectedRowIndexArray` 已废弃，只用于识别和迁移旧代码；Java 已直接删除同名 getter/setter 与模板属性。读取选中行数据时，Pro / Core-RazorForms 调 `Grid1.GetSelectedDataKeys()`，Java 调 `Grid1.getSelectedDataKeys()`；必须让 `DataKeyNames` / `_DataKeyNames` / `data-key-names` 包含行 ID 字段。数据库分页跨页选择或敏感业务只取稳定行 ID，再查询数据库。详见 [references/selection.md](references/selection.md)。
 9. **三个"分组/层级"概念别混**：**多表头**（列的分组，`GroupField`，[header.md](references/header.md)）≠ **行分组**（数据行按字段分组，`EnableRowGroup`，[row-group.md](references/row-group.md)）≠ **树表格**（行父子层级，`EnableTree`，[tree-grid.md](references/tree-grid.md)）。用户说"分组"时先确认是哪一种。
 10. **F.js 嵌套配置 vs .NET 拍平属性**：多个高级功能 F.js 把选项收进一个对象（`tree:{...}`/`rowGroup:{...}`/`rowExpander:{...}`/`filter:{...}`），而 Pro/Core 拍平成一堆独立属性（`EnableTree`/`TreeColumn`/...）。转写时注意这种结构差异。
 11. **行事件 EventArgs 类名按栈不同**：同一行事件，Pro 与 RazorForms 的参数类名不一样（如行命令 Pro `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`）。**Java 的类名与 Core 又不完全一致**：行命令用 `GridCommandEventArgs`（同 Pro），行单击/双击用 `GridRowEventArgs`，行数据绑定用 `GridRowDataBoundEventArgs`，翻页 `GridPageEventArgs`、排序 `GridSortEventArgs`（getter 取值，如 `e.getRowIndex()`/`e.getCommandName()`）。详见 [row-features.md](references/row-features.md)，别照抄错。
 12. **合并/拖拽无服务端属性**：单元格合并（`mergeCells`/`mergeColumns`）、行拖拽（`moveRowUp` 等）都是客户端方法；列/行顺序持久化使用 `F.customEvent` + `Page_CustomEvent`，结构化参数传 JSON 对象/数组。详见 [advanced.md](references/advanced.md)。
-13. **Pro 行命令用 `RenderField.Commands`**：与 Core RazorForms / Java 对齐；`Command` 只属于 `RenderField`，不要把它放进 `LinkButtonField` / `WindowField`。客户端附加逻辑监听 Grid 的 `rowcommand`，服务端声明 `OnRowCommand`。
+13. **行命令统一用 `RenderField.Commands`**：Pro、Core RazorForms 与 Java 都使用 `RenderField.Commands`；`Command` 只属于 `RenderField`。客户端附加逻辑监听 Grid 的 `rowcommand`，服务端声明 `OnRowCommand`。
 
 ## 官方资源（Official Resources）
 

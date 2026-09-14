@@ -11,9 +11,9 @@
 | 普通渲染列（默认） | `'renderfield'`（默认，可省） | `<f:RenderField>` | `F.RenderField()` | `<f:render-field>` |
 | 行号列 | `'rownumberfield'` | `<f:RowNumberField>` | `F.RowNumberField()` | `<f:row-number-field>` |
 | 布尔展示列 | `'checkboxfield'` | `<f:RenderCheckField>` | `F.RenderCheckField()` | `<f:render-check-field>` |
-| 行展开列 | `'rowexpanderfield'` | `<f:RowExpanderField>` | `F.RowExpanderField()` | `<f:render-field render-as-row-expander="true">`（见 [row-features.md](row-features.md)） |
+| 行展开列 | `'rowexpanderfield'` | Core：`<f:RenderField RenderAsRowExpander="true">` | Core：`F.RenderField().RenderAsRowExpander(true)` | `<f:render-field render-as-row-expander="true">`（见 [row-features.md](row-features.md)） |
 
-> Pro 另有服务端渲染的声明式列：`<f:BoundField>`、`<f:TemplateField>`、`<f:CheckBoxField>`、`<f:HyperLinkField>`（Core 不提供，用 `RenderField` + 渲染函数替代）。为保持一致，优先用 `RenderField`。
+本技能只推荐 Pro、Core、Java 能共同表达的列和特性。FineUIPro 历史示例中的专属服务端渲染列不作为新代码模板。
 
 ---
 
@@ -121,8 +121,6 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 <f:render-field header-text="入学日期" data-field="EntranceDate" field-type="Date" renderer="Date" renderer-argument="yyyy/MM/dd" width="150"></f:render-field>
 <f:render-field header-text="工资" data-field="Salary" field-type="Double" renderer="Number" renderer-argument="N2" width="150"></f:render-field>
 ```
-
-> Pro 声明式 `BoundField` 也可格式化日期：`<f:BoundField DataField="LogTime" DataFormatString="{0:yyyy/MM/dd}" HeaderText="注册日期" />`。
 
 ---
 

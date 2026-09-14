@@ -2,14 +2,15 @@
 name: fineui-form
 description: >
   帮助开发者使用 FineUI 的表单：Form / SimpleForm 容器、表单字段（TextBox / TextArea / NumberBox /
-  DatePicker / DropDownList / CheckBox / RadioButtonList 等）、字段与整表校验、读取字段值。
+  DatePicker / DropDownList / CheckBox / RadioButtonList 等）、Calendar 内嵌日历、字段与整表校验、读取字段值。
   覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
   以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 表单", "F.Form", "SimpleForm", "FormRow", "表单校验",
   "ValidateForms", "Required", "TextBox", "NumberBox", "DatePicker", "DropDownList",
   "RadioButtonList", "CheckBox", "CheckBoxList", "TimePicker", "Label", "Hidden",
   "FileUpload", "TriggerBox", "DropDownBox", "HtmlEditor", "MarkInvalid", "字段标签",
-  "LabelWidth", "读取表单值", "下拉树", "文件上传", "富文本编辑器",
+  "LabelWidth", "读取表单值", "下拉树", "文件上传", "富文本编辑器", "Calendar", "内嵌日历",
+  "日期范围", "月份选择", "年份选择", "时间选择", "OnDateSelect",
   "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
 metadata:
   author: FineUI
@@ -24,6 +25,7 @@ metadata:
 - 搭建录入/编辑表单，配置字段、标签、必填红星、多列布局
 - 字段校验（必填、正则、比较、自定义）与整表提交校验
 - 读取/回填字段值
+- 使用 Calendar 选择日期、日期范围、月份、年份或时间
 
 ## 开始前（Before You Start）
 
@@ -102,6 +104,7 @@ public class Login extends FineUIPageBase {
 | [references/form-layout.md](references/form-layout.md) | Form vs SimpleForm、LabelWidth/LabelAlign、多列 FormRow/ColumnWidths |
 | [references/fields.md](references/fields.md) | 基础字段（TextBox/TextArea/NumberBox/DatePicker/DropDownList/CheckBox/RadioButtonList/CheckBoxList/TimePicker/Label/Hidden）+ 读值 |
 | [references/advanced-fields.md](references/advanced-fields.md) | 高级字段：FileUpload（文件上传）、TriggerBox（触发器）、DropDownBox（下拉树/下拉表格/多选下拉）、HtmlEditor（富文本） |
+| [references/calendar.md](references/calendar.md) | Calendar 内嵌日历：日期与范围、月/年/时间面板、最小最大日期、选择事件与读写值 |
 | [references/validation.md](references/validation.md) | 必填/正则/比较/自定义校验、整表校验、服务端 MarkInvalid |
 
 ## 相关技能（Related Skills）
@@ -118,6 +121,7 @@ public class Login extends FineUIPageBase {
 5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUIJava 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
 6. **Pro 变化事件采用推荐模式**：项目全局设置 `EnableImplicitChangeEvents="false"` 后，声明 `OnTextChanged`、`OnSelectedIndexChanged`、`OnCheckedChanged` 等服务端事件即可自动回发，无需再写 `AutoPostBack="true"`；显式 `AutoPostBack` 始终优先。其他控件回发只同步字段值，不会连带触发该字段的变化事件。
 7. **绝不编造 API**：字段属性不确定就查官网 API 或 `F/doc/` JSDoc。
+8. **Calendar 与 DatePicker 不同**：Calendar 是直接显示在页面中的日期/时间面板；需要输入框弹出日期面板时使用 DatePicker。Calendar 的日期型面板读写 `SelectedDate`，月/年/时间等部分值按 [references/calendar.md](references/calendar.md) 使用 `Text`。
 
 ## 官方资源（Official Resources）
 

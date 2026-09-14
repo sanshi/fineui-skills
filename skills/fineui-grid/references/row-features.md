@@ -6,10 +6,10 @@
 
 | 概念 | F.js | Pro (WebForms) | Core-MVC / TagHelper | Java（Thymeleaf 方言） |
 |------|------|----------------|----------------------|------------------------|
-| 行扩展列 | Grid `rowExpander: { field, renderer }` | `<f:TemplateField RenderAsRowExpander="true">` | `RenderField` + `RenderAsRowExpander="true"` + `RendererFunction` | `<f:render-field render-as-row-expander="true" renderer-function="fn">` |
+| 行扩展列 | Grid `rowExpander: { field, renderer }` | 本技能不提供 Pro 专属旧列写法 | `RenderField` + `RenderAsRowExpander="true"` + `RendererFunction` | `<f:render-field render-as-row-expander="true" renderer-function="fn">` |
 | 展开全部扩展列 | `grid.expandRowExpanders()` | `ExpandAllRowExpanders="true"` | 同 Pro 属性 | `expand-all-row-expanders="true"` |
-| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | 推荐 `RenderField.Commands`（旧页仍可用 `WindowField`） | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` | `<f:command window-id="Window1" window-iframe-url-format-string=…>`（同 RazorForms） |
-| 行命令列 | 列 `renderer` 返 `<a class>` | 推荐 `RenderField.Commands`（旧页仍可用 `LinkButtonField`） | `RendererFunction` / RF 用 `<f:Command CommandName>` | `<f:commands><f:command command-name=…>` |
+| 弹窗列 | 列 `renderer` + `F.ui.Window1.show(...)` | `RenderField.Commands` | `RendererFunction` + `F.ui.Window1.show` / RF 用 `<f:Command WindowID=...>` | `<f:command window-id="Window1" window-iframe-url-format-string=…>`（同 RazorForms） |
+| 行命令列 | 列 `renderer` 返 `<a class>` | `RenderField.Commands` | `RendererFunction` / RF 用 `<f:Command CommandName>` | `<f:commands><f:command command-name=…>` |
 | 行单击/双击/选中事件 | listener `rowclick`/`rowdblclick`/`rowselect` | `EnableRowClickEvent`+`OnRowClick` 等 | 客户端 listener + 回发 / RF 服务端 `OnRowClick` | `on-row-click` / `on-row-double-click` 服务端事件 |
 | 整行样式 | `rowRenderer` / `rowDataBound` | 服务端 `OnRowDataBound` → `e.RowCssClass` | 客户端 `RowRendererFunction` / `RowDataBoundFunction` | 客户端 `row-renderer-function` / `row-data-bound-function`；服务端 `on-row-data-bound` |
 | 固定行高 / 行高行数 | `fixedRowHeight` / `rowHeightLines` | `FixedRowHeight` / `RowHeightLines` | `.FixedRowHeight()` / `.RowHeightLines()` | `fixed-row-height` / `row-height-lines` |
@@ -28,16 +28,6 @@ rowExpander: {
 }
 // 展开/收起全部：grid.expandRowExpanders() / grid.collapseRowExpanders()
 ```
-```aspx
-<%-- Pro —— 用 TemplateField 服务端模板 --%>
-<f:Grid ... ExpandAllRowExpanders="true">
-    <Columns>
-        <f:TemplateField RenderAsRowExpander="true">
-            <ItemTemplate><strong>姓名：</strong><%# Eval("Name") %> <strong>简介：</strong><%# Eval("Desc") %></ItemTemplate>
-        </f:TemplateField>
-    </Columns>
-</f:Grid>
-```
 ```csharp
 // Core-MVC / TagHelper —— RenderField + 客户端渲染函数
 F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   // MVC
@@ -49,13 +39,13 @@ F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   /
 <!-- 展开全部：<f:grid expand-all-row-expanders="true">；客户端 F.ui.Grid1.rowExpander.toggleVisible() -->
 ```
 
-> Pro 用服务端 `<ItemTemplate>`；F.js/Core/Java 用客户端 `renderer`/`RendererFunction`/`renderer-function` 返回 HTML。**行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
+> 本节只给出 F.js、Core、Java 共有的客户端渲染思路，不把 Pro 专属旧列作为新代码模板。**行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
 
 ---
 
 ## 2. 弹出窗体列（点击行内链接开 iframe 窗口）
 
-机制各栈差别大：**Pro 与 RazorForms 新代码都用 `<f:Command WindowID=...>`**；Pro 的 `<f:WindowField>` 只作为旧页面兼容列保留；**F.js / MVC / RazorPages 手写 `renderer` + `F.ui.Window1.show(url, title)`**。
+机制各栈差别大：**Pro 与 RazorForms 新代码都用 `<f:Command WindowID=...>`**；**F.js / MVC / RazorPages 手写 `renderer` + `F.ui.Window1.show(url, title)`**。
 
 ```aspx
 <%-- Pro —— RenderField.Commands 声明式绑定 iframe 地址与标题 --%>
@@ -318,7 +308,7 @@ function onRowDensityChange(event) {
 ## 关键约束
 
 1. **事件 EventArgs 按栈不同**：行单击 Pro `GridRowClickEventArgs` / RazorForms 与 **Java** `GridRowEventArgs`；行选中 Pro `GridRowSelectEventArgs` / RazorForms `GridRowEventArgs`；行命令 Pro 与 **Java** `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`；行数据绑定 Pro `GridRowEventArgs` / RazorForms 与 **Java** `GridRowDataBoundEventArgs`（getter 取值：`e.getRowIndex()`/`e.getCommandName()`/`e.getFieldValue("列")`/`e.setRowCssClass(...)`）。别照抄错类名。
-2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`），新代码统一用 `RenderField.Commands`。`Command` 只属于 `RenderField`；`LinkButtonField` / `WindowField` 不支持该子标签，只为旧页面兼容保留。MVC/RazorPages 基础版纯客户端，服务端走明确 action/handler（非 `OnRowCommand`）。
+2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`），新代码统一用 `RenderField.Commands`。`Command` 只属于 `RenderField`。MVC/RazorPages 基础版纯客户端，服务端走明确 action/handler（非 `OnRowCommand`）。
 3. **弹窗列多套机制**：Pro、RazorForms 与 **Java** 使用 `<f:Command WindowID=…>` / `<f:command window-id=…>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
 4. **行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
 5. **行样式服务端事件仅 Pro / RazorForms / Java**（`on-row-data-bound` → `GridRowDataBoundEventArgs`）；MVC/RazorPages 用客户端 `RowDataBoundFunction`。

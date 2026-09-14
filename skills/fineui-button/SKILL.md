@@ -1,7 +1,7 @@
 ---
-name: fineui-buttons-toolbar
+name: fineui-button
 description: >
-  帮助开发者使用 FineUI 的按钮与菜单：Button（语义色/图标/尺寸/徽标）、服务端与客户端点击、确认按钮、
+  帮助开发者使用 FineUI 的按钮及其下拉菜单：Button（语义色/图标/尺寸/徽标）、服务端与客户端点击、确认按钮、
   LinkButton、ButtonGroup（按钮分组/互斥按下/多按下）、Menu/MenuButton 下拉菜单（MenuHyperLink/MenuCheckBox/MenuText/MenuSeparator）。
   覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
   以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
@@ -16,7 +16,7 @@ metadata:
   compatibility: FineUI v16.0（ClickHandler 与事件驱动回发）
 ---
 
-# FineUI 按钮与菜单技能（Buttons & Menu）
+# FineUI 按钮技能（Button）
 
 > 工具栏（Toolbar，放在 Panel/Grid 的 `<Toolbars>` 里）见 `fineui-panel` 技能。本技能聚焦按钮、按钮分组与下拉菜单控件本身。
 

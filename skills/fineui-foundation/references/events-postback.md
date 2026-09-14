@@ -101,14 +101,14 @@ FineUIPro 为老项目保留两个默认值为 `true` 的兼容开关。官方�
 - 纯客户端按钮只写 `ClickHandler`，不用重复写 `EnablePostBack="false"`。
 - `OnClick` 等服务端事件会自动推导回发，不用重复写 `EnablePostBack="true"`。
 - 显式 `EnablePostBack`、`EnableTrigger1PostBack`、`EnableTrigger2PostBack` 始终优先。
-- 作用于 `Button`、`MenuButton`、`Tool`、`LinkButton`、`TriggerBox`、`TwinTriggerBox` 两个触发器和 `LinkButtonField`；不影响变化事件的 `AutoPostBack` 或 Grid 自身功能。
+- 作用于 `Button`、`MenuButton`、`Tool`、`LinkButton`、`TriggerBox` 和 `TwinTriggerBox` 两个触发器；不影响变化事件的 `AutoPostBack` 或 Grid 自身功能。
 
 ### EnableImplicitChangeEvents=false
 
 - 未显式设置 `AutoPostBack` 时，声明 `TextChanged`、`SelectedIndexChanged`、`CheckedChanged` 等服务端变化事件即可自动回发。
 - 其他控件发起回发时仍同步字段当前值，但不会因值与旧状态不同而连带触发该字段的变化事件。
 - 显式 `AutoPostBack="true"` / `"false"` 始终优先。
-- 涉及文本与选择字段、复选框、单选框、列表、`MenuCheckBox`、`FileUpload`、`Accordion`、`TabStrip` 和 `CheckBoxField`。`HtmlEditor.TextChanged` 只收口连带触发，不自动推导回发。
+- 涉及文本与选择字段、复选框、单选框、列表、`MenuCheckBox`、`FileUpload`、`Accordion` 和 `TabStrip`。`HtmlEditor.TextChanged` 只收口连带触发，不自动推导回发。
 
 因此推荐模式下写：
 
@@ -192,7 +192,7 @@ Core 需要把值绑定到命名表单字段时可用 `fields` / `params`；Core
 
 ## 6. Grid 行命令
 
-新代码用 `RenderField.Commands`，不要再以 `LinkButtonField.OnClientClick` 或手写行内按钮拼脚本。`Command` 只属于 `RenderField`，`LinkButtonField` / `WindowField` 不支持该子标签。
+新代码用三栈共有的 `RenderField.Commands`，不要用 Pro 专属旧列或手写行内按钮拼脚本。`Command` 只属于 `RenderField`。
 
 ```aspx
 <f:Grid ID="Grid1" runat="server" OnRowCommand="Grid1_RowCommand">

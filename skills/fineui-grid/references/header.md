@@ -146,7 +146,7 @@
 ```
 ```csharp
 // Pro —— 后台代码（不是标签！）：FindColumn 后设 Attributes
-var col = Grid1.FindColumn("Name") as FineUIPro.BoundField;
+var col = Grid1.FindColumn("Name") as FineUIPro.RenderField;
 col.Attributes["data-header-color"] = "color1";
 ```
 ```csharp
@@ -185,7 +185,7 @@ columns: [
 ]
 ```
 ```aspx
-<%-- Pro / Core-TagHelper —— GroupField 嵌套（叶子 Core 用 RenderField；Pro 也可用 BoundField）--%>
+<%-- Pro / Core-TagHelper —— GroupField 嵌套，叶子统一使用 RenderField --%>
 <Columns>
     <f:RenderField ColumnID="Year" DataField="Year" HeaderText="统计年份" />
     <f:GroupField ColumnID="Anhui" HeaderText="安徽省" TextAlign="Center">
@@ -244,7 +244,7 @@ F.ui.grid1.configColumns(createGrid2Columns(), { idField: 'Id', checkboxSelect: 
 
 | 栈 | 建列位置 | 列类型 | 挂载方式 |
 |----|----------|--------|----------|
-| **Pro** | `Page_Init`（**不能放 `Page_Load`**，回发时不支持动态建列） | `new FineUIPro.BoundField()` / `CheckBoxField` | `Grid1.Columns.Add(col)` |
+| **Pro** | `Page_Init`（**不能放 `Page_Load`**，回发时不支持动态建列） | `new FineUIPro.RenderField()` / `RenderCheckField` / `RowNumberField` | `Grid1.Columns.Add(col)` |
 | **Core-MVC** | Controller `Index()` | `new RenderField()` / `RenderCheckField` / `RowNumberField` | `ViewBag.Grid1Columns = list.ToArray()` → View `.Columns(ViewBag.Grid1Columns)` |
 | **Core-RazorPages** | `OnGet()` | 同 MVC | `ViewBag.Grid1Columns` → 标签 `Columns="@ViewBag.Grid1Columns"` |
 | **Core-RazorForms** | `Page_Load`（`!IsPostBack`） | 同 MVC | `Grid1.Columns.Clear(); ...Add(col); Grid1.DataBind();` |
@@ -253,10 +253,10 @@ F.ui.grid1.configColumns(createGrid2Columns(), { idField: 'Id', checkboxSelect: 
 ```csharp
 // Pro —— 必须在 Page_Init
 protected void Page_Init(object sender, EventArgs e) {
-    var bf = new FineUIPro.BoundField { DataField = "Name", HeaderText = "姓名" };
-    Grid1.Columns.Add(bf);
-    var cf = new CheckBoxField { DataField = "AtSchool", HeaderText = "是否在校" };
-    Grid1.Columns.Add(cf);
+    var name = new FineUIPro.RenderField { DataField = "Name", HeaderText = "姓名" };
+    Grid1.Columns.Add(name);
+    var atSchool = new FineUIPro.RenderCheckField { DataField = "AtSchool", HeaderText = "是否在校" };
+    Grid1.Columns.Add(atSchool);
     Grid1.DataKeyNames = new string[] { "Id", "Name" };
 }
 ```
