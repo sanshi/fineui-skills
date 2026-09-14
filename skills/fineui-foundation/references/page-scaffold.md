@@ -270,7 +270,7 @@ public class HelloPage extends FineUIPageBase {
 | 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） | 2（html + 页面类 java） |
 | 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Load` |
 | 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` | `on-click="方法名"` |
-| 回发结尾 | 无返回（void） | `return UIHelper.Result()` | `return UIHelper.Result()` | `return UIHelper.Result()` | 无返回（void） |
+| 回发结尾 | 无返回（void） | `return UIHelper.Result()` | 无返回（void） | `return UIHelper.Result()` | 无返回（void） |
 | **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |
 
 > Region 布局各端一致：顶层 `Layout=Region` 的 Panel（Pro 用 `AutoSizePanelID` 撑满、Core/Java 用 `IsViewPort=true` / `is-view-port="true"`），子 Panel 用 `RegionPosition = Top/Left/Center/Right/Bottom`（Java `region-position="Top"`）定位。

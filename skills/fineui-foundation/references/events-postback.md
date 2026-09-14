@@ -77,6 +77,18 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 @(F.Button().Text("保存").OnClick(Url.Action("btnSave_Click")))
 ```
 
+后台处理器的签名不能只凭 ASP.NET Core 推断，必须先区分 RazorForms 与 RazorPages：
+
+| 模式 | 后台处理器 | 是否返回 `UIHelper.Result()` |
+|------|------------|------------------------------|
+| Pro WebForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` | 否 |
+| Core RazorForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` | 否 |
+| Core MVC | `[HttpPost] public IActionResult btnSave_Click()` | 是 |
+| Core RazorPages | `public IActionResult OnPostBtnSave_Click()` | 是 |
+| FineUIJava | `public void btnSave_Click(Object sender, EventArgs e)` | 否 |
+
+**RazorForms 采用 WebForms 风格的有状态控件事件，不是 RazorPages 处理器。**看到 `<f:Button OnClick="btnSave_Click">` 和 `.designer.cs` 时，按钮点击生成 `void btnSave_Click(object sender, EventArgs e)`；不要改写成 `OnPostBtnSave_Click`，也不要返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
+
 简单确认优先声明 `ConfirmText` / `ConfirmTarget`，不要手写 `F.confirm`：
 
 ```aspx

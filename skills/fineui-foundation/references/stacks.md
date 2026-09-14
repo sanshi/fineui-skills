@@ -62,7 +62,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 | 服务端操作控件 | 直接用控件字段 `x.Xxx=...` | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 `x.setYyy(...)`（Bean setter） |
 | 页面路由 | 物理 `.aspx` 路径 | Controller 路由 | Pages 目录结构 | Pages 目录结构 | `@FineUIPage("area/page")` 注解 |
 
-> Java 回发处理器**返回 `void`**：框架自动 diff 脏属性并回传 JSON 增量，不像 Core 需 `return UIHelper.Result();`。
+> Java 与 Core-RazorForms 的同步控件事件都**返回 `void`**，框架自动收集控件状态并回传 JSON 增量；只有 Core-MVC action 和 Core-RazorPages `OnPostXxx` 处理器在结尾返回 `UIHelper.Result()`。
 
 ## 命名约定
 
