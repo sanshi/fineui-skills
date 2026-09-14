@@ -38,7 +38,7 @@ F.create({
 
 ```aspx
 <f:Grid ID="Grid1" runat="server" IsFluid="true" Title="表格"
-        EnableCheckBoxSelect="true" DataKeyNames="Id,Name">
+        EnableCheckBoxSelect="true" DataIDField="Id" DataKeyNames="Id,Name">
     <Columns> <%-- ... --%> </Columns>
 </f:Grid>
 ```
@@ -78,49 +78,50 @@ F.create({
 
 ## 2. 默认选中行
 
-`SelectedRowIndexArray` 用**0 基行索引**（`4, 9` = 第 5、10 行）。F.js 用行 ID。**注意各模式初始化位置不同**。
+所有栈都用稳定行 ID 初始化选择（下面假定第 5、10 行的 `Id` 分别为 `105`、`110`）。
+Pro/Core 的 `SelectedRowIndex` / `SelectedRowIndexArray` 已废弃；Java 已直接删除同名 getter/setter 与 `selected-row-index-array` 模板属性。行索引会随分页、排序和行移动变化，不用于新代码。**注意各模式初始化位置不同**。
 
 ```javascript
 // F.js —— 数据加载后按行 ID 选中
 listeners: {
-    dataload: function () { this.selectRows(['R5', 'R10']); }
+    dataload: function () { this.selectRows(['105', '110']); }
 }
 ```
 ```csharp
 // Pro / RazorForms —— 后台 Page_Load（!IsPostBack）内，DataBind 之后
-Grid1.SelectedRowIndexArray = new int[] { 4, 9 };
+Grid1.SelectedRowIDArray = new string[] { "105", "110" };
 ```
 ```csharp
 // Core-MVC（Fluent API）—— View 内链式
-.DataSource(ViewBag.Grid1DataSource).SelectedRowIndexArray(4, 9)
+.DataSource(ViewBag.Grid1DataSource).SelectedRowIDArray("105", "110")
 ```
 ```html
 <!-- Core-RazorPages —— 标签内联 -->
-<f:Grid ... SelectedRowIndexArray="@(new int[] { 4, 9 })">
+<f:Grid ... SelectedRowIDArray="@(new string[] { "105", "110" })">
 ```
 ```java
 // FineUIJava 页面类 —— Page_Load（!isPostBack()）内，dataBind() 之后
-Grid1.setSelectedRowIndexArray(new int[] { 4, 9 });
+Grid1.setSelectedRowIdArray(new String[] { "105", "110" });
 ```
 
 ---
 
-## 3. 读取选中行
+## 3. 读取选中行数据
 
-C# 端有两种范式，按模式选用。
+C# 端按模式选用。Pro、RazorForms 和 Java 已把稳定 ID 关联封装进 Grid 实例方法；MVC、RazorPages 仍走客户端收集。
 
-### 方式 A：服务端按索引读取（Pro / RazorForms）
+### 方式 A：Grid 实例方法（Pro / RazorForms）
 
-前提：声明了 `DataKeyNames`（Pro）/ `_DataKeyNames`（RazorForms），且数据在服务端 `DataBind()`，这样 `DataKeys` 可用。
+前提：设置 `DataIDField`，并让 `DataKeyNames`（Pro）/ `_DataKeyNames`（RazorForms）包含该字段；数据在服务端 `DataBind()`。
 
 ```csharp
 // Pro / RazorForms 后台代码
 protected void Button1_Click(object sender, EventArgs e)
 {
-    foreach (int rowIndex in Grid1.SelectedRowIndexArray)   // 0 基索引
+    foreach (object[] dataKeys in Grid1.GetSelectedDataKeys())
     {
-        object id   = Grid1.DataKeys[rowIndex][0];   // 对应 DataKeyNames 第 1 个字段 Id
-        object name = Grid1.DataKeys[rowIndex][1];   // 第 2 个字段 Name
+        object id   = dataKeys[0];   // 对应 DataKeyNames 第 1 个字段 Id
+        object name = dataKeys[1];   // 第 2 个字段 Name
         // ... 用 id / name 处理业务
     }
 }
@@ -142,27 +143,26 @@ protected void Button1_Click(object sender, EventArgs e)
 </script>
 ```
 
-### 方式 A（Java）：服务端按索引读取（同 RazorForms 范式）
+### 方式 A（Java）：Grid 实例方法（同 RazorForms 范式）
 
-前提：声明了 `data-key-names`，且数据在服务端 `dataBind()`。Java 用 Bean getter：`getSelectedRowIndexArray()`（0 基索引 `int[]`）、`getDataKeys()`（`List<Object[]>`）、`getDataKeyNames()`。
+前提：设置 `data-id-field`，并让 `data-key-names` 包含该字段；数据在服务端 `dataBind()`。
 
 ```java
 // FineUIJava 页面类
 public void Button1_Click(Object sender, EventArgs e) {
-    int[] indices = Grid1.getSelectedRowIndexArray();        // 0 基索引
-    if (indices.length == 0) { showNotify("没有选中项！"); return; }
-    List<Object[]> dataKeys = Grid1.getDataKeys();
-    for (int rowIndex : indices) {
-        // 内存分页时 dataKeys 存全部数据，需按页偏移对齐：
-        int idx = (Grid1.isAllowPaging() && !Grid1.isDatabasePaging())
-                ? Grid1.getPageIndex() * Grid1.getPageSize() + rowIndex : rowIndex;
-        Object[] keys = dataKeys.get(idx);
+    List<Object[]> selectedDataKeys = Grid1.getSelectedDataKeys();
+    if (selectedDataKeys.isEmpty()) { showNotify("没有选中项！"); return; }
+    for (Object[] keys : selectedDataKeys) {
         Object id = keys[0];   // 对应 data-key-names 第 1 个字段
         Object name = keys[1]; // 第 2 个字段
         // ... 用 id / name 处理业务
     }
 }
 ```
+
+`GetSelectedDataKeys()` / `getSelectedDataKeys()` 的返回顺序与选中行 ID 顺序一致，每行字段顺序与数据键声明一致。内部按 `DataIDField` 对应的数据键关联，不使用行索引，所以内存分页、排序和行移动无需计算偏移。配置缺失、ID 重复或选中 ID 找不到数据键时会抛错，不会按索引猜测。
+
+返回值来自客户端回传，只适合界面交互与展示。数据库分页跨页选择，或删除、审批、金额、权限等需要权威数据的业务，应读取 `SelectedRowIDArray` / `getSelectedRowIdArray()` 后查询数据库。
 
 > 客户端读取（如 `notifySelectedRows('Grid1')`、`F.ui.Grid1.getSelectedRows(true)`、`getCheckedRows(true)`）与 F.js 完全相同；需回发服务端时用 `F.customEvent('事件名', 数据)` 触发页面类的 `Page_CustomEvent`。
 
@@ -227,16 +227,16 @@ rows.forEach(function (item) { console.log(item.id, item.values.Name); });
 
 ```csharp
 // Pro / RazorForms
-Grid1.SelectedRowIndexArray = new int[] { 1, 5, 7 };
+Grid1.SelectedRowIDArray = new string[] { "102", "106", "108" };
 ```
 ```csharp
 // Core-MVC / RazorPages（回发处理器内，用 UIHelper）
-UIHelper.Grid("Grid1").SelectedRowIndexArray(1, 5, 7);
+UIHelper.Grid("Grid1").SelectedRowIDArray("102", "106", "108");
 return UIHelper.Result();
 ```
 ```java
 // FineUIJava 页面类（处理器内直接用控件字段，void）
-Grid1.setSelectedRowIndexArray(new int[] { 1, 5, 7 });
+Grid1.setSelectedRowIdArray(new String[] { "102", "106", "108" });
 ```
 ```javascript
 // F.js
