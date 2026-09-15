@@ -18,7 +18,7 @@ F.create({
 });
 ```
 
-### FineUIPro
+### FineUI.Pro
 
 ```aspx
 <f:GroupPanel ID="GroupPanel1" runat="server" Title="基本信息"
@@ -34,7 +34,7 @@ F.create({
 </f:GroupPanel>
 ```
 
-### FineUICore MVC
+### FineUI.Core MVC
 
 ```csharp
 @(F.GroupPanel().ID("GroupPanel1").Title("基本信息").BodyPadding(10).EnableCollapse(true)
@@ -44,7 +44,7 @@ F.create({
             F.TextArea().ID("TextArea1").Label("备注"))))
 ```
 
-### FineUICore RazorForms / RazorPages
+### FineUI.Core RazorForms / RazorPages
 
 ```html
 <f:GroupPanel ID="GroupPanel1" Title="基本信息" BodyPadding="10" EnableCollapse="true">
@@ -59,7 +59,7 @@ F.create({
 </f:GroupPanel>
 ```
 
-### FineUIJava
+### FineUI.Java
 
 ```html
 <f:group-panel id="GroupPanel1" title="基本信息" body-padding="10" enable-collapse="true">
@@ -76,7 +76,7 @@ F.create({
 
 ## 折叠与服务端控制
 
-| 用途 | F.js | Pro / Core | FineUIJava |
+| 用途 | F.js | Pro / Core | FineUI.Java |
 |------|------|------------|------------|
 | 允许折叠 | `collapsible: true` | `EnableCollapse="true"` | `enable-collapse="true"` |
 | 初始折叠 | `collapsed: true` | `Collapsed="true"` | `collapsed="true"` |

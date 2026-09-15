@@ -3,13 +3,13 @@ name: fineui-tree
 description: >
   帮助开发者使用 FineUI 的 Tree（树）组件：树容器与节点（TreeNode）、静态/后台构建节点、数据绑定、
   节点图标、复选框树（级联、读取选中）、节点事件（点击/展开）、异步懒加载。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签）。
   Trigger phrases（触发词）: "FineUI 树", "F.Tree", "TreeNode", "树节点", "树控件",
   "EnableCheckBox", "enable-check-box", "复选框树", "CascadeCheck", "cascade-check", "级联选中",
   "GetCheckedNodes", "getCheckedNodes", "懒加载", "OnNodeLazyLoad", "on-node-lazy-load",
   "异步加载子节点", "节点点击", "nodeclick", "OnNodeExpand", "on-node-expand",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:tree", "f:tree-node".
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:tree", "f:tree-node".
 metadata:
   author: FineUI
   version: "16.0"
@@ -84,7 +84,7 @@ F.create({
 </f:Tree>
 ```
 ```html
-<!-- ⑤ FineUIJava（Thymeleaf 方言：标签/属性全 kebab-case；节点用 <f:nodes> 包裹）-->
+<!-- ⑤ FineUI.Java（Thymeleaf 方言：标签/属性全 kebab-case；节点用 <f:nodes> 包裹）-->
 <f:tree id="Tree1" is-fluid="true" show-header="true" title="树控件">
     <f:nodes>
         <f:tree-node text="中国" node-id="china" expanded="true">

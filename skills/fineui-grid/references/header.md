@@ -37,7 +37,7 @@
 @(F.Grid().ShowGridHeader(false).EnableRowLines(false).EnableAlternateRowColor(false) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... show-grid-header="false" enable-row-lines="false" enable-alternate-row-color="false"> ... </f:grid>
 ```
 
@@ -68,7 +68,7 @@
 <f:Grid ... EnableHeaderMenu="false" EnableColumnResize="false"> ... </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... enable-header-menu="false" enable-column-resize="false"> ... </f:grid>
 ```
 
@@ -106,7 +106,7 @@
         .Listener("click", "onToolColumnsClick")))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：<f:tools><f:tool> + 监听 click；JS 里 showColumnsMenu 与 F.js 相同 -->
+<!-- FineUI.Java（Thymeleaf 方言）：<f:tools><f:tool> + 监听 click；JS 里 showColumnsMenu 与 F.js 相同 -->
 <f:grid id="Grid1" ... enable-header-menu="false">
     <f:columns> ... </f:columns>
     <f:tools>
@@ -134,7 +134,7 @@
 <f:RenderField DataField="Major" HeaderText="所学专业" HeaderToolTip="这是所学专业列" HeaderToolTipPosition="Top" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:render-field data-field="Major" header-text="所学专业" header-tool-tip="这是所学专业列" header-tool-tip-position="Top"></f:render-field>
 ```
 
@@ -146,7 +146,7 @@
 ```
 ```csharp
 // Pro —— 后台代码（不是标签！）：FindColumn 后设 Attributes
-var col = Grid1.FindColumn("Name") as FineUIPro.RenderField;
+var col = Grid1.FindColumn("Name") as FineUI.Pro.RenderField;
 col.Attributes["data-header-color"] = "color1";
 ```
 ```csharp
@@ -160,7 +160,7 @@ F.RenderField().HeaderText("姓名").DataField("Name").Attribute("data-header-co
 </f:RenderField>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— 嵌套 <f:attributes><f:attribute> -->
+<!-- FineUI.Java（Thymeleaf 方言）—— 嵌套 <f:attributes><f:attribute> -->
 <f:render-field header-text="姓名" data-field="Name">
     <f:attributes><f:attribute key="data-header-color" value="color1"></f:attribute></f:attributes>
 </f:render-field>
@@ -210,7 +210,7 @@ columns: [
             F.RenderField().HeaderText("数据二").DataField("AHData2"))))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— <f:group-field> 嵌套 <f:columns>（可多层） -->
+<!-- FineUI.Java（Thymeleaf 方言）—— <f:group-field> 嵌套 <f:columns>（可多层） -->
 <f:columns>
     <f:render-field data-field="Year" header-text="统计年份"></f:render-field>
     <f:group-field header-text="安徽省" text-align="Center">
@@ -244,7 +244,7 @@ F.ui.grid1.configColumns(createGrid2Columns(), { idField: 'Id', checkboxSelect: 
 
 | 栈 | 建列位置 | 列类型 | 挂载方式 |
 |----|----------|--------|----------|
-| **Pro** | `Page_Init`（**不能放 `Page_Load`**，回发时不支持动态建列） | `new FineUIPro.RenderField()` / `RenderCheckField` / `RowNumberField` | `Grid1.Columns.Add(col)` |
+| **Pro** | `Page_Init`（**不能放 `Page_Load`**，回发时不支持动态建列） | `new FineUI.Pro.RenderField()` / `RenderCheckField` / `RowNumberField` | `Grid1.Columns.Add(col)` |
 | **Core-MVC** | Controller `Index()` | `new RenderField()` / `RenderCheckField` / `RowNumberField` | `ViewBag.Grid1Columns = list.ToArray()` → View `.Columns(ViewBag.Grid1Columns)` |
 | **Core-RazorPages** | `OnGet()` | 同 MVC | `ViewBag.Grid1Columns` → 标签 `Columns="@ViewBag.Grid1Columns"` |
 | **Core-RazorForms** | `Page_Load`（`!IsPostBack`） | 同 MVC | `Grid1.Columns.Clear(); ...Add(col); Grid1.DataBind();` |
@@ -253,9 +253,9 @@ F.ui.grid1.configColumns(createGrid2Columns(), { idField: 'Id', checkboxSelect: 
 ```csharp
 // Pro —— 必须在 Page_Init
 protected void Page_Init(object sender, EventArgs e) {
-    var name = new FineUIPro.RenderField { DataField = "Name", HeaderText = "姓名" };
+    var name = new FineUI.Pro.RenderField { DataField = "Name", HeaderText = "姓名" };
     Grid1.Columns.Add(name);
-    var atSchool = new FineUIPro.RenderCheckField { DataField = "AtSchool", HeaderText = "是否在校" };
+    var atSchool = new FineUI.Pro.RenderCheckField { DataField = "AtSchool", HeaderText = "是否在校" };
     Grid1.Columns.Add(atSchool);
     Grid1.DataKeyNames = new string[] { "Id", "Name" };
 }
@@ -269,7 +269,7 @@ columns.Add(new RenderCheckField { HeaderText = "是否在校", DataField = "AtS
 ViewBag.Grid1Columns = columns.ToArray();   // View: .Columns(ViewBag.Grid1Columns) / Columns="@ViewBag.Grid1Columns"
 ```
 ```java
-// FineUIJava —— 在 Page_Load 里用 Bean 建列并加入 Grid（标签 <f:columns> 留空）
+// FineUI.Java —— 在 Page_Load 里用 Bean 建列并加入 Grid（标签 <f:columns> 留空）
 @FineUIPage("grid-dynamic/dynamic-columns")
 public class DynamicColumns extends FineUIPageBase {
     com.fineui.java.core.controls.Grid Grid1;

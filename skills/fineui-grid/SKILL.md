@@ -2,13 +2,13 @@
 name: fineui-grid
 description: >
   帮助开发者使用 FineUI 的 Grid（表格）组件，覆盖 F.js（JavaScript）、Pro（WebForms）、
-  FineUICore 的 MVC / RazorForms / RazorPages，
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签）。
+  FineUI.Core 的 MVC / RazorForms / RazorPages，
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签）。
   用于表格配置、列定义与渲染、数据加载与绑定、单元格编辑、行选择（复选框多选/单选）、
   分页、排序、合计行、表头过滤、多表头、行分组、树表格、列锁定、单元格合并、
   行扩展/行命令/行事件、拖拽排序、大数据表格与工具栏。
   Trigger phrases（触发词）: "FineUI 表格", "F.Grid", "Grid 列", "grid columns",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:grid", "render-field", "data-field",
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:grid", "render-field", "data-field",
   "RenderField", "RenderCheckField", "复选框多选", "EnableCheckBoxSelect",
   "选中行", "SelectedRowIndexArray", "GetSelectedDataKeys", "getSelectedDataKeys", "RendererFunction", "RendererArgument",
   "列渲染", "服务端分页", "loadData", "DataKeyNames",
@@ -42,7 +42,7 @@ metadata:
 > - **RazorForms**：数据在后台 `Page_Load` 里 `Grid1.DataSource=...; Grid1.DataBind();`（`<f:Grid>` 标签上**不写** `DataSource`）；按钮 `OnClick="方法名"`。
 > - **RazorPages**：数据在标签上**内联** `DataSource="@Model.GetXxx()"`；按钮 `OnClick="@Url.Handler(\"方法名\")"`。
 >
-> **FineUIJava 是 Core-RazorForms 的「孪生栈」**：同样「标签式有状态服务端组件 + `Page_Load`/`isPostBack()` + 控件字段 + `xxx_Click`/事件处理器」，差异**只在后台栈**——标签/属性全 **kebab-case**（`<f:grid>`/`<f:render-field data-field=…>`），页面类用 Java Bean setter/getter（`Grid1.setDataSource(...); Grid1.dataBind();`），处理器**返回 `void`**（纯 JSON 增量回发，无需 `UIHelper.Result()`）。**客户端 F.js 运行时四栈完全相同**——`F.ui.Grid1.xxx()`、渲染函数、`notifySelectedRows('Grid1')`、监听器 JS 一字不改。详见 `fineui-foundation`。
+> **FineUI.Java 是 Core-RazorForms 的「孪生栈」**：同样「标签式有状态服务端组件 + `Page_Load`/`isPostBack()` + 控件字段 + `xxx_Click`/事件处理器」，差异**只在后台栈**——标签/属性全 **kebab-case**（`<f:grid>`/`<f:render-field data-field=…>`），页面类用 Java Bean setter/getter（`Grid1.setDataSource(...); Grid1.dataBind();`），处理器**返回 `void`**（纯 JSON 增量回发，无需 `UIHelper.Result()`）。**客户端 F.js 运行时四栈完全相同**——`F.ui.Grid1.xxx()`、渲染函数、`notifySelectedRows('Grid1')`、监听器 JS 一字不改。详见 `fineui-foundation`。
 
 ## 何时使用（When to Use）
 
@@ -135,10 +135,10 @@ protected void Page_Load(object sender, EventArgs e) {
 ```
 
 ```html
-<!-- ⑥ FineUIJava（Thymeleaf 方言）：标签/属性全 kebab-case；列同④结构，数据在页面类 Page_Load 绑定 -->
+<!-- ⑥ FineUI.Java（Thymeleaf 方言）：标签/属性全 kebab-case；列同④结构，数据在页面类 Page_Load 绑定 -->
 <!DOCTYPE html>
 <html xmlns:f="http://fineui.com/java" layout:decorate="~{shared/layout}">
-<head><title>FineUIJava · 基础表格</title></head>
+<head><title>FineUI.Java · 基础表格</title></head>
 <body>
   <th:block layout:fragment="body">
     <f:grid id="Grid1" is-fluid="true" show-border="true" show-header="true" title="表格" data-id-field="Id" data-text-field="Name">
@@ -237,7 +237,7 @@ public class Grid extends FineUIPageBase {
    - **RazorPages**：标签上内联 `DataSource="@Model.GetXxx()"`。
    - **Java（同 RazorForms 范式）**：页面类 `Page_Load`（`!isPostBack()`）里 `Grid1.setDataSource(list); Grid1.dataBind();`，`<f:grid>` 标签**不写** `data-source`；控件字段**手动在类里声明**（`com.fineui.java.core.controls.Grid Grid1;`，字段名 = 标签 `id`）；事件/命令处理器**返回 `void`**（如 `public void Grid1_PageIndexChanged(Object sender, GridPageEventArgs e)`）。
 6. **RazorForms vs RazorPages（同为 TagHelper，但后台模型不同）**：RazorForms 三件套（`.cshtml` + `.cshtml.cs` **partial** + `.designer.cs`），后台继承项目现有的 RazorForms 页面基类（官方示例为 `BaseModel`，它本身可继承 `PageModel`），使用 `Page_Load`/`IsPostBack`、`OnClick="方法名"`；同步控件事件返回 `void`，按钮点击示例为 `protected void 方法名(object sender, EventArgs e)`，分页、排序、行命令等则使用各自的专用 `EventArgs`，**不写 `OnPost`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。RazorPages 两件套（**非** partial、**无** designer）、`OnGet`/`OnPostXxx`、`OnClick="@Url.Handler(\"方法名\")"`，`OnPostXxx` 返回 `IActionResult` 和 `UIHelper.Result()`；**Java 两件套（`.html` + `.java`，无 designer）、`Page_Load`/`isPostBack()`、`on-click="方法名"`、`@FineUIPage("area/page")` 定路由。**
-7. **新代码只使用三栈共有列**：普通列用 `RenderField`，布尔展示列用 `RenderCheckField`，另有 `RowNumberField`、`GroupField` 及 `RenderField.Commands`。不要根据 FineUIPro 的历史示例生成仅 Pro 存在的服务端渲染列。
+7. **新代码只使用三栈共有列**：普通列用 `RenderField`，布尔展示列用 `RenderCheckField`，另有 `RowNumberField`、`GroupField` 及 `RenderField.Commands`。不要根据 FineUI.Pro 的历史示例生成仅 Pro 存在的服务端渲染列。
 8. **行选择统一使用稳定行 ID**：初始化、读取与服务端主动选中都先设置 `DataIDField` / `data-id-field`，再使用 `SelectedRowID` / `SelectedRowIDArray` / `getSelectedRowIdArray()`。Pro/Core 的 `SelectedRowIndex` / `SelectedRowIndexArray` 已废弃，只用于识别和迁移旧代码；Java 已直接删除同名 getter/setter 与模板属性。读取选中行数据时，Pro / Core-RazorForms 调 `Grid1.GetSelectedDataKeys()`，Java 调 `Grid1.getSelectedDataKeys()`；必须让 `DataKeyNames` / `_DataKeyNames` / `data-key-names` 包含行 ID 字段。数据库分页跨页选择或敏感业务只取稳定行 ID，再查询数据库。详见 [references/selection.md](references/selection.md)。
 9. **三个"分组/层级"概念别混**：**多表头**（列的分组，`GroupField`，[header.md](references/header.md)）≠ **行分组**（数据行按字段分组，`EnableRowGroup`，[row-group.md](references/row-group.md)）≠ **树表格**（行父子层级，`EnableTree`，[tree-grid.md](references/tree-grid.md)）。用户说"分组"时先确认是哪一种。
 10. **F.js 嵌套配置 vs .NET 拍平属性**：多个高级功能 F.js 把选项收进一个对象（`tree:{...}`/`rowGroup:{...}`/`rowExpander:{...}`/`filter:{...}`），而 Pro/Core 拍平成一堆独立属性（`EnableTree`/`TreeColumn`/...）。转写时注意这种结构差异。
@@ -251,5 +251,5 @@ public class Grid extends FineUIPageBase {
   - JS：https://fineui.com/js/api/（`FineUI.Grid` / `FineUI.GridColumn`）
   - Pro：https://fineui.com/pro/api/
   - Core：https://fineui.com/core/api/
-- **FineUIJava**：控件属性语义与 Core 一致（属性名 kebab-case、属性值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时先看 Core API 再按命名约定转 kebab-case。
+- **FineUI.Java**：控件属性语义与 Core 一致（属性名 kebab-case、属性值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时先看 Core API 再按命名约定转 kebab-case。
 - 官网示例库与文档见 https://www.fineui.com/

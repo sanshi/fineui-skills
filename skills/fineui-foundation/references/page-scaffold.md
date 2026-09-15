@@ -9,7 +9,7 @@
    - **Core 三模式**：PageManager **不写在业务页**，而是统一放在**共享布局 `_Layout.cshtml`** 里的 `@F.PageManager`。**Core 没有 `<f:PageManager>` TagHelper 写法**——业务页里不要写它。
    - **Java（Spring Boot）**：不写 PageManager 控件；共享母版 `shared/layout.html` 用 `<f:styles>`/`<f:scripts>` 输出 CSS/JS，页面级/按用户配置由实现 `FineUIPageManagerInitializer` bean 完成（渲染前回调）。
 2. **CSS/JS 引入**：Core 在 `_Layout.cshtml` 里用 `@F.RenderCss()` / `@F.RenderScript()`（Pro 由 PageManager 自动注入）；**Java 由母版里的 `<f:styles>`（head）/ `<f:scripts>`（body 末）输出**。
-3. **启用标签**：Core 需 `_ViewImports.cshtml` 里 `@addTagHelper *, FineUICore` + `@using FineUICore`；**Java 在页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，并用 `layout:decorate="~{shared/layout}"` 装饰母版**。
+3. **启用标签**：Core 需 `_ViewImports.cshtml` 里 `@addTagHelper *, FineUI.Core` + `@using FineUI.Core`；**Java 在页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，并用 `layout:decorate="~{shared/layout}"` 装饰母版**。
 
 ---
 
@@ -76,17 +76,17 @@ F.create({
 public partial class Hello : PageBase {
     protected void Page_Load(object sender, EventArgs e) { }
     protected void btnHello_Click(object sender, EventArgs e) {
-        Alert.Show("你好 FineUIPro！", MessageBoxIcon.Warning);
+        Alert.Show("你好 FineUI.Pro！", MessageBoxIcon.Warning);
     }
 }
-// Hello.aspx.designer.cs（自动生成）：protected global::FineUIPro.PageManager PageManager1; protected global::FineUIPro.Button btnHello;
+// Hello.aspx.designer.cs（自动生成）：protected global::FineUI.Pro.PageManager PageManager1; protected global::FineUI.Pro.Button btnHello;
 ```
 全屏布局：`<f:PageManager AutoSizePanelID="Panel1" />` + `<f:Panel Layout="Region"><Items><f:Panel RegionPosition="Top" .../></Items></f:Panel>`。
 
-新项目在 `Web.config` 的 `<FineUIPro>` 节点采用推荐模式：
+新项目在 `Web.config` 的 `<FineUI.Pro>` 节点采用推荐模式：
 
 ```xml
-<FineUIPro EnableImplicitPostBack="false"
+<FineUI.Pro EnableImplicitPostBack="false"
            EnableImplicitChangeEvents="false"
            AllowDangerousRawTag="false"
            AllowDangerousScriptTag="false" />
@@ -149,7 +149,7 @@ Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
 }
 ```
 
-服务注册只调用一次 `services.AddFineUI(Configuration)`。它会登记 FineUI 模型绑定器，并在 `EnableRazorForms=true` 时自动加入 RazorForms 所需过滤器；不要再在 `AddRazorPages(...)` 中手工添加 `RazorFormsFilter`，该配置已经多余。FineUICore v16.0 的最低运行环境是 .NET 8，Newtonsoft.Json 使用 13.x。
+服务注册只调用一次 `services.AddFineUI(Configuration)`。它会登记 FineUI 模型绑定器，并在 `EnableRazorForms=true` 时自动加入 RazorForms 所需过滤器；不要再在 `AddRazorPages(...)` 中手工添加 `RazorFormsFilter`，该配置已经多余。FineUI.Core v16.0 的最低运行环境是 .NET 8，Newtonsoft.Json 使用 13.x。
 
 ---
 
@@ -172,7 +172,7 @@ public partial class HelloModel : BaseModel {
         Alert.Show("你好 FineUI！", MessageBoxIcon.Warning);
     }
 }
-// Hello.cshtml.designer.cs（自动生成）：protected FineUICore.Button btnHello;
+// Hello.cshtml.designer.cs（自动生成）：protected FineUI.Core.Button btnHello;
 ```
 PageManager 同样在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。
 
@@ -203,14 +203,14 @@ PageManager 同样在 `Pages/Shared/_Layout.cshtml`。
 
 ---
 
-## 6) FineUIJava —— Spring Boot + Thymeleaf 方言（两件套：`.html` + 页面类 `.java`，无 designer）
+## 6) FineUI.Java —— Spring Boot + Thymeleaf 方言（两件套：`.html` + 页面类 `.java`，无 designer）
 
 业务页 `templates/basic/hello.html`（**无 PageManager**，标签/属性全 kebab-case）：
 
 ```html
 <!DOCTYPE html>
 <html xmlns:f="http://fineui.com/java" layout:decorate="~{shared/layout}">
-<head><title>FineUIJava · Hello</title></head>
+<head><title>FineUI.Java · Hello</title></head>
 <body>
     <th:block layout:fragment="body">
         <f:button id="btnHello" text="点击弹出对话框" on-click="btnHello_Click"></f:button>
@@ -235,7 +235,7 @@ public class HelloPage extends FineUIPageBase {
     public void Page_Load(Object sender, EventArgs e) { }
 
     public void btnHello_Click(Object sender, EventArgs e) {   // 返回 void，无需 UIHelper.Result()
-        showAlert("你好 FineUIJava！", MessageBoxIcon.Warning);
+        showAlert("你好 FineUI.Java！", MessageBoxIcon.Warning);
     }
 }
 ```
@@ -247,7 +247,7 @@ public class HelloPage extends FineUIPageBase {
 <html f:lang="true" xmlns:f="http://fineui.com/java">
 <head>
     <meta charset="UTF-8" />
-    <title layout:title-pattern="$CONTENT_TITLE">FineUIJava</title>
+    <title layout:title-pattern="$CONTENT_TITLE">FineUI.Java</title>
     <f:styles></f:styles>                          <!-- CSS 输出到 head（先行、无 FOUC） -->
 </head>
 <body>

@@ -41,7 +41,7 @@
     .Columns(F.RenderField().HeaderText("姓名").DataField("Name").SortField("Name")) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：列上 sort-field 即可排序；多列加 sorting-multi + sort-field-array -->
+<!-- FineUI.Java（Thymeleaf 方言）：列上 sort-field 即可排序；多列加 sorting-multi + sort-field-array -->
 <f:grid ... allow-sorting="true" sort-field="Gender" sort-direction="ASC">
     <f:columns>
         <f:render-field header-text="姓名" data-field="Name" sort-field="Name"></f:render-field>
@@ -113,12 +113,12 @@ public IActionResult OnPostGrid1_Sort(string[] Grid1_fields, string Grid1_sortFi
 }
 ```
 
-### FineUIJava —— 后台服务端事件（读 `Grid1.getSortField()`）
+### FineUI.Java —— 后台服务端事件（读 `Grid1.getSortField()`）
 
 同 RazorForms 范式：`on-sort` 指向 `void` 处理器，读控件的排序态 getter 后重绑（多列读 `getSortFieldArray()`）。
 
 ```java
-// FineUIJava 页面类
+// FineUI.Java 页面类
 public void Grid1_Sort(Object sender, GridSortEventArgs e) {
     loadData();   // 内部读 Grid1.getSortField() / Grid1.getSortDirection()（多列 Grid1.getSortFieldArray()）后重绑
 }

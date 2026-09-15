@@ -25,7 +25,7 @@
 <!-- Pro / Core-TagHelper -->
 <f:TreeNode Text="西平县" NodeID="xiping" ClickHandler="onXipingClick" />
 
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:tree-node text="西平县" node-id="xiping" click-handler="onXipingClick"></f:tree-node>
 ```
 
@@ -54,7 +54,7 @@ function onXipingClick(event, nodeId) {
 F.TreeNode().Text("遂平县").NodeID("suiping").Icon(Icon.TagBlue)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：内置图标 icon（值同 C#）、自定义 icon-url、超链接节点 -->
+<!-- FineUI.Java（Thymeleaf 方言）：内置图标 icon（值同 C#）、自定义 icon-url、超链接节点 -->
 <f:tree-node text="遂平县" node-id="suiping" icon="TagBlue"></f:tree-node>
 <f:tree-node text="漯河市" node-id="luohe" icon-url="/res/icon/tag_orange.png"></f:tree-node>
 <f:tree-node text="科大（链接）" node-id="ustc" navigate-url="http://www.ustc.edu.cn/" target="_blank" tool-tip="跳转科大"></f:tree-node>
@@ -107,10 +107,10 @@ ViewBag.Tree1Nodes = nodes.ToArray();
 @(F.Tree().ID("Tree1").ShowHeader(true).Title("树").Nodes((TreeNode[])ViewBag.Tree1Nodes))
 ```
 
-**FineUIJava —— 顶层 `Tree1.addNode(node)`、子层 `parent.addChild(child)`：**
+**FineUI.Java —— 顶层 `Tree1.addNode(node)`、子层 `parent.addChild(child)`：**
 
 ```java
-// FineUIJava 页面类：把"自引用关系"扁平数据（Id/Text/ParentId）按父子关系建成层级树
+// FineUI.Java 页面类：把"自引用关系"扁平数据（Id/Text/ParentId）按父子关系建成层级树
 @FineUIPage("tree/data-bind-data-table")
 public class DataBindDataTable extends FineUIPageBase {
 

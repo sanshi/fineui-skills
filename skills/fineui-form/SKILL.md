@@ -3,15 +3,15 @@ name: fineui-form
 description: >
   帮助开发者使用 FineUI 的表单：Form / SimpleForm 容器、表单字段（TextBox / TextArea / NumberBox /
   DatePicker / DropDownList / CheckBox / RadioButtonList 等）、Calendar 内嵌日历、字段与整表校验、读取字段值。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 表单", "F.Form", "SimpleForm", "FormRow", "表单校验",
   "ValidateForms", "Required", "TextBox", "NumberBox", "DatePicker", "DropDownList",
   "RadioButtonList", "CheckBox", "CheckBoxList", "TimePicker", "Label", "Hidden",
   "FileUpload", "TriggerBox", "DropDownBox", "HtmlEditor", "MarkInvalid", "字段标签",
   "LabelWidth", "读取表单值", "下拉树", "文件上传", "富文本编辑器", "Calendar", "内嵌日历",
   "日期范围", "月份选择", "年份选择", "时间选择", "OnDateSelect",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
 metadata:
   author: FineUI
   version: "16.0"
@@ -79,7 +79,7 @@ F.create({
           OnClick="@Url.Handler(&quot;btnSubmit_Click&quot;)" OnClickFields="SimpleForm1"></f:Button>
 ```
 ```html
-<!-- ⑥ FineUIJava（Thymeleaf 方言）：全 kebab-case；validate-forms 直接写、逗号分隔（无下划线前缀）-->
+<!-- ⑥ FineUI.Java（Thymeleaf 方言）：全 kebab-case；validate-forms 直接写、逗号分隔（无下划线前缀）-->
 <f:simple-form id="SimpleForm1" is-fluid="true" body-padding="10" title="登录">
     <f:items>
         <f:text-box id="tbxName" label="用户名" required="true" show-red-star="true" empty-text="请输入用户名"></f:text-box>
@@ -88,14 +88,14 @@ F.create({
 </f:simple-form>
 ```
 ```java
-// FineUIJava 页面类：@FineUIPage 路由 + extends FineUIPageBase；void 处理器无需 return
+// FineUI.Java 页面类：@FineUIPage 路由 + extends FineUIPageBase；void 处理器无需 return
 @FineUIPage("form/login")
 public class Login extends FineUIPageBase {
     public void btnSubmit_Click(Object sender, EventArgs e) { showNotify("通过"); }
 }
 ```
 
-> **注意 TagHelper 里 `_ValidateForms`**（下划线便捷形式）——`ValidateForms` 是 `string[]`，用下划线字符串写法传。多表单逗号分隔：`_ValidateForms="Form1,Form2"`。**FineUIJava 则直接写 `validate-forms="Form1,Form2"`（无下划线前缀）。**
+> **注意 TagHelper 里 `_ValidateForms`**（下划线便捷形式）——`ValidateForms` 是 `string[]`，用下划线字符串写法传。多表单逗号分隔：`_ValidateForms="Form1,Form2"`。**FineUI.Java 则直接写 `validate-forms="Form1,Form2"`（无下划线前缀）。**
 
 ## 参考文档（Documentation Reference Files）
 
@@ -114,11 +114,11 @@ public class Login extends FineUIPageBase {
 
 ## 约束与规则（Constraints & Rules）
 
-1. **先定写法、不混用**：F.js 用 `fieldLabel`/`required`（camelCase）；C# 用 `Label`/`Required`（PascalCase）；**FineUIJava 用 `label`/`required`（kebab-case），属性「值」仍 PascalCase（`text-mode="Password"`、`display-type="Switch"`、`compare-operator="GreaterThan"`）**。别把 F.js 的 `fieldLabel` 用到 C#（C# 是 `Label`）。
+1. **先定写法、不混用**：F.js 用 `fieldLabel`/`required`（camelCase）；C# 用 `Label`/`Required`（PascalCase）；**FineUI.Java 用 `label`/`required`（kebab-case），属性「值」仍 PascalCase（`text-mode="Password"`、`display-type="Switch"`、`compare-operator="GreaterThan"`）**。别把 F.js 的 `fieldLabel` 用到 C#（C# 是 `Label`）。
 2. **单列用 SimpleForm、多列用 Form**：Form 的字段必须包在 `<Rows><f:FormRow><Items>` 里；SimpleForm 字段直接在 `<Items>`。
 3. **必填红星**：`Required="true"` 需配 `ShowRedStar="true"` 才显示红星。
-4. **整表校验在提交按钮上**：`ValidateForms="表单ID"`（Core-TagHelper 用 `_ValidateForms`；**FineUIJava 直接写 `validate-forms="表单ID"`，逗号分隔多表单，无下划线前缀**）；不是设在 Form 容器上。
-5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUIJava 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
+4. **整表校验在提交按钮上**：`ValidateForms="表单ID"`（Core-TagHelper 用 `_ValidateForms`；**FineUI.Java 直接写 `validate-forms="表单ID"`，逗号分隔多表单，无下划线前缀**）；不是设在 Form 容器上。
+5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUI.Java 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
 6. **Pro 变化事件采用推荐模式**：项目全局设置 `EnableImplicitChangeEvents="false"` 后，声明 `OnTextChanged`、`OnSelectedIndexChanged`、`OnCheckedChanged` 等服务端事件即可自动回发，无需再写 `AutoPostBack="true"`；显式 `AutoPostBack` 始终优先。其他控件回发只同步字段值，不会连带触发该字段的变化事件。
 7. **绝不编造 API**：字段属性不确定就查官网 API 或 `F/doc/` JSDoc。
 8. **Calendar 与 DatePicker 不同**：Calendar 是直接显示在页面中的日期/时间面板；需要输入框弹出日期面板时使用 DatePicker。Calendar 的日期型面板读写 `SelectedDate`，月/年/时间等部分值按 [references/calendar.md](references/calendar.md) 使用 `Text`。
@@ -126,4 +126,4 @@ public class Login extends FineUIPageBase {
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
-- **FineUIJava**：控件属性语义与 Core 一致（属性名 kebab-case、枚举值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。
+- **FineUI.Java**：控件属性语义与 Core 一致（属性名 kebab-case、枚举值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。

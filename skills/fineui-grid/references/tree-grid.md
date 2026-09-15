@@ -65,7 +65,7 @@ F.create({
 </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：三个树属性 + 树列，数据（扁平 id/parentId 列表）在页面类 Page_Load 绑定 -->
+<!-- FineUI.Java（Thymeleaf 方言）：三个树属性 + 树列，数据（扁平 id/parentId 列表）在页面类 Page_Load 绑定 -->
 <f:grid id="Grid1" is-fluid="true" title="树表格" data-id-field="Id" data-text-field="Name"
         data-parent-id-field="ParentId" enable-tree="true" tree-column="Name">
     <f:columns>
@@ -76,7 +76,7 @@ F.create({
 </f:grid>
 ```
 ```java
-// FineUIJava 页面类：扁平树数据（每行含 Id/ParentId），服务端绑定
+// FineUI.Java 页面类：扁平树数据（每行含 Id/ParentId），服务端绑定
 @FineUIPage("grid-tree/grid-tree")
 public class GridTree extends FineUIPageBase {
     com.fineui.java.core.controls.Grid Grid1;
@@ -148,7 +148,7 @@ tree: { columnId: 'Name', checkbox: true, cascadeCheck: true }   // 加 onlyLeaf
 @(F.Grid().EnableTree(true).TreeColumn("Name").TreeCheckBox(true).TreeCascadeCheck(true) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：加 tree-only-leaf-check / tree-only-folder-check 限制可勾范围 -->
+<!-- FineUI.Java（Thymeleaf 方言）：加 tree-only-leaf-check / tree-only-folder-check 限制可勾范围 -->
 <f:grid ... enable-tree="true" tree-column="Name" data-id-field="Id" data-parent-id-field="ParentId" data-text-field="Name"
         tree-check-box="true" tree-cascade-check="true"> ... </f:grid>
 ```

@@ -3,13 +3,13 @@ name: fineui-button
 description: >
   帮助开发者使用 FineUI 的按钮及其下拉菜单：Button（语义色/图标/尺寸/徽标）、服务端与客户端点击、确认按钮、
   LinkButton、ButtonGroup（按钮分组/互斥按下/多按下）、Menu/MenuButton 下拉菜单（MenuHyperLink/MenuCheckBox/MenuText/MenuSeparator）。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 按钮", "F.Button", "Button", "ButtonColor", "语义颜色按钮",
   "OnClick", "ClickHandler", "客户端点击", "确认按钮", "ConfirmText", "LinkButton", "下拉菜单", "MenuButton",
   "Menu", "MenuHyperLink", "MenuCheckBox", "徽标", "Badge", "IconFont",
   "ButtonGroup", "按钮分组", "pressGroup", "互斥按下", "EnablePress", "EnablePressGroup",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:button", "button-color", "enable-press-group".
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:button", "button-color", "enable-press-group".
 metadata:
   author: FineUI
   version: "16.0"
@@ -59,11 +59,11 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '主按钮', color: 'primary
 <f:Button ID="btnPrimary" Text="主按钮" ButtonColor="Primary" OnClick="@Url.Handler(&quot;btnPrimary_Click&quot;)"></f:Button>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：标签/属性全 kebab-case；on-click="方法名" -->
+<!-- FineUI.Java（Thymeleaf 方言）：标签/属性全 kebab-case；on-click="方法名" -->
 <f:button id="btnPrimary" text="主按钮" button-color="Primary" on-click="btnPrimary_Click"></f:button>
 ```
 ```java
-// FineUIJava 页面类：@FineUIPage + extends FineUIPageBase；处理器返回 void
+// FineUI.Java 页面类：@FineUIPage + extends FineUIPageBase；处理器返回 void
 @FineUIPage("button/button-click")
 public class ButtonClick extends FineUIPageBase {
     public void btnPrimary_Click(Object sender, EventArgs e) { showNotify("这是服务器端事件"); }
@@ -97,4 +97,4 @@ public class ButtonClick extends FineUIPageBase {
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
-- **FineUIJava**：控件属性 kebab-case、值同 Core，客户端 F.js API（`F.ui.btn.*`）与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。
+- **FineUI.Java**：控件属性 kebab-case、值同 Core，客户端 F.js API（`F.ui.btn.*`）与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。

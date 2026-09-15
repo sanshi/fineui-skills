@@ -7,8 +7,8 @@
 F.init({ theme: 'pure_black' });
 ```
 ```xml
-<!-- Pro —— Web.config 的 <FineUIPro> 段 -->
-<FineUIPro DebugMode="false" Theme="Pure_Black" EnableAnimation="true"
+<!-- Pro —— Web.config 的 <FineUI.Pro> 段 -->
+<FineUI.Pro DebugMode="false" Theme="Pure_Black" EnableAnimation="true"
            CustomTheme="" CustomThemeBasePath="~/res/themes/" />
 ```
 ```json
@@ -18,7 +18,7 @@ F.init({ theme: 'pure_black' });
 }
 ```
 ```properties
-# FineUIJava（Spring Boot）—— application.properties（fineui.* 全站默认，主题名小写）
+# FineUI.Java（Spring Boot）—— application.properties（fineui.* 全站默认，主题名小写）
 fineui.theme=pure_black
 fineui.enable-animation=true
 fineui.custom-scrollbar=true
@@ -29,7 +29,7 @@ fineui.custom-scrollbar=true
 | 部署栈 | 全局默认入口 | 页面级/按用户 |
 |--------|-------------|--------------|
 | F.js | `F.init({ theme:'pure_black' })` | 同上（前端） |
-| Pro | `Web.config` `<FineUIPro Theme="Pure_Black" .../>` | 页面/基类 `pm.Theme = ...` |
+| Pro | `Web.config` `<FineUI.Pro Theme="Pure_Black" .../>` | 页面/基类 `pm.Theme = ...` |
 | Core（三模式） | `appsettings.json` 的 `"FineUI":{ "Theme":"Pure_Black" }` | `_InitPageManagerPartial.cshtml` 里 `pm.Theme(...)` |
 | **Java（Spring Boot）** | **`application.properties` 的 `fineui.theme=pure_black`（`fineui.*` 键）** | **`FineUIPageManagerInitializer` bean 的 `init(pm, request)` 里 `pm.theme(...)`** |
 
@@ -49,7 +49,7 @@ pm.Theme(Theme.Pure_Blue);           // 内置主题
 // 自定义主题：pm.CustomTheme("my_theme");
 ```
 ```java
-// FineUIJava —— 实现 FineUIPageManagerInitializer 的 @Component，渲染前回调、可读 request/cookie
+// FineUI.Java —— 实现 FineUIPageManagerInitializer 的 @Component，渲染前回调、可读 request/cookie
 // 注意：Java 不分 Theme / CustomTheme——pm.theme(名) 对内置主题和自定义主题名统一处理
 @Component
 public class AppPageManagerInitializer implements FineUIPageManagerInitializer {
@@ -95,7 +95,7 @@ if (!String.IsNullOrEmpty(themeCookie)) {
 }
 ```
 ```java
-// FineUIJava —— FineUIPageManagerInitializer bean（渲染前回调，读 cookie 设主题）
+// FineUI.Java —— FineUIPageManagerInitializer bean（渲染前回调，读 cookie 设主题）
 @Component
 public class AppPageManagerInitializer implements FineUIPageManagerInitializer {
     @Override

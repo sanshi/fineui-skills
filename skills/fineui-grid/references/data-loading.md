@@ -36,11 +36,11 @@ F.create({
 <f:Grid ID="Grid1" AllowPaging="true" PageSize="10" ShowPageSizeSelector="true" DataSource="@Model.GetAll()"> ... </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：同 RazorForms，标签不写 data-source，页面类 Page_Load 一次性绑全量 -->
+<!-- FineUI.Java（Thymeleaf 方言）：同 RazorForms，标签不写 data-source，页面类 Page_Load 一次性绑全量 -->
 <f:grid id="Grid1" allow-paging="true" page-size="10" show-page-size-selector="true"> ... </f:grid>
 ```
 ```java
-// FineUIJava 页面类：内存分页首屏绑一次，回发无需重绑
+// FineUI.Java 页面类：内存分页首屏绑一次，回发无需重绑
 @FineUIPage("grid-paging/paging")
 public class Paging extends FineUIPageBase {
     com.fineui.java.core.controls.Grid Grid1;
@@ -147,17 +147,17 @@ public IActionResult OnPostGrid1_PageIndexChanged(string[] Grid1_fields, int Gri
 }
 ```
 
-### FineUIJava（Thymeleaf 方言，后台事件）
+### FineUI.Java（Thymeleaf 方言，后台事件）
 
 结构与 RazorForms 一致：`on-page-index-changed` 指向页面类 `void` 处理器；处理器读 `Grid1.getPageIndex()` 按页取数、每次都 `setRecordCount(...)`。
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid id="Grid1" allow-paging="true" is-database-paging="true" page-size="5"
         data-id-field="Id" on-page-index-changed="Grid1_PageIndexChanged"> <f:columns> ... </f:columns> </f:grid>
 ```
 ```java
-// FineUIJava 页面类
+// FineUI.Java 页面类
 @FineUIPage("grid-paging/database")
 public class Database extends FineUIPageBase {
     com.fineui.java.core.controls.Grid Grid1;

@@ -2,7 +2,7 @@
 
 ## 单选与多选
 
-| 用途 | F.js | Pro / Core | FineUIJava |
+| 用途 | F.js | Pro / Core | FineUI.Java |
 |------|------|------------|------------|
 | 允许选择 | `selectable: true` | `EnableSelect="true"` | `enable-select="true"` |
 | 允许多选 | `multiSelect: true` | `EnableMultiSelect="true"` | `enable-multi-select="true"` |
@@ -12,14 +12,14 @@
 | 读取多选 | `getSelectedItems()` | `SelectedValueArray` | `getSelectedValueArray()` |
 
 ```html
-<!-- FineUICore RazorForms -->
+<!-- FineUI.Core RazorForms -->
 <f:DataList ID="DataList1" EnableSelect="true" EnableMultiSelect="true"
     SelectedValueArray="@(new string[] { "cn", "us" })"
     DataValueField="Id"></f:DataList>
 ```
 
 ```html
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:data-list id="DataList1" enable-select="true" enable-multi-select="true"
     selected-value-array="cn,us" data-value-field="Id"></f:data-list>
 ```

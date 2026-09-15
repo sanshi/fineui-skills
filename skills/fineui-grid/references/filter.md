@@ -94,12 +94,12 @@ columns: [
 
 **可选过滤字段控件**：文本 `TextBox`（默认）、数字 `NumberBox`、日期 `DatePicker`、下拉 `DropDownList`（可多选 tags）、复选框列表 `CheckBoxList`、单选 `RadioButtonList`。
 
-### FineUIJava（Thymeleaf 方言）
+### FineUI.Java（Thymeleaf 方言）
 
 结构同 Core-TagHelper：Grid 开 `allow-filters`，列开 `enable-filter`，列内嵌 `<f:filter>` 的 `<f:field>`（过滤输入控件）/`<f:operator>`（运算符下拉）。
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid id="Grid1" allow-filters="true" on-filter-changed="Grid1_FilterChanged">
     <f:columns>
         <f:render-field column-id="Name" header-text="姓名" data-field="Name" enable-filter="true"></f:render-field>
@@ -146,7 +146,7 @@ F.create({ type: 'Grid', inlineFilters: true, filters: true, columns: [ { text:'
 <f:Grid ... AllowFilters="true" InlineFilters="true"> <Columns> ... </Columns> </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... allow-filters="true" inline-filters="true"> <f:columns> ... </f:columns> </f:grid>
 ```
 
@@ -168,7 +168,7 @@ Grid1.FindColumn("Name").ColumnFilteredData = new GridColumnFilteredData() {
 // 清空全部过滤：Grid1.FilteredData = null;
 ```
 ```java
-// FineUIJava 页面类 —— 后台按列设 ColumnFilteredData（GridColumnFilteredItem 构造：(operator, value)）
+// FineUI.Java 页面类 —— 后台按列设 ColumnFilteredData（GridColumnFilteredItem 构造：(operator, value)）
 GridColumnFilteredData data = new GridColumnFilteredData();
 data.addItem(new GridColumnFilteredItem(null, "张"));
 Grid1.findColumn("Name").setColumnFilteredData(data);
@@ -231,12 +231,12 @@ public IActionResult OnPostGrid1_FilterChanged(string[] Grid1_fields, JArray Gri
 }
 ```
 
-### FineUIJava —— 后台服务端事件 `Grid1_FilterChanged`（有 d），读各列过滤态
+### FineUI.Java —— 后台服务端事件 `Grid1_FilterChanged`（有 d），读各列过滤态
 
 同 RazorForms 范式：`on-filter-changed` 指向 `void` 处理器；用辅助类按各列过滤态筛选后重绑（“按列命中”的逻辑放在回调里）。
 
 ```java
-// FineUIJava 页面类
+// FineUI.Java 页面类
 public void Grid1_FilterChanged(Object sender, EventArgs e) {
     bindGrid();
     labResult.setText("过滤数据：" + Grid1.getFilteredData());   // 普通文本保持编码输出

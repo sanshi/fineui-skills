@@ -88,12 +88,12 @@ F.create({
 </f:Grid>
 ```
 
-### FineUIJava（Thymeleaf 方言，`<f:editor>` 子标签）
+### FineUI.Java（Thymeleaf 方言，`<f:editor>` 子标签）
 
 结构同 Core-TagHelper：`allow-cell-editing` + `clicks-to-edit`（1 单击 / 2 双击），列内嵌 `<f:editor>` 放表单字段；列级只读用 `enable-column-edit="false"`。
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid id="Grid1" allow-cell-editing="true" clicks-to-edit="1">
     <f:columns>
         <f:row-number-field></f:row-number-field>
@@ -182,7 +182,7 @@ protected void btnSubmit_Click(object sender, EventArgs e) {
 }
 ```
 
-### FineUIJava —— **方法** `Grid1.getModifiedData()`（含 status）/ `Grid1.getMergedData()`
+### FineUI.Java —— **方法** `Grid1.getModifiedData()`（含 status）/ `Grid1.getMergedData()`
 
 Java 走**方法**（不像 RazorForms 的属性），两者返回 `List<Map<String, Object>>`，每行有 `values`（`Map<String,Object>`）：
 
@@ -190,7 +190,7 @@ Java 走**方法**（不像 RazorForms 的属性），两者返回 `List<Map<Str
 - **`getMergedData()`**：所有未删除行的当前值（含新增/已改/未改）——需先在 `<f:grid>` 上开 `include-merged-data="true"`，适合“整表重建”。
 
 ```java
-// FineUIJava 页面类 —— 用 getModifiedData() 的 status 分流新增/改/删（推荐）
+// FineUI.Java 页面类 —— 用 getModifiedData() 的 status 分流新增/改/删（推荐）
 public void btnSubmit_Click(Object sender, EventArgs e) {
     for (Map<String, Object> row : Grid1.getModifiedData()) {
         String status = String.valueOf(row.get("status"));

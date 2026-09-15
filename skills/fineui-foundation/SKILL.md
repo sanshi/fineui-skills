@@ -2,12 +2,12 @@
 name: fineui-foundation
 description: >
   FineUI 地基技能：搭建 FineUI 页面的通用基础，覆盖 F.js（JavaScript）、Pro（WebForms）、
-  FineUICore 的三种开发模式 MVC（Fluent API）/ RazorForms（TagHelper）/ RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签）。
+  FineUI.Core 的三种开发模式 MVC（Fluent API）/ RazorForms（TagHelper）/ RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签）。
   用于：判定项目属于哪种写法、F.create 工厂、PageManager、页面骨架与布局（Region/ViewPort）、
   客户端事件与回发、可信 HTML（RawHtml）安全模型、属性命名约定、全局配置项。**做任何 FineUI 页面前先看本技能。**
-  Trigger phrases（触发词）: "FineUI", "F.create", "PageManager", "FineUIPro", "FineUICore",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "Fluent API", "TagHelper",
+  Trigger phrases（触发词）: "FineUI", "F.create", "PageManager", "FineUI.Pro", "FineUI.Core",
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "Fluent API", "TagHelper",
   "RazorForms", "RazorPages", "RawHtml", "F.rawHtml", "TextRawHtml",
   "FineUI 布局", "Region 布局", "ViewPort", "页面骨架", "FineUI 怎么用".
 metadata:
@@ -32,7 +32,7 @@ metadata:
 | **Java** | Spring Boot | **Thymeleaf 方言标签** `<f:xxx>`（kebab-case） |
 
 > `Fluent API` / `TagHelper` 是**前台写法**、不是模式名；Core 模式说 MVC / RazorForms / RazorPages。RazorForms 与 RazorPages 共用 TagHelper 标签，但数据初始化/事件不同。
-> **FineUIJava 是 Core-RazorForms 的「孪生栈」**：同样是「标签式有状态服务端组件」，但用 Spring Boot + Thymeleaf 方言，标签/属性全 kebab-case，页面类用 Java。**客户端 F.js 运行时四栈完全相同**（`F.ui.Grid1.xxx()`、渲染函数、监听器 JS 一字不差）。详见 [references/stacks.md](references/stacks.md)。
+> **FineUI.Java 是 Core-RazorForms 的「孪生栈」**：同样是「标签式有状态服务端组件」，但用 Spring Boot + Thymeleaf 方言，标签/属性全 kebab-case，页面类用 Java。**客户端 F.js 运行时四栈完全相同**（`F.ui.Grid1.xxx()`、渲染函数、监听器 JS 一字不差）。详见 [references/stacks.md](references/stacks.md)。
 
 ## 何时使用（When to Use）
 
@@ -65,7 +65,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 <f:Panel ID="Panel1" Title="面板" BodyPadding="10"></f:Panel>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言：标签 + 属性全 kebab-case）-->
+<!-- FineUI.Java（Thymeleaf 方言：标签 + 属性全 kebab-case）-->
 <f:panel id="Panel1" title="面板" body-padding="10"></f:panel>
 ```
 
@@ -90,7 +90,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 2. **PageManager 位置**：Pro 写在 aspx 页面内（`<f:PageManager>`）；**Core 三模式统一放在共享 `_Layout.cshtml` 的 `@F.PageManager`**；**Java 放在共享 `shared/layout.html`（`<f:styles>`/`<f:scripts>` 槽）+ 可选实现 `FineUIPageManagerInitializer` bean 做页面级配置**。三者业务页都不写 PageManager。
 3. **文本默认 HTML 编码（v15.2）**：要原样输出 HTML 必须声明可信 HTML（`F.rawHtml` / `XxxRawHtml` / `new RawHtml(...)`），来自用户输入/数据库的内容不要声明。详见 [references/rawhtml.md](references/rawhtml.md)。
 4. **绝不编造 API**：不确定的属性/方法去查官网 API 或 `F/doc/` 的 JSDoc。不同写法名称不同，别硬套（如 Grid 列 F.js `text`/`field` ↔ C# `HeaderText`/`DataField` ↔ Java `header-text`/`data-field`）。
-5. **各栈启用标签**：Core 启用 TagHelper 需 `_ViewImports.cshtml` 的 `@addTagHelper *, FineUICore`，CSS/JS 用 `@F.RenderCss()` / `@F.RenderScript()`；**Java 页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，CSS/JS 由母版里的 `<f:styles>` / `<f:scripts>` 输出**。
+5. **各栈启用标签**：Core 启用 TagHelper 需 `_ViewImports.cshtml` 的 `@addTagHelper *, FineUI.Core`，CSS/JS 用 `@F.RenderCss()` / `@F.RenderScript()`；**Java 页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，CSS/JS 由母版里的 `<f:styles>` / `<f:scripts>` 输出**。
 6. **消息框与回发返回值必须按模式区分**：F.js 用 `F.alert({ message: ... })` / `showNotify(...)`；Pro 与 **Core-RazorForms** 的同步控件事件返回 `void`、直接操作控件，**不写 `OnPostXxx`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。按钮点击可写 `void Xxx_Click(object sender, EventArgs e)`；分页、排序、行命令等事件的第二参数必须使用各自的专用 `EventArgs`。RazorForms 后台类必须是 `partial` 并继承项目现有的 RazorForms 页面基类（官方示例为 `XxxModel : BaseModel`，而 `BaseModel` 本身可继承 `PageModel`）；不要改成非 `partial` 的 RazorPages 页面并使用 `OnGet` / `OnPostXxx`。只有 Core-MVC 的 action 和 Core-RazorPages 的 `OnPostXxx` 返回 `IActionResult`，结尾 `return UIHelper.Result();`；Java 用 `showAlert(...)` / `showNotify(...)`，同步处理器返回 `void`，事件参数同样按事件类型选择。
 7. **客户端动作只写具名函数**：Pro/Core 用 `ClickHandler="onXxxClick"`，Java 用 `click-handler="onXxxClick"`，函数首参为 `event`。不要在新代码中使用 `OnClientClick` / `on-client-click` 或把脚本塞进 Handler；详见 [references/events-postback.md](references/events-postback.md)。
 
@@ -98,4 +98,4 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
 - 官网与示例：https://www.fineui.com/
-- **FineUIJava**：控件属性语义与 Core 一致（属性名 kebab-case、值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。
+- **FineUI.Java**：控件属性语义与 Core 一致（属性名 kebab-case、值同 Core），客户端 F.js API 与 JS 端完全相同；查属性时参考 Core API 再按命名约定转 kebab-case。

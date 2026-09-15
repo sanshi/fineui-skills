@@ -1,10 +1,10 @@
 # 表单字段（Fields）
 
-各字段类型的写法与读值。F.js 用 camelCase（`fieldLabel`/`required`），C# 用 PascalCase（`Label`/`Required`），**FineUIJava 用 kebab-case（`label`/`required`），属性「值」仍保持 PascalCase**（`text-mode="Password"`、`display-type="Switch"`）。
+各字段类型的写法与读值。F.js 用 camelCase（`fieldLabel`/`required`），C# 用 PascalCase（`Label`/`Required`），**FineUI.Java 用 kebab-case（`label`/`required`），属性「值」仍保持 PascalCase**（`text-mode="Password"`、`display-type="Switch"`）。
 
 ## 共同属性
 
-| 概念 | F.js | C#（Pro / Core） | FineUIJava（Thymeleaf 方言） |
+| 概念 | F.js | C#（Pro / Core） | FineUI.Java（Thymeleaf 方言） |
 |------|------|------------------|------------------------------|
 | 字段标签 | `fieldLabel` | `Label` | `label` |
 | 隐藏标签 | `hideLabel: true` | `ShowLabel="false"` | `show-label="false"` |
@@ -14,7 +14,7 @@
 | 占位提示 | `emptyText` | `EmptyText` | `empty-text` |
 | 宽度 | `width` | `Width` | `width` |
 
-> **FineUIJava 页面类**：`@FineUIPage("form/xxx")` + `extends FineUIPageBase`；控件字段手动声明（类名与控件同名时用全限定名 `com.fineui.java.core.controls.TextBox tbx;` 消歧）；事件处理器 `public void xxx_Click(Object sender, EventArgs e)`（返回 `void`，无需 return）。客户端 F.js API（`F.ui.xxx.getValue()` 等）四栈完全相同。
+> **FineUI.Java 页面类**：`@FineUIPage("form/xxx")` + `extends FineUIPageBase`；控件字段手动声明（类名与控件同名时用全限定名 `com.fineui.java.core.controls.TextBox tbx;` 消歧）；事件处理器 `public void xxx_Click(Object sender, EventArgs e)`（返回 `void`，无需 return）。客户端 F.js API（`F.ui.xxx.getValue()` 等）四栈完全相同。
 
 ---
 
@@ -44,7 +44,7 @@ F.TextBox().ID("tbxPwd").Label("密码").TextMode(TextMode.Password).Required(tr
 <f:TextBox ID="tbxPwd" Label="密码" TextMode="Password" Required="true"></f:TextBox>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:text-box id="tbxName" label="用户名" required="true" show-red-star="true" empty-text="请输入"></f:text-box>
 <f:text-box id="tbxPwd" label="密码" text-mode="Password" required="true" show-red-star="true"></f:text-box>
 <f:text-area id="taDesc" label="描述" auto-grow-height="true" auto-grow-height-min="100" auto-grow-height-max="600"></f:text-area>
@@ -79,7 +79,7 @@ F.NumberBox().Label("金额").Commas(true).NumberPrefix("￥").DecimalPrecision(
 <f:NumberBox Label="0-9 整数" MaxValue="9" MinValue="0" NoDecimal="true" NoNegative="true" Required="true" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：千分位是 enable-commas（不是 commas）；评分模式 display-type="Rate" -->
+<!-- FineUI.Java（Thymeleaf 方言）：千分位是 enable-commas（不是 commas）；评分模式 display-type="Rate" -->
 <f:number-box label="0-9 整数" max-value="9" min-value="0" no-decimal="true" no-negative="true" required="true"></f:number-box>
 <f:number-box label="金额" value="3000000" enable-commas="true" number-prefix="￥" decimal-precision="2"></f:number-box>
 <f:number-box id="NumberBox2" display-type="Rate" value="3.5" rate-allow-half="true" rate-count="5"></f:number-box>
@@ -106,7 +106,7 @@ F.DatePicker().ID("dp1").Label("开始日期").Required(true).DateFormatString("
 <f:DatePicker ID="dp1" Label="开始日期" Required="true" DateFormatString="yyyy/MM/dd"></f:DatePicker>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:date-picker id="dp1" label="开始日期" required="true" show-red-star="true" date-format-string="yyyy/MM/dd" empty-text="请选择"></f:date-picker>
 ```
 
@@ -137,14 +137,14 @@ F.DropDownList().ID("ddl1").Label("审批人").Required(true).AutoSelectFirstIte
 </f:DropDownList>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：列表项 <f:list-item>，可直接为子元素，也可包在 <f:items> 里 -->
+<!-- FineUI.Java（Thymeleaf 方言）：列表项 <f:list-item>，可直接为子元素，也可包在 <f:items> 里 -->
 <f:drop-down-list id="ddl1" label="审批人" required="true" show-red-star="true" auto-select-first-item="false">
     <f:list-item text="老大甲" value="0"></f:list-item>
     <f:list-item text="不可选" value="2" enable-select="false"></f:list-item>
 </f:drop-down-list>
 ```
 ```java
-// FineUIJava 页面类：读值 getSelectedValue() / getText()，回填 setSelectedValue(...)
+// FineUI.Java 页面类：读值 getSelectedValue() / getText()，回填 setSelectedValue(...)
 ddl1.setSelectedValue("0");
 String val = ddl1.getSelectedValue();   // 选中值；ddl1.getText() = 选中文本
 ```
@@ -171,12 +171,12 @@ F.CheckBox().ID("cb1").ShowLabel(false).Text("复选框").Checked(true)
 <f:CheckBox ID="cb1" ShowLabel="false" Text="复选框" Checked="true"></f:CheckBox>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：开关样式 display-type="Switch"；选中改变事件 on-checked-changed -->
+<!-- FineUI.Java（Thymeleaf 方言）：开关样式 display-type="Switch"；选中改变事件 on-checked-changed -->
 <f:check-box id="cb1" show-label="false" text="复选框" checked="true"></f:check-box>
 <f:check-box id="cb2" show-label="false" text="开关" display-type="Switch" on-checked-changed="cb2_CheckedChanged"></f:check-box>
 ```
 ```java
-// FineUIJava 页面类：读 isChecked()，写 setChecked(...)
+// FineUI.Java 页面类：读 isChecked()，写 setChecked(...)
 cb1.setChecked(!cb1.isChecked());
 boolean on = cb1.isChecked();
 ```
@@ -205,14 +205,14 @@ F.RadioButtonList().ID("rbl2").DataTextField("Name").DataValueField("Id").DataSo
 </f:RadioButtonList>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：竖排 column-vertical="true"；选中改变事件 on-selected-index-changed -->
+<!-- FineUI.Java（Thymeleaf 方言）：竖排 column-vertical="true"；选中改变事件 on-selected-index-changed -->
 <f:radio-button-list id="rbl1" label="性别" column-number="3">
     <f:radio-item text="男" value="1"></f:radio-item>
     <f:radio-item text="女" value="0"></f:radio-item>
 </f:radio-button-list>
 ```
 ```java
-// FineUIJava 页面类：读 getSelectedValue()，写 setSelectedValue(...)；运行时加项 addRadioItem(value, text, ...)
+// FineUI.Java 页面类：读 getSelectedValue()，写 setSelectedValue(...)；运行时加项 addRadioItem(value, text, ...)
 rbl1.setSelectedValue("1");
 String sex = rbl1.getSelectedValue();
 ```
@@ -247,7 +247,7 @@ F.CheckBoxList().ID("cbl1").Label("兴趣").ColumnNumber(3)
 </f:CheckBoxList>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：项用 <f:check-item>，预选 selected="true" -->
+<!-- FineUI.Java（Thymeleaf 方言）：项用 <f:check-item>，预选 selected="true" -->
 <f:check-box-list id="cbl1" label="兴趣" column-number="3">
     <f:check-item text="音乐" value="music" selected="true"></f:check-item>
     <f:check-item text="运动" value="sport"></f:check-item>
@@ -258,7 +258,7 @@ F.CheckBoxList().ID("cbl1").Label("兴趣").ColumnNumber(3)
 string[] selected = cbl1.SelectedValueArray;   // 如 ["music", "read"]
 ```
 ```java
-// FineUIJava 页面类：读/写选中值用 List<String>（不是数组）
+// FineUI.Java 页面类：读/写选中值用 List<String>（不是数组）
 java.util.List<String> selected = cbl1.getSelectedValues();      // 如 ["music", "read"]
 cbl1.setSelectedValues(java.util.List.of("music", "read"));
 cbl1.addCheckItem("read", "阅读", true, false);                   // 运行时加项（值, 文本, ...）
@@ -285,7 +285,7 @@ F.TimePicker().ID("tp1").Label("预约时间").MinValue("09:00").MaxValue("18:00
 <f:TimePicker ID="tp1" Label="预约时间" MinValue="09:00" MaxValue="18:00" Increment="60"></f:TimePicker>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：范围属性是 min-time-text/max-time-text（不是 min-value/max-value）-->
+<!-- FineUI.Java（Thymeleaf 方言）：范围属性是 min-time-text/max-time-text（不是 min-value/max-value）-->
 <f:time-picker id="tp1" label="预约时间" increment="30" min-time-text="8:30" max-time-text="20:30" enable-edit="false"></f:time-picker>
 ```
 
@@ -316,12 +316,12 @@ F.Label().ID("labResult").Label("结果").Text("初始文本")
 labResult.Text = "新文本";
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：普通文本用 text；可信 HTML 用 text-raw-html -->
+<!-- FineUI.Java（Thymeleaf 方言）：普通文本用 text；可信 HTML 用 text-raw-html -->
 <f:label id="labResult" label="结果" text="初始文本"></f:label>
 <f:label id="labHtml" text-raw-html="<span style='color:red'>红字</span>"></f:label>
 ```
 ```java
-// FineUIJava 页面类：服务端更新 setText(...)
+// FineUI.Java 页面类：服务端更新 setText(...)
 labResult.setText("新文本");
 ```
 
@@ -348,11 +348,11 @@ F.Hidden().ID("hfUserId").Value("12345")
 <f:Hidden ID="hfUserId" Value="12345"></f:Hidden>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：控件名 hidden-field -->
+<!-- FineUI.Java（Thymeleaf 方言）：控件名 hidden-field -->
 <f:hidden-field id="hfUserId"></f:hidden-field>
 ```
 ```java
-// FineUIJava 页面类：服务端读写用 getText()/setText()；客户端仍是 F.ui.hfUserId.getValue()/setValue()
+// FineUI.Java 页面类：服务端读写用 getText()/setText()；客户端仍是 F.ui.hfUserId.getValue()/setValue()
 hfUserId.setText("67890");
 String v = hfUserId.getText();
 ```
@@ -391,10 +391,10 @@ var tbx = UIHelper.TextBox("tbxName");
 UIHelper.Label("labResult").Text("用户名：" + name);
 ```
 
-### FineUIJava —— 控件字段的 getter/setter（同 Core-RazorForms 思路，方法化）
+### FineUI.Java —— 控件字段的 getter/setter（同 Core-RazorForms 思路，方法化）
 
 ```java
-// FineUIJava 页面类：直接用手动声明的控件字段读写
+// FineUI.Java 页面类：直接用手动声明的控件字段读写
 String name = tbxName.getValue();                    // TextBox/TextArea
 String v    = ddl1.getSelectedValue();               // DropDownList 值；ddl1.getText() = 选中文本
 boolean on  = cb1.isChecked();                       // CheckBox

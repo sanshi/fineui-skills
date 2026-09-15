@@ -34,7 +34,7 @@ F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   /
 // TagHelper: <f:RenderField RenderAsRowExpander="true" RendererFunction="renderExpander" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— render-as-row-expander + renderer-function（函数体同 F.js） -->
+<!-- FineUI.Java（Thymeleaf 方言）—— render-as-row-expander + renderer-function（函数体同 F.js） -->
 <f:render-field data-field="Desc" render-as-row-expander="true" renderer-function="renderExpander"></f:render-field>
 <!-- 展开全部：<f:grid expand-all-row-expanders="true">；客户端 F.ui.Grid1.rowExpander.toggleVisible() -->
 ```
@@ -74,7 +74,7 @@ F.RenderField().RenderAsRowExpander(true).RendererFunction("renderExpander")   /
 // 页面 JS：$(grid.el).on('click', 'a.mywindowfield', function(){ F.ui.Window1.show(url, title); });
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— 同 RazorForms：命令列 + Window 绑定（url 字段以逗号列出，无下划线前缀） -->
+<!-- FineUI.Java（Thymeleaf 方言）—— 同 RazorForms：命令列 + Window 绑定（url 字段以逗号列出，无下划线前缀） -->
 <f:render-field header-text="窗口列">
     <f:commands>
         <f:command command-name="Action1" text="编辑" css-class="mywindowfield" window-id="Window1"
@@ -97,7 +97,7 @@ protected void Grid1_RowDoubleClick(object sender, GridRowClickEventArgs e) {
 // RazorForms 同名事件但参数是 GridRowEventArgs：Grid1_RowDoubleClick(object sender, GridRowEventArgs e)
 ```
 ```java
-// FineUIJava —— <f:grid data-key-names="Id,Name" on-row-double-click="Grid1_RowDoubleClick">；参数 GridRowEventArgs
+// FineUI.Java —— <f:grid data-key-names="Id,Name" on-row-double-click="Grid1_RowDoubleClick">；参数 GridRowEventArgs
 public void Grid1_RowDoubleClick(Object sender, GridRowEventArgs e) {
     Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());   // keys[0]=Id, keys[1]=Name
     // 窗体通信在被弹页面类里用 ActiveWindow.hidePostBack() / hideRefresh() / hideCallParentFunction("removeActiveTab")
@@ -163,7 +163,7 @@ public IActionResult Grid1_RowCommand(string rowId, string rowText, int rowIndex
 ```
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— <f:commands> 声明式命令；服务端事件用 on-row-command -->
+<!-- FineUI.Java（Thymeleaf 方言）—— <f:commands> 声明式命令；服务端事件用 on-row-command -->
 <f:grid ... data-key-names="Id,Name" on-row-command="Grid1_RowCommand">
     <f:columns>
         <f:render-field header-text="">
@@ -176,7 +176,7 @@ public IActionResult Grid1_RowCommand(string rowId, string rowText, int rowIndex
 </f:grid>
 ```
 ```java
-// FineUIJava —— 注意：行命令参数是 GridCommandEventArgs（同 Pro，不是 RazorForms 的 GridRowCommandEventArgs）
+// FineUI.Java —— 注意：行命令参数是 GridCommandEventArgs（同 Pro，不是 RazorForms 的 GridRowCommandEventArgs）
 public void Grid1_RowCommand(Object sender, GridCommandEventArgs e) {
     Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());
     showNotify(String.format("第 %d 行，命令 %s，ID %s", e.getRowIndex() + 1, e.getCommandName(), keys[0]));
@@ -222,7 +222,7 @@ public IActionResult Grid1_RowSelect(string rowId, string rowText, int rowIndex,
 // RazorPages: OnPostGrid1_RowClick(string rowId, string rowText, int rowIndex, string columnText)
 ```
 ```java
-// FineUIJava —— 服务端属性 on-row-click（需 data-key-names），参数 GridRowEventArgs（同 RazorForms）
+// FineUI.Java —— 服务端属性 on-row-click（需 data-key-names），参数 GridRowEventArgs（同 RazorForms）
 // 标签：<f:grid data-key-names="Id,Name" on-row-click="Grid1_RowClick">（双击 on-row-double-click，选中 on-row-select）
 public void Grid1_RowClick(Object sender, GridRowEventArgs e) {
     int rowIndex = e.getRowIndex();
@@ -255,7 +255,7 @@ protected void Grid1_RowDataBound(object sender, GridRowEventArgs e) {
 //   protected void Grid1_RowDataBound(object sender, GridRowDataBoundEventArgs e) { e.RowCssClass = "color1"; }
 ```
 ```java
-// FineUIJava —— 服务端 on-row-data-bound，参数 GridRowDataBoundEventArgs（同 RazorForms）
+// FineUI.Java —— 服务端 on-row-data-bound，参数 GridRowDataBoundEventArgs（同 RazorForms）
 // 标签：<f:grid on-row-data-bound="Grid1_RowDataBound">
 public void Grid1_RowDataBound(Object sender, GridRowDataBoundEventArgs e) {
     int year = ((Number) e.getFieldValue("EntranceYear")).intValue();   // 读本行字段值
@@ -296,7 +296,7 @@ function onRowDensityChange(event) {
 @(F.Grid().FixedRowHeight(true).RowHeightLines(3) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... fixed-row-height="true" row-height-lines="3"> ... </f:grid>
 ```
 

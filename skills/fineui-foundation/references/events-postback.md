@@ -28,7 +28,7 @@ function onShowWindowClick(event) {
 <!-- Core RazorForms / RazorPages -->
 <f:Button ID="btnShow" Text="显示窗体" ClickHandler="onShowWindowClick"></f:Button>
 
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:button id="btnShow" text="显示窗体" click-handler="onShowWindowClick"></f:button>
 ```
 
@@ -45,7 +45,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 
 规则：
 
-- 新代码不使用 `OnClientClick` / `on-client-click`；FineUIJava 不提供该旧入口，Core/Pro 仅为存量项目兼容。
+- 新代码不使用 `OnClientClick` / `on-client-click`；FineUI.Java 不提供该旧入口，Core/Pro 仅为存量项目兼容。
 - 不写 `ClickHandler="doSomething();"`，也不把脚本串写进 `<f:Listener Handler>`；一律写具名函数。
 - 一个控件只有一个 click 回调时优先 `ClickHandler`，不要同时再声明 click Listener。
 - `Button`、`Tool`、菜单项、`LinkButton`、`HyperLink` 和 `TreeNode` 均支持 `ClickHandler`。`TreeNode` 回调签名是 `(event, nodeId)`，其余通常是 `(event)`。
@@ -68,7 +68,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 <!-- Core RazorPages -->
 <f:Button ID="btnSave" Text="保存" OnClick="@Url.Handler(&quot;btnSave_Click&quot;)"></f:Button>
 
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:button id="btnSave" text="保存" on-click="btnSave_Click"></f:button>
 ```
 
@@ -85,7 +85,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 | Core RazorForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` | 否 |
 | Core MVC | `[HttpPost] public IActionResult btnSave_Click()` | 是 |
 | Core RazorPages | `public IActionResult OnPostBtnSave_Click()` | 是 |
-| FineUIJava | `public void btnSave_Click(Object sender, EventArgs e)` | 否 |
+| FineUI.Java | `public void btnSave_Click(Object sender, EventArgs e)` | 否 |
 
 **RazorForms 采用 WebForms 风格的有状态控件事件，不是 RazorPages 处理器。**看到 `<f:Button OnClick="btnSave_Click">` 和 `.designer.cs` 时，按钮点击生成 `void btnSave_Click(object sender, EventArgs e)`；不要改写成 `OnPostBtnSave_Click`，也不要返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
 
@@ -96,12 +96,12 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
     ConfirmText="确定删除？" ConfirmTarget="Top" OnClick="btnDelete_Click" />
 ```
 
-## 3. FineUIPro 的两个兼容开关
+## 3. FineUI.Pro 的两个兼容开关
 
-FineUIPro 为老项目保留两个默认值为 `true` 的兼容开关。官方示例、空项目和新应用推荐统一设为 `false`：
+FineUI.Pro 为老项目保留两个默认值为 `true` 的兼容开关。官方示例、空项目和新应用推荐统一设为 `false`：
 
 ```xml
-<FineUIPro EnableImplicitPostBack="false"
+<FineUI.Pro EnableImplicitPostBack="false"
            EnableImplicitChangeEvents="false"
            AllowDangerousRawTag="false"
            AllowDangerousScriptTag="false" />
@@ -228,4 +228,4 @@ Core RazorForms 使用相同标签结构；Java 对应 `<f:render-field><f:comma
 
 Pro、Core RazorForms 与 Java 的普通控件回发参数都以 F.js 客户端事件名开头，例如 `click`、`change`、`rowcommand$...`。这是框架协议，不是业务自定义事件的替代品。
 
-FineUIJava 普通控件回发不把后台方法名放进 URL；服务端根据本次模板和 `Page_Load` 重建的事件映射分派。回发保留当前页面的查询字符串，因此页面类仍可通过 `getQueryParam()` 读取首次 URL 参数。业务代码不应依赖或自行构造内部控件回发参数。
+FineUI.Java 普通控件回发不把后台方法名放进 URL；服务端根据本次模板和 `Page_Load` 重建的事件映射分派。回发保留当前页面的查询字符串，因此页面类仍可通过 `getQueryParam()` 读取首次 URL 参数。业务代码不应依赖或自行构造内部控件回发参数。

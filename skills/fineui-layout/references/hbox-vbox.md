@@ -38,7 +38,7 @@
     ))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:panel layout="HBox" box-config-align="Stretch" box-config-child-margin="0 5 0 0">
     <f:items>
         <f:panel width="200" title="左固定"></f:panel>
@@ -78,7 +78,7 @@
     ))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：下方 box-flex="1" 撑满，内部 layout="Fit" 放 Grid -->
+<!-- FineUI.Java（Thymeleaf 方言）：下方 box-flex="1" 撑满，内部 layout="Fit" 放 Grid -->
 <f:panel layout="VBox" box-config-align="Stretch">
     <f:items>
         <f:panel height="40" title="工具区"></f:panel>

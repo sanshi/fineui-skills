@@ -36,7 +36,7 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
     ))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:tab-strip id="TabStrip1" is-fluid="true" height="350" tab-position="Top" active-tab-index="1" enable-tab-close-menu="false" show-border="true">
     <f:tabs>
         <f:tab title="标签一" body-padding="10" layout="Fit"><f:items> ... </f:items></f:tab>
@@ -60,7 +60,7 @@ F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', 
 F.Tab().Title("标签二（IFrame）").EnableIFrame(true).IFrameUrl(Url.Content("~/Panel/Group")).Listener("iframeload", "onTabIFrameLoad")
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：enable-iframe + iframe-url，iframeload 处理器是客户端 JS（同 F.js）-->
+<!-- FineUI.Java（Thymeleaf 方言）：enable-iframe + iframe-url，iframeload 处理器是客户端 JS（同 F.js）-->
 <f:tab id="Tab2" title="标签二（IFrame）" enable-iframe="true" iframe-url="/panel/group">
     <f:listeners><f:listener event="iframeload" handler="onTabIFrameLoad" /></f:listeners>
 </f:tab>
@@ -89,7 +89,7 @@ PageContext.RegisterStartupScript(TabStrip1.GetAddTabReference("tab_x", "https:/
 // RazorForms 用 RegisterStartupScript(TabStrip1.GetAddTabReference(...))
 ```
 ```java
-// FineUIJava 页面类 —— 直接在控件字段上调 addTab / hideTab（框架下发运行时命令，无需注册脚本）
+// FineUI.Java 页面类 —— 直接在控件字段上调 addTab / hideTab（框架下发运行时命令，无需注册脚本）
 public void btnAddTab_Click(Object sender, EventArgs e) {
     TabStrip1.addTab("dynamic_tab", "https://deepseek.com/", "新标签",
             IconHelper.namedIconUrl("Application"), true);   // 参数：id, url, title, iconUrl, closable

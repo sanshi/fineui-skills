@@ -63,7 +63,7 @@
 </f:Button>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：<f:menu> 内嵌，全 kebab-case；子菜单再挂一层 <f:menu> -->
+<!-- FineUI.Java（Thymeleaf 方言）：<f:menu> 内嵌，全 kebab-case；子菜单再挂一层 <f:menu> -->
 <f:button id="btnMenu" text="中国科学技术大学" icon-font="_Bicycle">
     <f:menu>
         <f:menu-hyper-link icon="TagGreen" target="_blank" navigate-url="http://scms.ustc.edu.cn/" text="化学与材料科学学院"></f:menu-hyper-link>
@@ -82,14 +82,14 @@
 <f:MenuButton runat="server" Text="反选" ClickHandler="onSelectInverse" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：on-click 服务端，click-handler 客户端 -->
+<!-- FineUI.Java（Thymeleaf 方言）：on-click 服务端，click-handler 客户端 -->
 <f:menu-button text="打开官网" on-click="menuOpen_Click"></f:menu-button>
 <f:menu-button text="反选" click-handler="onSelectInverse"></f:menu-button>
 ```
 
 ## 可勾选菜单项（MenuCheckBox）
 
-`GroupName` 相同即单选组（不同则各自多选）。FineUIPro 推荐设置 `EnableImplicitChangeEvents="false"`；此时声明 `OnCheckedChanged` 即自动回发，不再重复设置 `AutoPostBack="true"`。**各模式事件绑定不同：**
+`GroupName` 相同即单选组（不同则各自多选）。FineUI.Pro 推荐设置 `EnableImplicitChangeEvents="false"`；此时声明 `OnCheckedChanged` 即自动回发，不再重复设置 `AutoPostBack="true"`。**各模式事件绑定不同：**
 
 ```aspx
 <%-- Pro / Core-RazorForms：OnCheckedChanged="方法名" --%>
@@ -115,12 +115,12 @@ public IActionResult OnPostMenuLang_CheckedChanged(string checkedValue) {   // R
 }
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：group-name 单选组、checked 初始勾选、on-checked-changed 勾选即回发 -->
+<!-- FineUI.Java（Thymeleaf 方言）：group-name 单选组、checked 初始勾选、on-checked-changed 勾选即回发 -->
 <f:menu-check-box id="MenuLangEN" text="English" group-name="MenuLang" checked="true"
     on-checked-changed="MenuLang_CheckedChanged"></f:menu-check-box>
 ```
 ```java
-// FineUIJava 页面类：处理器 (Object sender, EventArgs e)，直接读控件字段的 isChecked()（无 CheckedEventArgs）
+// FineUI.Java 页面类：处理器 (Object sender, EventArgs e)，直接读控件字段的 isChecked()（无 CheckedEventArgs）
 com.fineui.java.core.controls.MenuCheckBox MenuLangEN;
 public void MenuLang_CheckedChanged(Object sender, EventArgs e) {
     if (MenuLangEN.isChecked()) { /* ... */ }

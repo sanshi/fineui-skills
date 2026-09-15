@@ -50,7 +50,7 @@
 F.RenderField().HeaderText("学费").DataField("Fee").FieldType(FieldType.Float).SummaryType(SummaryType.Avg).SummaryTypeArgument("N2")
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：不给合计数据即客户端算 -->
+<!-- FineUI.Java（Thymeleaf 方言）：不给合计数据即客户端算 -->
 <f:grid ... enable-summary="true" summary-position="Bottom">
     <f:columns>
         <f:render-field header-text="所学专业" data-field="Major" column-id="Major" summary-text="合计："></f:render-field>
@@ -80,7 +80,7 @@ Grid1.SummaryData = summary;
 // Controller: ViewBag.Grid1SummaryData = GetSummaryData(GetDataTable2());
 ```
 ```java
-// FineUIJava —— 单行合计：Map（key = 列的 data-field），Page_Load 里设一次即“全部合计”
+// FineUI.Java —— 单行合计：Map（key = 列的 data-field），Page_Load 里设一次即“全部合计”
 Map<String, Object> summary = new LinkedHashMap<>();
 summary.put("Fee", String.format("%.2f", feeTotal));
 summary.put("ExtraFee", String.format("%.2f", extraFeeTotal));
@@ -103,7 +103,7 @@ public IActionResult Grid1_PageIndexChanged(string[] Grid1_fields, int Grid1_pag
 }
 ```
 ```java
-// FineUIJava —— 当前页合计：翻页 void 处理器里按当前页数据重算 SummaryData
+// FineUI.Java —— 当前页合计：翻页 void 处理器里按当前页数据重算 SummaryData
 public void Grid1_PageIndexChanged(Object sender, GridPageEventArgs e) {
     Grid1.setRecordCount(DataSourceUtil.count());
     List<Map<String, Object>> pageData = DataSourceUtil.paged(Grid1.getPageIndex(), Grid1.getPageSize());
@@ -145,7 +145,7 @@ summaryArray.Add(CalcSummaryRow(DataSourceUtil.GetDataTable2(), "全部合计：
 Grid1.SummaryDataArray = summaryArray;
 ```
 ```java
-// FineUIJava —— 多行服务端数据（List<Map>，每行一个 Map；配 summary-row-count 或按 List 大小）
+// FineUI.Java —— 多行服务端数据（List<Map>，每行一个 Map；配 summary-row-count 或按 List 大小）
 List<Map<String, Object>> array = new ArrayList<>();
 array.add(calcSummaryRow(pagedRows, "当前页合计："));   // 第一行：当前页合计（翻页处理器里重算）
 array.add(calcSummaryRow(allRows, "全部合计："));        // 第二行：全部合计

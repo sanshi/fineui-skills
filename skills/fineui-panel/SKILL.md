@@ -3,11 +3,11 @@ name: fineui-panel
 description: >
   帮助开发者使用 FineUI 的容器组件：Panel（面板，含工具栏/折叠/标题工具图标/ContentPanel/GroupPanel）、
   TabStrip（选项卡，含 iframe 页、动态增删）、Accordion（手风琴）。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 面板", "F.Panel", "Panel", "ContentPanel", "工具栏面板",
   "TabStrip", "选项卡", "标签页", "动态选项卡", "iframe 选项卡", "Accordion", "手风琴", "AccordionPane",
-  "折叠面板", "GroupPanel", "分组面板", "Tools 标题图标", "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage",
+  "折叠面板", "GroupPanel", "分组面板", "Tools 标题图标", "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage",
   "f:panel", "f:tab-strip", "f:accordion", "f:region-panel".
 metadata:
   author: FineUI
@@ -62,7 +62,7 @@ F.create({ type: 'Panel', isFluid: true, id: 'Panel1', renderTo: '#wrap', title:
 </f:Panel>
 ```
 ```html
-<!-- ⑤ FineUIJava（Thymeleaf 方言：标签/属性全 kebab-case，工具栏用 <f:toolbars>/<f:toolbar>）-->
+<!-- ⑤ FineUI.Java（Thymeleaf 方言：标签/属性全 kebab-case，工具栏用 <f:toolbars>/<f:toolbar>）-->
 <f:panel id="Panel1" is-fluid="true" title="面板" body-padding="10" enable-collapse="true">
     <f:toolbars>
         <f:toolbar id="Toolbar1" position="Top">
@@ -104,4 +104,4 @@ F.create({ type: 'Panel', isFluid: true, id: 'Panel1', renderTo: '#wrap', title:
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
-- **FineUIJava**：控件属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js API 与 JS 端完全相同；查属性先看 Core API 再按命名约定转写。
+- **FineUI.Java**：控件属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js API 与 JS 端完全相同；查属性先看 Core API 再按命名约定转写。

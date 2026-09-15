@@ -4,7 +4,7 @@
 
 > 消息框在 C# 服务端与 JS 客户端调用方式基本一致；跨写法的唯一差异是**触发按钮怎么绑事件**（MVC `OnClick(Url.Action)` / RazorForms `OnClick="方法名"` / RazorPages `OnClick="@Url.Handler(...)"` / **Java `on-click="方法名"`**）。
 >
-> **FineUIJava 服务端方法名首字母小写**：`Alert.Show(...)`→`showAlert(...)`、`ShowNotify(...)`→`showNotify(...)`、`Confirm`→`showConfirm(...)`；均是 `FineUIPageBase` 上的方法，处理器里直接调用。可信 HTML 变体加 `Raw` 后缀（`showAlertRaw`/`showNotifyRaw`/`showConfirmRaw`）。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
+> **FineUI.Java 服务端方法名首字母小写**：`Alert.Show(...)`→`showAlert(...)`、`ShowNotify(...)`→`showNotify(...)`、`Confirm`→`showConfirm(...)`；均是 `FineUIPageBase` 上的方法，处理器里直接调用。可信 HTML 变体加 `Raw` 后缀（`showAlertRaw`/`showNotifyRaw`/`showConfirmRaw`）。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
 
 ## 图标值（MessageBoxIcon）
 
@@ -25,7 +25,7 @@ Alert alert = new Alert { Message = "内容", Title = "标题",
 alert.Show();
 ```
 ```java
-// FineUIJava —— FineUIPageBase 方法（处理器里直接调用）
+// FineUI.Java —— FineUIPageBase 方法（处理器里直接调用）
 showAlert("操作成功！");                                 // 无标题无图标
 showAlert("请先选择一行！", null, MessageBoxIcon.Warning); // 带图标
 showAlertInTop("保存成功！", null, MessageBoxIcon.Success);// iframe 内推荐：弹到顶层
@@ -78,7 +78,7 @@ Core RazorForms 使用相同属性名但不写 `runat="server"`；Java 改为 ke
 
 需要确认/取消进入不同业务分支时，在 `ClickHandler` 指向的具名函数中调用 `F.confirm`，回调里分别调用 `F.customEvent(...)`；后台统一由 `Page_CustomEvent` 按 `EventName` 分派。不要用 `Confirm.GetShowReference` + `OnClientClick` 生成脚本串。
 
-### FineUIJava —— 三种「先确认再操作」
+### FineUI.Java —— 三种「先确认再操作」
 
 ```html
 <!-- ① 声明式 confirm-text（点击先弹确认，确认后才回发 on-click 处理器）—— 同 Core -->
@@ -116,7 +116,7 @@ Notify notify = new Notify { Message = "内容", Title = "标题", ShowHeader = 
 notify.Show();
 ```
 ```java
-// FineUIJava —— FineUIPageBase 方法
+// FineUI.Java —— FineUIPageBase 方法
 showNotify("这是一条通知");
 showNotify("成功登录！", MessageBoxIcon.Success);
 showNotify("提示", "标题", MessageBoxIcon.Information);  // 带标题头

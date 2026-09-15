@@ -13,7 +13,7 @@
 | 布尔展示列 | `'checkboxfield'` | `<f:RenderCheckField>` | `F.RenderCheckField()` | `<f:render-check-field>` |
 | 行展开列 | `'rowexpanderfield'` | Core：`<f:RenderField RenderAsRowExpander="true">` | Core：`F.RenderField().RenderAsRowExpander(true)` | `<f:render-field render-as-row-expander="true">`（见 [row-features.md](row-features.md)） |
 
-本技能只推荐 Pro、Core、Java 能共同表达的列和特性。FineUIPro 历史示例中的专属服务端渲染列不作为新代码模板。
+本技能只推荐 Pro、Core、Java 能共同表达的列和特性。FineUI.Pro 历史示例中的专属服务端渲染列不作为新代码模板。
 
 ---
 
@@ -65,10 +65,10 @@ columns: [
 </Columns>
 ```
 
-### FineUIJava（Thymeleaf 方言）
+### FineUI.Java（Thymeleaf 方言）
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：标签/属性 kebab-case，宽度值不带 px -->
+<!-- FineUI.Java（Thymeleaf 方言）：标签/属性 kebab-case，宽度值不带 px -->
 <f:columns>
     <f:row-number-field></f:row-number-field>
     <f:render-field header-text="姓名" data-field="Name" width="120"></f:render-field>
@@ -117,7 +117,7 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 <f:RenderField HeaderText="工资" DataField="Salary" FieldType="Double" Renderer="Number" RendererArgument="N2" Width="150" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：属性名 kebab-case，值 Date/Number/N2/yyyy/MM/dd 保持不变 -->
+<!-- FineUI.Java（Thymeleaf 方言）：属性名 kebab-case，值 Date/Number/N2/yyyy/MM/dd 保持不变 -->
 <f:render-field header-text="入学日期" data-field="EntranceDate" field-type="Date" renderer="Date" renderer-argument="yyyy/MM/dd" width="150"></f:render-field>
 <f:render-field header-text="工资" data-field="Salary" field-type="Double" renderer="Number" renderer-argument="N2" width="150"></f:render-field>
 ```
@@ -155,7 +155,7 @@ F.RenderField().HeaderText("状态").DataField("Status").RendererFunction("rende
 <f:RenderField HeaderText="状态" DataField="Status" RendererFunction="renderStatus" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：renderer-function 指向页面里同名 JS 函数（函数体与 F.js 完全相同，不重复贴） -->
+<!-- FineUI.Java（Thymeleaf 方言）：renderer-function 指向页面里同名 JS 函数（函数体与 F.js 完全相同，不重复贴） -->
 <f:render-field header-text="状态" data-field="Status" renderer-function="renderStatus"></f:render-field>
 ```
 ```html
@@ -193,7 +193,7 @@ F.RenderCheckField().HeaderText("是否在校").DataField("AtSchool").RenderAsSt
 <f:RenderCheckField HeaderText="是否在校" DataField="AtSchool" RenderAsStaticField="true" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：render-as-static-field="true" 表示只读展示（不可编辑） -->
+<!-- FineUI.Java（Thymeleaf 方言）：render-as-static-field="true" 表示只读展示（不可编辑） -->
 <f:render-check-field header-text="是否在校" data-field="AtSchool" render-as-static-field="true"></f:render-check-field>
 ```
 
@@ -220,7 +220,7 @@ F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(t
 <f:RenderField HeaderText="姓名" DataField="Name" EnableLock="true" Locked="true" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：列锁定需 Grid 上 allow-column-locking="true"（见 advanced.md） -->
+<!-- FineUI.Java（Thymeleaf 方言）：列锁定需 Grid 上 allow-column-locking="true"（见 advanced.md） -->
 <f:render-field header-text="姓名" data-field="Name" enable-lock="true" locked="true"></f:render-field>
 ```
 

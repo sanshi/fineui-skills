@@ -3,12 +3,12 @@ name: fineui-window
 description: >
   帮助开发者使用 FineUI 的窗口与消息框：Window（内联内容 / iframe 弹窗）、打开/关闭窗口、
   iframe 子页回传数据给父页（closeArgument）、以及 MessageBox（Alert 对话框 / Confirm 确认框 / Notify 通知框）。
-  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUICore 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
-  以及 FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case）。
+  覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
+  以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case）。
   Trigger phrases（触发词）: "FineUI 窗口", "F.Window", "弹窗", "对话框", "MessageBox",
   "Alert.Show", "F.alert", "F.confirm", "确认框", "通知框", "Notify", "ShowNotify",
   "iframe 窗口", "关闭窗口", "回传数据", "closeArgument", "GetShowReference", "OnClose",
-  "FineUIJava", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:window", "showAlert", "showNotify",
+  "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:window", "showAlert", "showNotify",
   "showConfirm", "ActiveWindow", "setHidden".
 metadata:
   author: FineUI
@@ -76,7 +76,7 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '显示窗体',
     OnClose="@Url.Handler(&quot;Window1_Close&quot;)"> <Content><p>...</p></Content> </f:Window>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：内联内容用 content 属性；on-close="方法名" -->
+<!-- FineUI.Java（Thymeleaf 方言）：内联内容用 content 属性；on-close="方法名" -->
 <f:window id="Window1" title="窗体" width="650" height="300" is-modal="false"
     enable-resize="true" enable-maximize="true" body-padding="10"
     close-action="HidePostBack" on-close="Window1_Close" content="<p>窗口内联内容</p>"></f:window>
@@ -89,7 +89,7 @@ function onShowWindowClick(event) {
 }
 ```
 ```java
-// FineUIJava 页面类：服务端显隐用 setHidden；on-close 处理器返回 void
+// FineUI.Java 页面类：服务端显隐用 setHidden；on-close 处理器返回 void
 @FineUIPage("window/window")
 public class Window extends FineUIPageBase {
     com.fineui.java.core.controls.Window Window1;

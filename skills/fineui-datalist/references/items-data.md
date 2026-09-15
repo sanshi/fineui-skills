@@ -5,7 +5,7 @@
 DataListItem 的常用属性：`Text`、`Value`、`EnableSelect`、`Selected`、`Group`、`NavigateUrl`、`Target`、`ShowArrow`。Java 标签将属性名转为 kebab-case。
 
 ```html
-<!-- FineUICore RazorForms / RazorPages -->
+<!-- FineUI.Core RazorForms / RazorPages -->
 <f:DataList ID="DataList1" EnableSelect="true">
     <f:DataListItem Text="中国" Value="cn" EnableSelect="true" />
     <f:DataListItem Text="FineUI 官网" NavigateUrl="https://fineui.com/" Target="_blank" ShowArrow="true" />
@@ -13,7 +13,7 @@ DataListItem 的常用属性：`Text`、`Value`、`EnableSelect`、`Selected`、
 ```
 
 ```html
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:data-list id="DataList1" enable-select="true">
     <f:data-list-item text="中国" value="cn" enable-select="true"></f:data-list-item>
     <f:data-list-item text="FineUI 官网" navigate-url="https://fineui.com/" target="_blank" show-arrow="true"></f:data-list-item>
@@ -52,7 +52,7 @@ DataList1.DataBind();
 
 Core MVC / RazorPages 优先在首次渲染时通过 Fluent API 或标签的 `DataSource` 提供数据；回发处理器只返回需要更新的控件状态。
 
-## FineUIJava 服务端添加列表项
+## FineUI.Java 服务端添加列表项
 
 Java 使用控件字段清空并添加列表项：
 
@@ -81,7 +81,7 @@ item.TextRawHtml = new RawHtml(
 ```
 
 ```java
-// FineUIJava
+// FineUI.Java
 DataList1.addItem(
     new RawHtml("<img class='item-img' src='%s'><span>%s</span>",
         htmlEncode(imageUrl), htmlEncode(name)),
@@ -95,12 +95,12 @@ RawHtml 只声明外层模板可信，不会自动保证插入值安全。来自
 首次进入页面时清空并加载第一批；按钮回发时只追加下一批：
 
 ```csharp
-// FineUIPro：参数是与初始绑定相同结构的数据源
+// FineUI.Pro：参数是与初始绑定相同结构的数据源
 DataList1.AppendData(nextDataSource);
 ```
 
 ```csharp
-// FineUICore RazorForms：参数是这一批 DataListItem
+// FineUI.Core RazorForms：参数是这一批 DataListItem
 DataList1.AppendData(nextItems);
 ```
 

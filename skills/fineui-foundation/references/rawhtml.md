@@ -67,7 +67,7 @@ notify.MessageRawHtml = new RawHtml("<div class=\"box\">...</div>");
 CheckBox5.SwitchOnTextRawHtml = new RawHtml("<i class=\"f-icon check\"></i>");
 ```
 
-### FineUIJava（Thymeleaf 方言）—— 单属性便捷 `xxx-raw-html="..."`（直接写 HTML，无下划线前缀）
+### FineUI.Java（Thymeleaf 方言）—— 单属性便捷 `xxx-raw-html="..."`（直接写 HTML，无下划线前缀）
 
 ```html
 <!-- markup 里直接写 HTML 字符串（不像 Core 需要下划线前缀） -->
@@ -99,7 +99,7 @@ showNotifyRaw(new RawHtml("已选择：<b>%s</b>", name));   // ← 消息框用
 3. **消息框用 `ShowNotify(new RawHtml(...))`**；`Alert.Show(new RawHtml(...))` 虽存在但示例中不用它。F.js 用 `F.alert({ message: F.rawHtml(...) })` 对象配置形式，**不是** `F.alert(F.rawHtml(...))` 直传。
 4. **Core TagHelper 便捷形式**：markup 里直接写 HTML 字符串用 `_XxxRawHtml="..."`（下划线前缀）；含 Razor 变量/表达式用 `_XxxRawHtml="@(...)"` 或 `XxxRawHtml="@(new RawHtml(...))"`。**Java 便捷形式**：`xxx-raw-html="..."`（kebab-case，直接写 HTML 字符串，**无**下划线前缀）；服务端 `x.setXxxRawHtml(new RawHtml(...))`、消息框 `showNotifyRaw(new RawHtml(...))`。
 5. **（Pro 大坑）`XxxRawHtml`（RawHtml 类型）便捷属性绝不能加 `[Browsable(false)]` 或 `[DesignerSerializationVisibility(Hidden)]`**——否则 aspx 里 `TextRawHtml="..."` 声明式用法会直接抛分析器错误、页面打不开。（这是控件开发者约束；使用者只要按上面写法即可。）
-6. **不要生成旧的内联 `<raw>...</raw>`**。Core/Pro/F 只为老项目保留兼容，推荐配置会用 `AllowDangerousRawTag=false` 将其关闭；FineUIJava 不提供该能力。
+6. **不要生成旧的内联 `<raw>...</raw>`**。Core/Pro/F 只为老项目保留兼容，推荐配置会用 `AllowDangerousRawTag=false` 将其关闭；FineUI.Java 不提供该能力。
 7. **关闭脚本文本兼容入口**：新项目同时设置 `AllowDangerousScriptTag=false`，禁止服务端把控件文案中的 `<script>` 片段解释为 JavaScript 表达式。客户端动态 HTML 使用 `F.rawHtml(...)` 明确声明，业务动作使用具名函数与 `ClickHandler`。
 
 ## 推荐的严格配置
@@ -107,12 +107,12 @@ showNotifyRaw(new RawHtml("已选择：<b>%s</b>", name));   // ← 消息框用
 官方示例、空项目、AppBox 与 QuickStart 采用严格模式；新项目也应保持一致：
 
 ```xml
-<!-- FineUIPro / Web.config -->
-<FineUIPro AllowDangerousRawTag="false" AllowDangerousScriptTag="false" />
+<!-- FineUI.Pro / Web.config -->
+<FineUI.Pro AllowDangerousRawTag="false" AllowDangerousScriptTag="false" />
 ```
 
 ```json
-// FineUICore / appsettings.json
+// FineUI.Core / appsettings.json
 "FineUI": {
     "AllowDangerousRawTag": false,
     "AllowDangerousScriptTag": false

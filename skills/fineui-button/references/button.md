@@ -17,7 +17,7 @@
 F.Button().Text("危险按钮").ButtonColor(ButtonColor.Danger)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：属性名 kebab-case，值仍 PascalCase -->
+<!-- FineUI.Java（Thymeleaf 方言）：属性名 kebab-case，值仍 PascalCase -->
 <f:button id="btnSuccess" text="成功按钮" button-color="Success"></f:button>
 ```
 
@@ -42,7 +42,7 @@ F.Button().Text("首页").IconFont(IconFont._Home)
 F.Button().Text("右图标").Icon(Icon.Star).IconAlign(IconAlign.Right)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：icon / icon-font / icon-url / icon-align，值 PascalCase -->
+<!-- FineUI.Java（Thymeleaf 方言）：icon / icon-font / icon-url / icon-align，值 PascalCase -->
 <f:button text="邮件" icon="Email"></f:button>
 <f:button text="首页" icon-font="_Home"></f:button>
 <f:button text="右图标" icon="Star" icon-align="Right"></f:button>
@@ -58,7 +58,7 @@ F.Button().Text("右图标").Icon(Icon.Star).IconAlign(IconAlign.Right)
 <f:Button runat="server" Text="消息" Badge="true" BadgeText="10" BadgeType="Warning" />
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：size / badge / badge-text / badge-type / badge-animation-type -->
+<!-- FineUI.Java（Thymeleaf 方言）：size / badge / badge-text / badge-type / badge-animation-type -->
 <f:button text="大按钮" size="Large"></f:button>
 <f:button text="消息" badge="true" badge-text="10" badge-type="Warning" badge-animation-type="Processing"></f:button>
 ```
@@ -87,11 +87,11 @@ public IActionResult btnServer_Click() { ShowNotify("服务端事件"); return U
 // Pro/RazorForms: protected void btnServer_Click(object sender, EventArgs e) { ShowNotify("..."); }
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：on-click="方法名"（结构同 Core-RazorForms） -->
+<!-- FineUI.Java（Thymeleaf 方言）：on-click="方法名"（结构同 Core-RazorForms） -->
 <f:button id="btnServer" text="服务端" on-click="btnServer_Click"></f:button>
 ```
 ```java
-// FineUIJava 页面类：处理器 (Object sender, EventArgs e)，返回 void（无需 return UIHelper.Result()）
+// FineUI.Java 页面类：处理器 (Object sender, EventArgs e)，返回 void（无需 return UIHelper.Result()）
 public void btnServer_Click(Object sender, EventArgs e) { showNotify("服务端事件"); }
 ```
 
@@ -117,7 +117,7 @@ function onClientClick(event) {
 F.Button().Text("客户端").ClickHandler("onClientClick")
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言） -->
+<!-- FineUI.Java（Thymeleaf 方言） -->
 <f:button text="客户端" click-handler="onClientClick"></f:button>
 ```
 
@@ -136,7 +136,7 @@ F.Button().Text("客户端").ClickHandler("onClientClick")
 F.Button().Text("删除").ConfirmText("确定删除？").ConfirmTarget(Target.Top).OnClick(Url.Action("btnDelete_Click"))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：confirm-text + confirm-target，确认后回发 on-click 处理器 -->
+<!-- FineUI.Java（Thymeleaf 方言）：confirm-text + confirm-target，确认后回发 on-click 处理器 -->
 <f:button text="删除" icon="Delete" confirm-text="确定删除？" confirm-target="Top" on-click="btnDelete_Click"></f:button>
 ```
 ```javascript
@@ -157,7 +157,7 @@ F.Button().Type(ButtonType.Submit).ValidateForms("SimpleForm1").OnClick(Url.Acti
 F.Button().Type(ButtonType.Reset).Text("重置")
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：type 值保持 PascalCase（Submit/Reset）-->
+<!-- FineUI.Java（Thymeleaf 方言）：type 值保持 PascalCase（Submit/Reset）-->
 <f:button type="Submit" validate-forms="SimpleForm1" on-click="btnLogin_Click" text="登录"></f:button>
 <f:button type="Reset" text="重置"></f:button>
 ```
@@ -181,12 +181,12 @@ F.Button().Type(ButtonType.Reset).Text("重置")
 F.LinkButton().ID("LinkButton3").Text("服务端事件").OnClick(Url.Action("LinkButton3_Click"))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：<f:link-button>，on-click / click-handler / enabled / confirm-text -->
+<!-- FineUI.Java（Thymeleaf 方言）：<f:link-button>，on-click / click-handler / enabled / confirm-text -->
 <f:link-button id="LinkButton3" text="服务端事件" on-click="LinkButton3_Click"></f:link-button>
 <f:link-button id="LinkButton1" text="客户端事件" click-handler="onClientClick"></f:link-button>
 ```
 ```java
-// FineUIJava 页面类：控件字段用全限定名或 import；启用/禁用同 setEnabled
+// FineUI.Java 页面类：控件字段用全限定名或 import；启用/禁用同 setEnabled
 com.fineui.java.core.controls.LinkButton LinkButton1;
 public void btnChangeEnable_Click(Object sender, EventArgs e) { LinkButton1.setEnabled(!LinkButton1.isEnabled()); }
 ```
@@ -269,7 +269,7 @@ F.create({ type: 'ButtonGroup', renderTo: '#wrap', vertical: true, items: [
     ))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：enable-press-group；on-press-changed 绑按下改变事件 -->
+<!-- FineUI.Java（Thymeleaf 方言）：enable-press-group；on-press-changed 绑按下改变事件 -->
 <f:button-group id="bg1" enable-press-group="true" on-press-changed="bg1_PressChanged">
     <f:button text="日" enable-press="true" pressed="true"></f:button>
     <f:button text="周" enable-press="true"></f:button>
@@ -277,7 +277,7 @@ F.create({ type: 'ButtonGroup', renderTo: '#wrap', vertical: true, items: [
 </f:button-group>
 ```
 ```java
-// FineUIJava 页面类：处理器读分组子项的按下状态
+// FineUI.Java 页面类：处理器读分组子项的按下状态
 ButtonGroup bg1;
 public void bg1_PressChanged(Object sender, EventArgs e) {
     for (Button btn : bg1.getItems()) { if (btn.isPressed()) { /* btn.getText() */ } }

@@ -42,7 +42,7 @@ Grid 级开 `AllowColumnLocking`（**不是 `EnableLock`**），列级用 `Enabl
     .Columns(F.RenderField().HeaderText("姓名").DataField("Name").EnableLock(true).Locked(true)) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... allow-column-locking="true" column-locking-right="true">
     <f:columns>
         <f:render-field data-field="Name" header-text="姓名" enable-lock="true" locked="true"></f:render-field>
@@ -74,7 +74,7 @@ function onGrid1ColumnMove(event, targetColumnId, sourceColumnId, operation) {
 </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— 监听 columnmove（handler 的 JS 体同 F.js，不重复贴）-->
+<!-- FineUI.Java（Thymeleaf 方言）—— 监听 columnmove（handler 的 JS 体同 F.js，不重复贴）-->
 <f:grid ... enable-column-move="true">
     <f:listeners><f:listener event="columnmove" handler="onGrid1ColumnMove" /></f:listeners>
 </f:grid>
@@ -93,7 +93,7 @@ protected void Page_CustomEvent(object sender, CustomEventArgs e) {
 // 回显：Grid1.FindColumn(columnId).ColumnOrder = order;
 ```
 ```java
-// FineUIJava —— 同样用 Page_CustomEvent 接收前端上报的列布局；回显用列的 setColumnOrder/setWidth/setHidden
+// FineUI.Java —— 同样用 Page_CustomEvent 接收前端上报的列布局；回显用列的 setColumnOrder/setWidth/setHidden
 public void Page_CustomEvent(Object sender, CustomEventArgs e) {
     if ("Grid1_ColumnMove".equals(e.getEventName())) {
         session().setAttribute(KEY, e.getArgument());   // 保存 JSON（含各列 columnId/width/hidden）
@@ -141,7 +141,7 @@ protected void Page_CustomEvent(object sender, CustomEventArgs e) {
 ```
 
 ```java
-// FineUIJava —— 同 Core：客户端 F.customEvent('Grid1_RowMove', {rowIds:[...]}) 触发，页面类 Page_CustomEvent 接收保存
+// FineUI.Java —— 同 Core：客户端 F.customEvent('Grid1_RowMove', {rowIds:[...]}) 触发，页面类 Page_CustomEvent 接收保存
 public void Page_CustomEvent(Object sender, CustomEventArgs e) {
     if ("Grid1_RowMove".equals(e.getEventName())) {
         session().setAttribute(KEY, e.getArgument());   // 按上报的 rowIds 顺序重排数据源
@@ -184,7 +184,7 @@ listeners: {
 ```
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：dataload 监听 + 客户端方法（JS 与 F.js 完全相同，不重复贴） -->
+<!-- FineUI.Java（Thymeleaf 方言）：dataload 监听 + 客户端方法（JS 与 F.js 完全相同，不重复贴） -->
 <f:grid id="Grid1" ... enable-column-lines="true">
     <f:columns> ... </f:columns>
     <f:listeners><f:listener event="dataload" handler="onGridDataLoad"></f:listener></f:listeners>
@@ -216,7 +216,7 @@ listeners: {
 @(F.Grid().EnableBigData(true).FixedRowHeight(true).EnableBigDataRowTip(true).PagingToolbarVisible(false) ...)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：网址数据源用 data-url；大数据 + 分页再加 allow-paging + page-size -->
+<!-- FineUI.Java（Thymeleaf 方言）：网址数据源用 data-url；大数据 + 分页再加 allow-paging + page-size -->
 <f:grid id="Grid1" height="500" data-url="/grid-big-data/big-data-url-data?total=10000&amp;type=simple"
         enable-big-data="true" fixed-row-height="true" enable-big-data-row-tip="true" paging-toolbar-visible="false">
     <f:columns> ... </f:columns>

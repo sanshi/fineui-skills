@@ -46,7 +46,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 <f:Panel ID="Panel1" Title="面板" BodyPadding="10"> ... </f:Panel>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言：标签名 + 属性名全 kebab-case）-->
+<!-- FineUI.Java（Thymeleaf 方言：标签名 + 属性名全 kebab-case）-->
 <f:panel id="Panel1" title="面板" body-padding="10"> ... </f:panel>
 ```
 
@@ -56,7 +56,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 |------|----------------|----------|-----------------|-----------------|--------------------|
 | 数据绑定 | `x.DataSource=...; x.DataBind();`（`!IsPostBack`） | Controller 设 `ViewBag`，View `.DataSource(ViewBag.x)` | 后台 `Page_Load` 里 `DataBind()` | 标签内联 `DataSource="@Model.GetX()"` | `x.setDataSource(...); x.dataBind();`（`!isPostBack()`） |
 | 生命周期 | `Page_Load` + `IsPostBack` | Controller action | `Page_Load` + `IsPostBack` | `OnGet` / `OnPost` | `Page_Load(Object,EventArgs)` + `isPostBack()` |
-| 控件字段 | designer 声明 | 无（View 内局部） | designer 声明 `protected FineUICore.Xxx x;` | 无 | **手动在页面类声明** `Xxx x;`（同名 = 标签 id） |
+| 控件字段 | designer 声明 | 无（View 内局部） | designer 声明 `protected FineUI.Core.Xxx x;` | 无 | **手动在页面类声明** `Xxx x;`（同名 = 标签 id） |
 | 按钮事件 | `OnClick="方法名"` | `.OnClick(Url.Action("方法名"), "参数控件")` | `OnClick="方法名"` | `OnClick="@Url.Handler(\"方法名\")"` | `on-click="方法名"` |
 | 服务端回发 | `方法名(object s, EventArgs e)` | `[HttpPost] IActionResult 方法名(...)` | `方法名(object s, EventArgs e)` | `IActionResult OnPost方法名(...)` | `void 方法名(Object s, EventArgs e)`（**返回 void**） |
 | 服务端操作控件 | 直接用控件字段 `x.Xxx=...` | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 `x.setYyy(...)`（Bean setter） |
@@ -76,7 +76,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
   - JS/C# 实例属性：`pagerAutoSimpleMode` / `PagerAutoSimpleMode`；Java 标签属性 `pager-auto-simple-mode`
   - C# 全局：`Grid` 前缀（`GridPagerAutoSimpleMode`，PageManager 或 `Web.config`/`appsettings.json` 设）
   - Java 全局：`application.properties` 的 `fineui.grid-pager-auto-simple-mode`（`fineui.` + kebab-case）
-- **全局配置入口**：Pro = `Web.config` 的 `<FineUIPro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
+- **全局配置入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
 - **新项目安全默认值**：Pro/Core 设置 `AllowDangerousRawTag=false` 与 `AllowDangerousScriptTag=false`。Pro 另设置 `EnableImplicitPostBack=false`、`EnableImplicitChangeEvents=false`，使用“声明服务端事件才自动回发”的统一心智模型。完整规则见 [events-postback.md](events-postback.md) 与 [rawhtml.md](rawhtml.md)。
 
 ## See also

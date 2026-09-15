@@ -76,7 +76,7 @@ FineUI 从 v10 起逐步把“控件文本默认按 HTML 编码、可信 HTML �
 - **`Active` 与 `Activate` 区分**（`Active` 作形容词）（不兼容）：`TabStrip.GetActiveTabReference` → `GetActivateTabReference`，客户端 `activeTab` → `activateTab`；`Tab.GetActiveReference` → `GetActivateReference`，客户端 `active` → `activate`。属性如 `ActiveTabIndex`/`ActivePanelIndex` 保持形容词形式。
 - **窗体关闭参数名 `closeArgument` → `Window1_closeArgument`**（不兼容）。
   - Core 回发：`OnPostWindow1_Close(string[] Grid1_fields, string Window1_closeArgument)`；JS `close: function(event, closeArgument){}` 从事件参数取。
-- **FineUIPro 表格事件 `PageIndexChange` → `PageIndexChanged`**（改名）。
+- **FineUI.Pro 表格事件 `PageIndexChange` → `PageIndexChanged`**（改名）。
 - **`DropDownList.Text` 语义变化**：现在任何情况下都表示输入框显示文本（之前仅用户输入时有效）。多选取文本可直接用 `.Text`；判断是否用户输入用 `IsUserInput`。
 
 ## v10.0.0（2024-03-20）—— 安全基石

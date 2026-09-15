@@ -18,7 +18,7 @@ F.create({
 });
 ```
 
-### FineUIPro
+### FineUI.Pro
 
 ```aspx
 <f:Calendar ID="Calendar1" runat="server" DateFormatString="yyyy/MM/dd"
@@ -40,7 +40,7 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
 }
 ```
 
-### FineUICore MVC
+### FineUI.Core MVC
 
 ```csharp
 @(F.Calendar().ID("Calendar1")
@@ -60,7 +60,7 @@ public IActionResult Calendar1_DateSelect(string selectedDate)
 }
 ```
 
-### FineUICore RazorForms（推荐）
+### FineUI.Core RazorForms（推荐）
 
 ```html
 <f:Calendar ID="Calendar1" DateFormatString="yyyy/MM/dd"
@@ -82,7 +82,7 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
 }
 ```
 
-### FineUICore RazorPages
+### FineUI.Core RazorPages
 
 ```html
 <f:Calendar ID="Calendar1" DateFormatString="yyyy/MM/dd"
@@ -99,7 +99,7 @@ public IActionResult OnPostCalendar1_DateSelect(string selectedDate)
 }
 ```
 
-### FineUIJava
+### FineUI.Java
 
 ```html
 <f:calendar id="Calendar1" date-format-string="yyyy/MM/dd"
@@ -129,21 +129,21 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 范围面板使用 `DisplayType="DayRange"`，值由开始日期和结束日期组成。月范围与年范围分别使用 `MonthRange`、`YearRange`。
 
 ```aspx
-<!-- FineUIPro -->
+<!-- FineUI.Pro -->
 <f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
     ShowConfirmButton="true" ConfirmToSelect="true" EnableDateSelectEvent="true"
     OnDateSelect="Calendar1_DateSelect" />
 ```
 
 ```html
-<!-- FineUICore RazorForms -->
+<!-- FineUI.Core RazorForms -->
 <f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
     ShowConfirmButton="true" ConfirmToSelect="true" OnDateSelect="Calendar1_DateSelect">
 </f:Calendar>
 ```
 
 ```html
-<!-- FineUICore RazorPages -->
+<!-- FineUI.Core RazorPages -->
 <f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
     ShowConfirmButton="true" ConfirmToSelect="true"
     OnDateSelect="@Url.Handler("Calendar1_DateSelect")"
@@ -152,7 +152,7 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 ```
 
 ```html
-<!-- FineUIJava -->
+<!-- FineUI.Java -->
 <f:calendar id="Calendar1" display-type="DayRange" date-format-string="yyyy/MM/dd"
     show-confirm-button="true" confirm-to-select="true"
     on-date-select="Calendar1_DateSelect"></f:calendar>
@@ -164,7 +164,7 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 |------|--------|--------|
 | Pro / Core RazorForms | `Calendar1.RangeStartDate` | `Calendar1.RangeEndDate` |
 | Core MVC / RazorPages | 将 `F.ui.Calendar1.getText()` 作为参数提交 | 在处理器中按 `RangeSeparator` 拆分 |
-| FineUIJava | `Calendar1.getRangeStartDate()` | `Calendar1.getRangeEndDate()` |
+| FineUI.Java | `Calendar1.getRangeStartDate()` | `Calendar1.getRangeEndDate()` |
 
 `RangeSeparator` / `range-separator` 可以修改范围分隔符。只有需要两个面板互不联动时才设置 `IndependentRangePanels="true"` / `independent-range-panels="true"`。
 

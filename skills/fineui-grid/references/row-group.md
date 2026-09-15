@@ -37,7 +37,7 @@ F.create({ type: 'Grid', id: 'grid1', isFluid: true, renderTo: '#wrap',
 @(F.Grid().ID("Grid1").EnableRowGroup(true).DataRowGroupField("EntranceYear").Columns( ... ).DataSource(ViewBag.Grid1DataSource))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：两个拍平属性，数据在页面类 Page_Load 绑定 -->
+<!-- FineUI.Java（Thymeleaf 方言）：两个拍平属性，数据在页面类 Page_Load 绑定 -->
 <f:grid id="Grid1" enable-row-group="true" data-row-group-field="EntranceYear"> <f:columns> ... </f:columns> </f:grid>
 ```
 
@@ -63,7 +63,7 @@ rowGroup: {
 <script> function onGrid1RowGroupRenderer(groupValue, rowData) { /* 同 F.js renderer */ } </script>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：renderer-function 指向的 JS 函数体与 F.js 完全相同，不重复贴 -->
+<!-- FineUI.Java（Thymeleaf 方言）：renderer-function 指向的 JS 函数体与 F.js 完全相同，不重复贴 -->
 <f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" row-group-renderer-function="onGrid1RowGroupRenderer"> ... </f:grid>
 ```
 
@@ -80,7 +80,7 @@ rowGroup: { collapsible: true, expanded: false }
 <f:Grid ... EnableRowGroup="true" DataRowGroupField="EntranceYear" ExpandAllRowGroups="false"> ... </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— 全部折叠 -->
+<!-- FineUI.Java（Thymeleaf 方言）—— 全部折叠 -->
 <f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" expand-all-row-groups="false"> ... </f:grid>
 ```
 
@@ -124,7 +124,7 @@ columns: [
 F.RenderField().DataField("ChineseScore").ColumnID("ChineseScore").FieldType(FieldType.Int).HeaderText("语文成绩").RowGroupSummaryType(SummaryType.Avg)
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid ... enable-row-group="true" data-row-group-field="EntranceYear" row-group-summary="true">
     <f:columns>
         <f:render-field header-text="所学专业" data-field="Major" column-id="Major" row-group-summary-text="平均（分组）："></f:render-field>
@@ -159,7 +159,7 @@ rowGroupField: 'EntranceYear', rowGroup: { collapsible: true }
         EnableRowGroup="true" DataRowGroupField="EntranceYear"> ... </f:Grid>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）—— 数据库分页 + 服务端排序 + 行分组（on-page-index-changed / on-sort 指向 void 处理器）-->
+<!-- FineUI.Java（Thymeleaf 方言）—— 数据库分页 + 服务端排序 + 行分组（on-page-index-changed / on-sort 指向 void 处理器）-->
 <f:grid ... allow-paging="true" page-size="10" is-database-paging="true" on-page-index-changed="Grid1_PageIndexChanged"
         allow-sorting="true" sort-field="Name" sort-direction="ASC" on-sort="Grid1_Sort"
         enable-row-group="true" data-row-group-field="EntranceYear"> ... </f:grid>

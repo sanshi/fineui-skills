@@ -52,7 +52,7 @@ F.create({ type: 'Accordion', isFluid: true, id: 'Accordion1', renderTo: '#wrap'
 </f:Accordion>
 ```
 ```html
-<!-- ⑤ FineUIJava（Thymeleaf 方言）：on-pane-index-changed 直接声明服务端事件（客户端 panechange）-->
+<!-- ⑤ FineUI.Java（Thymeleaf 方言）：on-pane-index-changed 直接声明服务端事件（客户端 panechange）-->
 <f:accordion id="Accordion1" is-fluid="true" title="手风琴控件" show-header="false" height="500" show-border="true" active-pane-index="1"
     enable-collapse="false" on-pane-index-changed="Accordion1_PaneIndexChanged">
     <f:panes>
@@ -66,7 +66,7 @@ F.create({ type: 'Accordion', isFluid: true, id: 'Accordion1', renderTo: '#wrap'
 </f:accordion>
 ```
 ```java
-// FineUIJava 页面类
+// FineUI.Java 页面类
 @FineUIPage("accordion/pane-index-changed")
 public class PaneIndexChanged extends FineUIPageBase {
     com.fineui.java.core.controls.Accordion Accordion1;
@@ -101,7 +101,7 @@ F.ui.Accordion1.getActivePaneIndex();   // 当前展开的面板索引
 F.ui.Accordion1.activeNextPane();        // 展开下一个
 ```
 ```java
-// FineUIJava 页面类 —— Bean 方法读写活动面板
+// FineUI.Java 页面类 —— Bean 方法读写活动面板
 int idx = Accordion1.getActivePaneIndex();
 Accordion1.setActivePaneIndex((idx + 1) % 3);   // 展开下一个
 ```

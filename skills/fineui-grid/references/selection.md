@@ -62,12 +62,12 @@ F.create({
 </f:Grid>
 ```
 
-### FineUIJava（Thymeleaf 方言）
+### FineUI.Java（Thymeleaf 方言）
 
 > **注意**：服务端读取所需主键，Java 用 **`data-key-names`**（kebab-case，**不是** RazorForms 那个带下划线的 `_DataKeyNames`）。
 
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:grid id="Grid1" is-fluid="true" title="表格" enable-check-box-select="true"
         data-id-field="Id" data-text-field="Name" data-key-names="Id,Name,Gender,Major">
     <f:columns> <!-- ... --> </f:columns>
@@ -100,7 +100,7 @@ Grid1.SelectedRowIDArray = new string[] { "105", "110" };
 <f:Grid ... SelectedRowIDArray="@(new string[] { "105", "110" })">
 ```
 ```java
-// FineUIJava 页面类 —— Page_Load（!isPostBack()）内，dataBind() 之后
+// FineUI.Java 页面类 —— Page_Load（!isPostBack()）内，dataBind() 之后
 Grid1.setSelectedRowIdArray(new String[] { "105", "110" });
 ```
 
@@ -148,7 +148,7 @@ protected void Button1_Click(object sender, EventArgs e)
 前提：设置 `data-id-field`，并让 `data-key-names` 包含该字段；数据在服务端 `dataBind()`。
 
 ```java
-// FineUIJava 页面类
+// FineUI.Java 页面类
 public void Button1_Click(Object sender, EventArgs e) {
     List<Object[]> selectedDataKeys = Grid1.getSelectedDataKeys();
     if (selectedDataKeys.isEmpty()) { showNotify("没有选中项！"); return; }
@@ -235,7 +235,7 @@ UIHelper.Grid("Grid1").SelectedRowIDArray("102", "106", "108");
 return UIHelper.Result();
 ```
 ```java
-// FineUIJava 页面类（处理器内直接用控件字段，void）
+// FineUI.Java 页面类（处理器内直接用控件字段，void）
 Grid1.setSelectedRowIdArray(new String[] { "102", "106", "108" });
 ```
 ```javascript

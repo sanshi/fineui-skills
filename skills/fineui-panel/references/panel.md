@@ -29,7 +29,7 @@ bars: [{ type: 'Toolbar', position: 'top', items: [
     F.ToolbarText().Text("文本"), F.ToolbarSeparator(), F.Button().Text("按钮"), F.ToolbarFill()))
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:toolbars>
     <f:toolbar id="Toolbar1" position="Top">
         <f:items>
@@ -61,13 +61,13 @@ bars: [{ type: 'Toolbar', position: 'top', items: [
 // Controller: UIHelper.Panel("Panel2").Collapsed(!collapsed);
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：折叠/展开服务端事件直接写 on-collapse / on-expand（无需 EnableCollapseEvent 开关）-->
+<!-- FineUI.Java（Thymeleaf 方言）：折叠/展开服务端事件直接写 on-collapse / on-expand（无需 EnableCollapseEvent 开关）-->
 <f:panel id="Panel1" enable-collapse="true" on-collapse="Panel1_CollapseExpand" on-expand="Panel1_CollapseExpand">
     <f:items> ... </f:items>
 </f:panel>
 ```
 ```java
-// FineUIJava 页面类：读折叠状态 / 服务端切换折叠
+// FineUI.Java 页面类：读折叠状态 / 服务端切换折叠
 public void Panel1_CollapseExpand(Object sender, EventArgs e) {
     showNotify("面板处于" + (Panel1.isCollapsed() ? "折叠" : "展开") + "状态");
 }
@@ -90,7 +90,7 @@ public void Button3_Click(Object sender, EventArgs e) {
 </f:Panel>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）：<f:tools> 内放 <f:tool>，可带 text 显示文字 -->
+<!-- FineUI.Java（Thymeleaf 方言）：<f:tools> 内放 <f:tool>，可带 text 显示文字 -->
 <f:panel id="Panel1" title="面板" icon-url="/res/images/16/8.png">
     <f:items> ... </f:items>
     <f:tools>
@@ -110,7 +110,7 @@ public void Button3_Click(Object sender, EventArgs e) {
 </f:ContentPanel>
 ```
 ```html
-<!-- FineUIJava（Thymeleaf 方言）-->
+<!-- FineUI.Java（Thymeleaf 方言）-->
 <f:content-panel id="cp1" title="内容面板" show-border="true" height="200" auto-scroll="true" body-padding="10">
     可放 HTML 或其它控件的内容
 </f:content-panel>

@@ -19,7 +19,7 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 > RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见 `fineui-grid`。
 >
-> FineUIJava 与 Core RazorForms 都采用标签式有状态服务端组件。FineUIJava 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
+> FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
 
 ## 前置要求
 
@@ -31,10 +31,10 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 ### 项目级安装（推荐）
 
-这是**项目级安装**。请先在终端进入需要使用这些技能的项目根目录，再执行安装命令。例如，要为 `D:\FineUI` 项目安装：
+这是**项目级安装**。请先在终端进入需要使用这些技能的项目根目录，再执行安装命令。例如，要为 `D:\YourProject` 项目安装：
 
 ```powershell
-cd D:\FineUI
+cd D:\YourProject
 npx skills add sanshi/fineui-skills
 ```
 
@@ -76,7 +76,7 @@ npx skills update
 
 装好后，在 AI 编程助手里正常提需求即可，例如：
 
-- “用 FineUICore 的 TagHelper 写一个带复选框多选、服务端读取选中行的员工表格”
+- “用 FineUI.Core 的 TagHelper 写一个带复选框多选、服务端读取选中行的员工表格”
 - “把这个 Grid 加一个日期格式化列，显示成 yyyy/MM/dd”
 - “F.js 里怎么给 Grid 列写自定义渲染函数”
 

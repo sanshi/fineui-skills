@@ -3,11 +3,11 @@ name: fineui-layout
 description: >
   帮助开发者使用 FineUI 的布局系统——容器的 `Layout` 属性如何排布子控件：
   Fit（填充）/ Region（区域上下左右中）/ HBox·VBox（弹性盒子）/ Block（响应式栅格）/ Column / Anchor，
-  以及视口自适应（IsViewPort / AutoSizePanelID）。覆盖 F.js、Pro、FineUICore（MVC/RazorForms/RazorPages）、
-  FineUIJava（Spring Boot + Thymeleaf 方言标签，kebab-case，含 region-panel 便捷控件）。
+  以及视口自适应（IsViewPort / AutoSizePanelID）。覆盖 F.js、Pro、FineUI.Core（MVC/RazorForms/RazorPages）、
+  FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case，含 region-panel 便捷控件）。
   Trigger phrases（触发词）: "FineUI 布局", "Layout", "Region 布局", "区域布局", "RegionPosition",
   "HBox", "VBox", "BoxFlex", "弹性布局", "Fit 布局", "Block 响应式", "BlockMD", "栅格布局",
-  "IsViewPort", "视口自适应", "Column 布局", "Anchor 布局", "FineUIJava", "Spring Boot", "Thymeleaf",
+  "IsViewPort", "视口自适应", "Column 布局", "Anchor 布局", "FineUI.Java", "Spring Boot", "Thymeleaf",
   "region-panel", "region-position", "box-flex", "is-view-port".
 metadata:
   author: FineUI
@@ -57,7 +57,7 @@ metadata:
     .Items(F.Panel().Width(200).Title("左固定"), F.Panel().BoxFlex(1).Title("右弹性")))
 ```
 ```html
-<!-- ⑤ FineUIJava（Thymeleaf 方言：标签/属性全 kebab-case，布局值 layout="HBox" 保持 PascalCase）-->
+<!-- ⑤ FineUI.Java（Thymeleaf 方言：标签/属性全 kebab-case，布局值 layout="HBox" 保持 PascalCase）-->
 <f:panel layout="HBox" box-config-align="Stretch">
     <f:items>
         <f:panel width="200" title="左固定"></f:panel>
@@ -92,4 +92,4 @@ metadata:
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/
-- **FineUIJava**：布局属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js 布局引擎与 JS 端完全相同；Region 另有 `<f:region-panel>` 便捷控件。
+- **FineUI.Java**：布局属性语义同 Core（属性名转 kebab-case、值保持 PascalCase），客户端 F.js 布局引擎与 JS 端完全相同；Region 另有 `<f:region-panel>` 便捷控件。
