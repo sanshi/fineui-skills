@@ -10,7 +10,7 @@ description: >
   "application.properties", "FineUIPageManagerInitializer", "pm.theme".
 metadata:
   author: FineUI
-  version: "16.0"
+  version: "16.0.0-beta.2"
   compatibility: FineUI v15+（主题系统重构为 CSS Variables）
 ---
 
