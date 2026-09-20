@@ -1,0 +1,47 @@
+# 行尾约定：**文本文件统一 LF**，只有 Windows 脚本用 CRLF。
+#
+# 为什么是 LF：
+#   1) git 索引里存的一直是 LF（提交时 core.autocrlf 已归一），显式声明后克隆/检出的工作区
+#      不再随每台机器的 core.autocrlf 设置变化；
+#   2) 仓库里的同步脚本（node）写文件时一律写 LF，声明成 LF 后「脚本写出来的」与
+#      「git 检出来的」完全一致——工作区不会因为重复跑同步而多出只有行尾不同的假修改；
+#   3) 编辑器与 IDE 读这份文件后保存也按 LF，不会再出现同一个文件里 CRLF 与 LF 混排。
+#
+# 每个公开仓根目录也有一份同样的 .gitattributes，由 `npm run sync-public-repository-files`
+# 写入（唯一副本是 tools/public-content/gitattributes），审计会断言两边内容一致。
+* text=auto eol=lf
+
+# Windows 脚本必须 CRLF：cmd 解析依赖它，交付包里的 .bat 另有静态检查任务守着。
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell 脚本必须 LF（CRLF 会让 Linux/macOS 报 bad interpreter；会随源码交付包分发）。
+*.sh text eol=lf
+*.bash text eol=lf
+
+# 二进制文件，不做行尾转换。
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.bmp binary
+*.eot binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
+*.otf binary
+*.zip binary
+*.7z binary
+*.gz binary
+*.dll binary
+*.exe binary
+*.pdb binary
+*.snk binary
+*.pfx binary
+*.mv.db binary
+*.trace.db binary
+*.jar binary
+*.xlsx binary
+*.pdf binary
