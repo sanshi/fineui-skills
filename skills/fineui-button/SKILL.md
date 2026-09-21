@@ -12,7 +12,7 @@ description: >
   "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:button", "button-color", "enable-press-group".
 metadata:
   author: FineUI
-  version: "16.0.0-beta.2"
+  version: "16.0.0-beta.3"
   compatibility: FineUI v16.0（ClickHandler 与事件驱动回发）
 ---
 

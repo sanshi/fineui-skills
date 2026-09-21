@@ -11,7 +11,7 @@ description: >
   "f:panel", "f:tab-strip", "f:accordion", "f:region-panel".
 metadata:
   author: FineUI
-  version: "16.0.0-beta.2"
+  version: "16.0.0-beta.3"
   compatibility: FineUI v16.0（事件驱动变化回发）
 ---
 
