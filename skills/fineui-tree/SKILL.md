@@ -12,7 +12,7 @@ description: >
   "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "f:tree", "f:tree-node".
 metadata:
   author: FineUI
-  version: "16.0.0-beta.3"
+  version: "16.0.0-rc.1"
   compatibility: FineUI v16.0（TreeNode ClickHandler 与统一回发协议）
 ---
 
