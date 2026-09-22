@@ -172,13 +172,15 @@ Java：
 ```java
 public void Page_CustomEvent(Object sender, CustomEventArgs e) {
     if ("DeleteSelectedUsers".equals(e.getEventName())) {
-        // 使用项目统一配置的 Jackson ObjectMapper 解析 JSON 参数。
-        JsonNode payload = objectMapper.readTree(e.getArgument());
+        // 应用侧自建静态工具 Json（内部是 Spring Boot 自带的 Jackson 3）解析 JSON 参数
+        JsonNode payload = Json.parse(e.getArgument());
         JsonNode rowIds = payload.path("rowIds");
         // 按 rowIds 执行业务操作
     }
 }
 ```
+
+FineUI.Java 应用的 JSON 处理约定：应用自己的 JSON 一律用 Spring Boot 自带的 **Jackson 3**（包名 `tools.jackson.databind`，注解包仍是两代共用的 `com.fasterxml.jackson.annotation`），`pom.xml` 不需要声明任何 Jackson 依赖；官方示例的做法是自建一个静态工具类 `Json`，提供 `Json.parse(String)`、`Json.parse(String, TypeReference<T>)`、`Json.encode(Object)` 三个方法（内部 `JsonMapper.builder().build()`），页面代码直接调用。`java.time` 类型 Jackson 3 自带支持，可直接序列化。
 
 多参数使用 JSON 对象，批量标识使用数组；不要自己用 `$`、`,`、`#` 拼接后再拆分。业务页面不要直接调用 `__doPostBack`，也不要在 `Page_Load` 中读取原始 `__EVENTARGUMENT` 分派业务。
 

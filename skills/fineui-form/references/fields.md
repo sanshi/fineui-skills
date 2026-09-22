@@ -357,6 +357,8 @@ hfUserId.setText("67890");
 String v = hfUserId.getText();
 ```
 
+Hidden 属于表单字段集合：表单的 `reset()` / `clearDirty()` 会带上它，但它不参与校验（`validate()` 恒为 true）和 `isDirty` 脏判断。
+
 ---
 
 ## 读取字段值（各写法不同）

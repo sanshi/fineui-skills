@@ -4,7 +4,7 @@
 
 > **完整逐条以官方在线发布历史为准**：https://fineui.com/versions/ （在其中搜索“不兼容”）。本清单是高影响项的精炼；升级跨越多个大版本时，把区间内每个版本的“不兼容”条目都过一遍。
 
-## v16.0.0（2026-09-13）
+## v16.0.0（2026-09-30）
 
 - **[Core/Pro] 客户端点击统一到具名函数 + `ClickHandler`**。新代码不再使用 `OnClientClick`，也不把脚本串塞进 Handler；Java 只提供 `click-handler`。
   - 回调首参统一为 `event`；要中断确认框、导航或回发必须显式 `return false`。
@@ -21,6 +21,9 @@
 - **[Core] 最低运行环境提高到 .NET 8**，Newtonsoft.Json 依赖提高到 13.x。仍在 .NET 6/7 或引用旧 Newtonsoft.Json 的项目必须先升级。
 - **[Pro] 开启 `EnableFStateValidation` 的项目必须显式配置非 `AutoGenerate` 的 `<machineKey validationKey="...">`**；Web 农场节点使用同一密钥。
 - **[Pro] 单元格编辑改为 `GetModifiedData()`**；`GetModifiedDict` / `GetDeletedList` / `GetNewAddedList` 已废弃。
+- **[Core] `AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记所需过滤器**。Startup 不再需要手工添加这两项；老项目保留原手工登记也不会重复执行，建议升级后删除以简化 Startup。
+- **[Core-RazorForms] 点击时给后台带额外数据不再用 `OnClickParameter1..N`**，推荐改为自定义回发（`ClickHandler` + `F.customEvent`）；需要落进 `[BindProperty]` 命名表单字段时用 `F.doPostBack({ eventName, params })`。MVC 与 RazorPages 不受影响，继续使用 `OnClickParameter`。
+- **[Core] 配置项 `ExcludedURLs`（不使用 FineUI 中间件的网址列表）已废弃**，不再需要配置；已有配置继续生效，无需修改。
 - **[JS] 不再支持 IE**；移除 `F.isIE8()` / `F.isIE89()` / `F.isIE9()` / `F.isIE()`。
 
 完整点击与回发迁移见 `fineui-foundation` 的 `events-postback.md`。

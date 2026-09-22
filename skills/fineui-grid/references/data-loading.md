@@ -185,6 +185,7 @@ public class Database extends FineUIPageBase {
    - **Java**：`on-page-index-changed="方法名"` → 页面类 `public void 方法名(Object sender, GridPageEventArgs e)`（服务端事件，读 `Grid1.getPageIndex()`；**返回 void**）。
 4. **回发按页取数用 `Grid1_pageIndex`（MVC/RazorPages）或 `Grid1.PageIndex`/`Grid1.getPageIndex()`（Pro/RazorForms/Java）**，配合 `Grid1_fields`（MVC/RazorPages）保持列。
 5. **“加载更多/流式追加”**：Core-MVC 翻页处理器里用 `grid1.AppendData(dataSource, Grid1_fields)` 代替 `DataSource(...)`；**Java 用 `Grid1.appendData(nextPageList)` 追加下一页**（可把已加载页码存进 `Grid1.setAttribute("data-index", ...)` 随回发往返）。
+6. **长整型精度（Core / Java，Pro 无此开关）**：JS Number 无法精确表示超过 15 位的整数。Core 的全局配置 / 页面 PageManager 属性 `GridConvertLongToString`、Java 的全局键 `fineui.grid-convert-long-to-string` 均默认 `true`，会把 `long`/`BigInteger` 列以字符串下发，主键为 BIGINT 的表格依赖它；Java 还可用页面级 `getPageManager().gridConvertLongToString(false)` 或表格属性 `<f:grid convert-long-to-string="false">` 逐层关闭。
 
 ## See also
 
