@@ -49,7 +49,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 - 不写 `ClickHandler="doSomething();"`，也不把脚本串写进 `<f:Listener Handler>`；一律写具名函数。
 - 一个控件只有一个 click 回调时优先 `ClickHandler`，不要同时再声明 click Listener。
 - `Button`、`Tool`、菜单项、`LinkButton`、`HyperLink` 和 `TreeNode` 均支持 `ClickHandler`。`TreeNode` 回调签名是 `(event, nodeId)`，其余通常是 `(event)`。
-- `HyperLink` 有真实地址；回调返回 `false` 才阻止导航。`LinkButton` 的占位地址由框架同步阻止默认导航，不要把 `href="javascript:;"` 机械替换成会改写 hash 的 `href="#"`。
+- `HyperLink` 有真实地址；回调返回 `false` 才阻止导航。`LinkButton` 使用 `href="#"` 占位，由框架同步阻止默认导航；自定义操作链接也要在处理器开头调用 `event.preventDefault()`，否则会改写 hash。
 - 要取消后续确认框、默认导航或服务端回发，必须显式 `return false`；普通 `return` / `undefined` 表示继续。
 
 ## 2. 标准服务端事件
