@@ -12,7 +12,7 @@ description: >
   "FineUI 布局", "Region 布局", "ViewPort", "页面骨架", "FineUI 怎么用".
 metadata:
   author: FineUI
-  version: "16.0.0-rc.1"
+  version: "16.0.0-rc.2"
   compatibility: FineUI v16.0（客户端事件、回发语义与 RawHtml 安全模型）
 ---
 

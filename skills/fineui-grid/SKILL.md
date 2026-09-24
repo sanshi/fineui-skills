@@ -19,7 +19,7 @@ description: >
   "拖拽排序", "EnableColumnMove", "大数据表格", "EnableBigData".
 metadata:
   author: FineUI
-  version: "16.0.0-rc.1"
+  version: "16.0.0-rc.2"
   compatibility: FineUI v16.0（RenderField.Commands、统一事件与回发协议）
 ---
 

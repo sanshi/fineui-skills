@@ -1,7 +1,7 @@
 {
   "name": "fineui-skills",
   "description": "FineUI 组件库 AI 技能：让 AI 编程助手准确生成使用 FineUI 的代码，覆盖 F.js、Pro（WebForms）、Core（MVC/RazorForms/RazorPages）与 Java（Spring Boot）。",
-  "version": "16.0.0-rc.1",
+  "version": "16.0.0-rc.2",
   "license": "MIT",
   "author": {
     "name": "FineUI",

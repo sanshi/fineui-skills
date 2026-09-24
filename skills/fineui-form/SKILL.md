@@ -14,7 +14,7 @@ description: >
   "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
 metadata:
   author: FineUI
-  version: "16.0.0-rc.1"
+  version: "16.0.0-rc.2"
   compatibility: FineUI v16.0（事件驱动变化回发与 RawHtml 安全模型）
 ---
 
