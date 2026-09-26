@@ -146,7 +146,9 @@ public void btnRegister_Click(Object sender, EventArgs e) {
     if ("admin".equals(tbxUserName.getValue())) {
         tbxUserName.markInvalid(tbxUserName.getValue() + " 是保留字，请另外选择！");
     } else {
-        showNotify("用户名：" + tbxUserName.getValue());
+        Notify notify = new Notify();
+        notify.setMessage("用户名：" + tbxUserName.getValue());
+        notify.show();
     }
 }
 ```

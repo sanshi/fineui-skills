@@ -151,7 +151,12 @@ protected void Button1_Click(object sender, EventArgs e)
 // FineUI.Java 页面类
 public void Button1_Click(Object sender, EventArgs e) {
     List<Object[]> selectedDataKeys = Grid1.getSelectedDataKeys();
-    if (selectedDataKeys.isEmpty()) { showNotify("没有选中项！"); return; }
+    if (selectedDataKeys.isEmpty()) {
+        Notify notify = new Notify();
+        notify.setMessage("没有选中项！");
+        notify.show();
+        return;
+    }
     for (Object[] keys : selectedDataKeys) {
         Object id = keys[0];   // 对应 data-key-names 第 1 个字段
         Object name = keys[1]; // 第 2 个字段

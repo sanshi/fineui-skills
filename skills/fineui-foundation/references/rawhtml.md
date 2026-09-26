@@ -78,10 +78,13 @@ CheckBox5.SwitchOnTextRawHtml = new RawHtml("<i class=\"f-icon check\"></i>");
 ```java
 // 页面类（.java）——用 new RawHtml(...)，setter 形式；支持 %s/%d 格式化参数（同 C#）
 import com.fineui.java.core.RawHtml;
+import com.fineui.java.core.Notify;
 
 labResult.setTextRawHtml(new RawHtml("<span class=\"highlight\">%s</span>", node.getText()));
 CheckBox5.setSwitchOnTextRawHtml(new RawHtml("<i class=\"f-icon f-iconfont f-iconfont-check\"></i>"));
-showNotifyRaw(new RawHtml("已选择：<b>%s</b>", name));   // ← 消息框用 showNotifyRaw（区别于 Core 的 ShowNotify(new RawHtml(...))）
+Notify notify = new Notify();
+notify.setMessageRawHtml(new RawHtml("已选择：<b>%s</b>", name));
+notify.show();
 ```
 
 ## 概念 → 各写法对照
@@ -90,14 +93,14 @@ showNotifyRaw(new RawHtml("已选择：<b>%s</b>", name));   // ← 消息框用
 |--|------|-----------|-------------------|------------------------|------------------|
 | 声明可信 HTML | `F.rawHtml('...')` | `XxxRawHtml="..."` | `.XxxRawHtml(new RawHtml("..."))` | `_XxxRawHtml="..."` 或 `XxxRawHtml="@(new RawHtml("..."))"` | `xxx-raw-html="..."`（直接写 HTML） |
 | 后置代码赋值 | — | `x.XxxRawHtml = new RawHtml(...)` | `x.XxxRawHtml = new RawHtml(...)` | `x.XxxRawHtml = new RawHtml(...)` | `x.setXxxRawHtml(new RawHtml(...))` |
-| 消息框 | `showNotify(F.rawHtml(...))` / `F.alert({message: F.rawHtml(...)})` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `showNotifyRaw(new RawHtml(...))` |
+| 消息框 | `showNotify(F.rawHtml(...))` / `F.alert({message: F.rawHtml(...)})` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `notify.setMessageRawHtml(new RawHtml(...)); notify.show()`；示例基类可用 `showNotify(new RawHtml(...))` |
 
 ## 关键约束
 
 1. **优先单属性便捷写法**，不要写「`Text` + `TextRaw` 两个属性」。命名一律 `Xxx` → `XxxRawHtml`。
 2. **只对开发者确信可信的 HTML 用它**；来自**用户输入 / 数据库**的内容**不要**声明为 RawHtml，让其保持默认转义。可信内容里若拼接了不可信片段，先 `HttpUtility.HtmlEncode(...)`（C#）再拼。
 3. **消息框用 `ShowNotify(new RawHtml(...))`**；`Alert.Show(new RawHtml(...))` 虽存在但示例中不用它。F.js 用 `F.alert({ message: F.rawHtml(...) })` 对象配置形式，**不是** `F.alert(F.rawHtml(...))` 直传。
-4. **Core TagHelper 便捷形式**：markup 里直接写 HTML 字符串用 `_XxxRawHtml="..."`（下划线前缀）；含 Razor 变量/表达式用 `_XxxRawHtml="@(...)"` 或 `XxxRawHtml="@(new RawHtml(...))"`。**Java 便捷形式**：`xxx-raw-html="..."`（kebab-case，直接写 HTML 字符串，**无**下划线前缀）；服务端 `x.setXxxRawHtml(new RawHtml(...))`、消息框 `showNotifyRaw(new RawHtml(...))`。
+4. **Core TagHelper 便捷形式**：markup 里直接写 HTML 字符串用 `_XxxRawHtml="..."`（下划线前缀）；含 Razor 变量/表达式用 `_XxxRawHtml="@(...)"` 或 `XxxRawHtml="@(new RawHtml(...))"`。**Java 便捷形式**：`xxx-raw-html="..."`（kebab-case，直接写 HTML 字符串，**无**下划线前缀）；服务端 `x.setXxxRawHtml(new RawHtml(...))`、消息实例 `notify.setMessageRawHtml(new RawHtml(...))`。
 5. **（Pro 大坑）`XxxRawHtml`（RawHtml 类型）便捷属性绝不能加 `[Browsable(false)]` 或 `[DesignerSerializationVisibility(Hidden)]`**——否则 aspx 里 `TextRawHtml="..."` 声明式用法会直接抛分析器错误、页面打不开。（这是控件开发者约束；使用者只要按上面写法即可。）
 6. **不要生成旧的内联 `<raw>...</raw>`**。Core/Pro/F 只为老项目保留兼容，推荐配置会用 `AllowDangerousRawTag=false` 将其关闭；FineUI.Java 不提供该能力。
 7. **关闭脚本文本兼容入口**：新项目同时设置 `AllowDangerousScriptTag=false`，禁止服务端把控件文案中的 `<script>` 片段解释为 JavaScript 表达式。客户端动态 HTML 使用 `F.rawHtml(...)` 明确声明，业务动作使用具名函数与 `ClickHandler`。

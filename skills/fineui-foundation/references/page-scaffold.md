@@ -235,7 +235,7 @@ public class HelloPage extends FineUIPageBase {
     public void Page_Load(Object sender, EventArgs e) { }
 
     public void btnHello_Click(Object sender, EventArgs e) {   // 返回 void，无需 UIHelper.Result()
-        showAlert("你好 FineUI.Java！", MessageBoxIcon.Warning);
+        Alert.show("你好 FineUI.Java！", null, MessageBoxIcon.Warning);
     }
 }
 ```

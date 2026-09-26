@@ -229,7 +229,7 @@ public class Grid extends FineUIPageBase {
 3. **文本默认 HTML 编码（RawHtml 安全模型）**：Grid 单元格/列头文本默认转义。要输出可信 HTML：
    - F.js：列 `renderer` 返回的字符串会作为 HTML 插入（渲染函数内自行保证可信）；普通文本属性用 `F.rawHtml(...)`。
    - C#：给控件文本赋 HTML 用 `xxx.TextRawHtml = new RawHtml("...")`；消息用 `ShowNotify(new RawHtml("..."))`。**绝不手写 `Text` + `TextRaw` 两个属性**。
-   - **Java**：标签使用 `xxx-raw-html`（如 `header-text-raw-html` / `text-raw-html`），服务端使用 `new RawHtml(...)` 与对应 setter；消息用 `showNotifyRaw(new RawHtml(...))`。不要以 `encode-text="false"` 作为新代码的通用逃生口。渲染函数返回值与 F.js 一致（客户端插入）。
+   - **Java**：标签使用 `xxx-raw-html`（如 `header-text-raw-html` / `text-raw-html`），服务端使用 `new RawHtml(...)` 与对应 setter；消息实例用 `notify.setMessageRawHtml(new RawHtml(...))` 后调用 `notify.show()`。不要以 `encode-text="false"` 作为新代码的通用逃生口。渲染函数返回值与 F.js 一致（客户端插入）。
 4. **Pro 数据绑定固定套路**：`!IsPostBack` 内 `Grid1.DataSource = table; Grid1.DataBind();`。忘了 `!IsPostBack` 会在每次回发重复绑定、丢失状态。
 5. **Core 三种模式的数据初始化各不相同**：
    - **MVC（Fluent API）**：Controller 设 `ViewBag.Grid1DataSource`，View 里 `.DataSource(ViewBag.Grid1DataSource)`。

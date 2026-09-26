@@ -105,7 +105,7 @@ public void Page_CustomEvent(Object sender, CustomEventArgs e) {
 
 > **注**：Java 示例里的 `session()` 是**页面类里自定义的私有辅助方法**（`return ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest().getSession();`），**不是** `FineUIPageBase` 内置方法——照抄时需自行定义，或直接注入/获取 `HttpSession`。
 
-> 只允许同组内移动：`EnableSameGroupColumnMove="true"`（配合多表头）。Java 侧多表头列拖拽示例仅见 `enable-column-move="true"`（同组限制属性未在示例中出现，用时以官网 API 为准）。
+> 只允许同组内移动：Core 设置 `EnableColumnMove="true" EnableSameGroupColumnMove="true"`；Java 设置 `enable-column-move="true" enable-same-group-column-move="true"`。表头有分组时，限制按直接父分组判断。
 
 ---
 
@@ -145,7 +145,9 @@ protected void Page_CustomEvent(object sender, CustomEventArgs e) {
 public void Page_CustomEvent(Object sender, CustomEventArgs e) {
     if ("Grid1_RowMove".equals(e.getEventName())) {
         session().setAttribute(KEY, e.getArgument());   // 按上报的 rowIds 顺序重排数据源
-        showNotify("数据保存成功！");
+        Notify notify = new Notify();
+        notify.setMessage("数据保存成功！");
+        notify.show();
     }
 }
 ```

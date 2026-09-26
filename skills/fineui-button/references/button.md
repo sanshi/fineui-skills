@@ -92,7 +92,11 @@ public IActionResult btnServer_Click() { ShowNotify("服务端事件"); return U
 ```
 ```java
 // FineUI.Java 页面类：处理器 (Object sender, EventArgs e)，返回 void（无需 return UIHelper.Result()）
-public void btnServer_Click(Object sender, EventArgs e) { showNotify("服务端事件"); }
+public void btnServer_Click(Object sender, EventArgs e) {
+    Notify notify = new Notify();
+    notify.setMessage("服务端事件");
+    notify.show();
+}
 ```
 
 ### 客户端点击（不回发）

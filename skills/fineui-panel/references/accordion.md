@@ -72,7 +72,9 @@ public class PaneIndexChanged extends FineUIPageBase {
     com.fineui.java.core.controls.Accordion Accordion1;
     public void Page_Load(Object sender, EventArgs e) { }
     public void Accordion1_PaneIndexChanged(Object sender, EventArgs e) {   // 返回 void
-        showNotify("当前展开的是第 " + (Accordion1.getActivePaneIndex() + 1) + " 个面板");
+        Notify notify = new Notify();
+        notify.setMessage("当前展开的是第 " + (Accordion1.getActivePaneIndex() + 1) + " 个面板");
+        notify.show();
     }
     public void Button2_Click(Object sender, EventArgs e) {
         Accordion1.setActivePaneIndex((Accordion1.getActivePaneIndex() + 1) % 3);   // 展开下一个

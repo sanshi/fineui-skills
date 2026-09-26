@@ -69,7 +69,9 @@ bars: [{ type: 'Toolbar', position: 'top', items: [
 ```java
 // FineUI.Java 页面类：读折叠状态 / 服务端切换折叠
 public void Panel1_CollapseExpand(Object sender, EventArgs e) {
-    showNotify("面板处于" + (Panel1.isCollapsed() ? "折叠" : "展开") + "状态");
+    Notify notify = new Notify();
+    notify.setMessage("面板处于" + (Panel1.isCollapsed() ? "折叠" : "展开") + "状态");
+    notify.show();
 }
 public void Button3_Click(Object sender, EventArgs e) {
     Panel2.setCollapsed(!Panel2.isCollapsed());   // 服务端展开/折叠

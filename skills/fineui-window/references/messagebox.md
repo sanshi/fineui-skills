@@ -1,10 +1,10 @@
-# 消息框（Alert / Confirm / Notify）
+# 消息框（Alert / Confirm / Prompt / Notify）
 
-三类：**Alert**（确认对话框，需点击关闭）、**Confirm**（确认/取消）、**Notify**（自动消失的通知）。
+四类：**Alert**（提示对话框，需点击关闭）、**Confirm**（确认/取消）、**Prompt**（输入对话框）、**Notify**（自动消失的通知）。
 
 > 消息框在 C# 服务端与 JS 客户端调用方式基本一致；跨写法的唯一差异是**触发按钮怎么绑事件**（MVC `OnClick(Url.Action)` / RazorForms `OnClick="方法名"` / RazorPages `OnClick="@Url.Handler(...)"` / **Java `on-click="方法名"`**）。
 >
-> **FineUI.Java 服务端方法名首字母小写**：`Alert.Show(...)`→`showAlert(...)`、`ShowNotify(...)`→`showNotify(...)`、`Confirm`→`showConfirm(...)`；均是 `FineUIPageBase` 上的方法，处理器里直接调用。可信 HTML 变体加 `Raw` 后缀（`showAlertRaw`/`showNotifyRaw`/`showConfirmRaw`）。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
+> **FineUI.Java 服务端入口在消息类上**：`Alert.Show(...)`→`Alert.show(...)`，`Confirm.Show(...)`→`Confirm.show(...)`，`Prompt.Show(...)`→`Prompt.show(...)`；四类复杂配置都可创建实例再调用 `show()`，`Notify` 与 Core 一样只提供实例显示。Java 的 `FineUIPageBase` 不提供 `showAlert` 等消息方法。官方示例自己的 `PageBase.showNotify` 仅统一通知样式。可信 HTML 用 `RawHtml` 显式声明。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
 
 ## 图标值（MessageBoxIcon）
 
@@ -25,11 +25,17 @@ Alert alert = new Alert { Message = "内容", Title = "标题",
 alert.Show();
 ```
 ```java
-// FineUI.Java —— FineUIPageBase 方法（处理器里直接调用）
-showAlert("操作成功！");                                 // 无标题无图标
-showAlert("请先选择一行！", null, MessageBoxIcon.Warning); // 带图标
-showAlertInTop("保存成功！", null, MessageBoxIcon.Success);// iframe 内推荐：弹到顶层
-// 子页「提示 → 确定后关闭窗体并带参回发父页」：showAlertInTopHidePostBack(msg, title, icon, closeArg)
+// FineUI.Java —— 与 Core 对应的类级入口，默认 Information 图标
+Alert.show("操作成功！");
+Alert.show("请先选择一行！", null, MessageBoxIcon.Warning);
+Alert.showInTop("保存成功！", null, MessageBoxIcon.Success);
+
+// 完整属性以及「确定后关闭窗体并回发父页」使用消息实例与结构化后续命令
+Alert alert = new Alert();
+alert.setMessage("保存成功！");
+alert.setTarget(Target.Top);
+alert.setOkCommand(ActiveWindow.hidePostBackReference("已保存"));
+alert.show();
 ```
 
 ### 客户端（F.js，或 C# 页面内 JS）
@@ -92,14 +98,35 @@ F.confirm({ message: '确认执行操作二？', messageIcon: 'question',
 ```
 ```java
 // ③ 后台：确认按钮直接进 on-click 处理器；F.customEvent 统一进 Page_CustomEvent，按事件名分派
-public void btnOperation1_Click(Object sender, EventArgs e) { showNotify("执行了操作一！"); }
-public void Page_CustomEvent(Object sender, CustomEventArgs e) {
-    if ("Operation2".equals(e.getEventName())) { showNotify("执行了操作二！"); }
+public void btnOperation1_Click(Object sender, EventArgs e) {
+    Notify notify = new Notify();
+    notify.setMessage("执行了操作一！");
+    notify.show();
 }
-// 服务端也可只“显示”确认框：showConfirm("确定要删除吗？")
+public void Page_CustomEvent(Object sender, CustomEventArgs e) {
+    if ("Operation2".equals(e.getEventName())) {
+        Notify notify = new Notify();
+        notify.setMessage("执行了操作二！");
+        notify.show();
+    }
+}
+// 服务端也可只显示确认框：Confirm.show("确定要删除吗？")
 ```
 
-## 三、Notify 通知框（自动消失）
+## 三、Prompt 输入框
+
+Core 可用 `Prompt.Show(...)`，Java 可用 `Prompt.show(...)`；需要接收输入值时，Java 创建 `Prompt` 实例，设置页面脚本中已定义的全局函数名，确定回调的首参是输入值：
+
+```java
+Prompt prompt = new Prompt();
+prompt.setMessage("请输入名称");
+prompt.setOkFunction("onPromptAccepted");
+prompt.show();
+```
+
+回调参数是函数名，不传 `onPromptAccepted()` 或任意脚本串。需不同的输入类型、默认值、必填或多行输入时，继续设置实例属性。
+
+## 四、Notify 通知框（自动消失）
 
 ### 服务端（Pro / Core，`ShowNotify` 便捷方法）
 
@@ -116,12 +143,19 @@ Notify notify = new Notify { Message = "内容", Title = "标题", ShowHeader = 
 notify.Show();
 ```
 ```java
-// FineUI.Java —— FineUIPageBase 方法
-showNotify("这是一条通知");
-showNotify("成功登录！", MessageBoxIcon.Success);
-showNotify("提示", "标题", MessageBoxIcon.Information);  // 带标题头
-showNotifyRaw("<ul><li>含 HTML 列表的通知</li></ul>");   // 可信 HTML 变体
-// 位置/停留时长/进度条等完整参数用 showNotify(...) 的长参重载
+// FineUI.Java —— 与 Core 一样配置实例后显示
+Notify notify = new Notify();
+notify.setMessage("成功登录！");
+notify.setMessageBoxIcon(MessageBoxIcon.Success);
+notify.setTarget(Target.Top);
+notify.setPositionX(Position.Center);
+notify.setPositionY(Position.Top);
+notify.setDisplayMilliseconds(3000);
+notify.setShowHeader(false);
+notify.show();
+
+// 官方示例的 PageBase 另有 showNotify("文本") 便捷方法，内部按上面的方式配置实例。
+// HTML 消息用 notify.setMessageRawHtml(new RawHtml("<b>已保存</b>"))。
 ```
 
 ### 客户端（F.js）
@@ -134,8 +168,8 @@ F.notify({ message: '添加成功！', messageIcon: 'information', target: '_top
 
 ## 关键约束
 
-1. **iframe 内的消息要跨到顶层**：Alert 用 `Alert.ShowInTop(...)`（C#）/ `showAlertInTop(...)`（Java）或 `top.F.alert(...)`；Confirm/Notify 用 `target: '_top'`。否则消息只显示在小 iframe 框里。
-2. **消息内容含 HTML**：默认转义。要输出可信 HTML 用 `ShowNotify(new RawHtml("..."))`（C#）/ `showNotifyRaw(...)`（Java）或 `F.rawHtml(...)`（JS）——见 `fineui-foundation` 的 rawhtml.md。**用户输入不要声明为可信**。
+1. **iframe 内的消息要跨到顶层**：Alert 用 `Alert.ShowInTop(...)`（C#）/ `Alert.showInTop(...)`（Java）或 `top.F.alert(...)`；Confirm 可用同名类级入口，Notify 实例设 `Target.Top`。否则消息只显示在小 iframe 框里。
+2. **消息内容含 HTML**：默认转义。要输出可信 HTML 用 `ShowNotify(new RawHtml("..."))`（C#）/ `setMessageRawHtml(new RawHtml("..."))`（Java 实例）或 `F.rawHtml(...)`（JS）——见 `fineui-foundation` 的 rawhtml.md。**用户输入不要声明为可信**。
 3. **确认框的“确认后动作”**：普通服务端按钮优先声明 `ConfirmText` / `confirm-text`；需要自定义分支时，用页面具名 `ClickHandler` 调 `F.confirm`，在 `ok` / `cancel` 回调里调用 `F.customEvent(...)`，后台进入 `Page_CustomEvent`。`F.doPostBack(options)` 只留给非 AJAX、loading、命名表单字段或完成回调等完整选项场景。
 
 ## See also

@@ -66,7 +66,11 @@ F.create({ type: 'Button', renderTo: '#wrap', text: '主按钮', color: 'primary
 // FineUI.Java 页面类：@FineUIPage + extends FineUIPageBase；处理器返回 void
 @FineUIPage("button/button-click")
 public class ButtonClick extends FineUIPageBase {
-    public void btnPrimary_Click(Object sender, EventArgs e) { showNotify("这是服务器端事件"); }
+    public void btnPrimary_Click(Object sender, EventArgs e) {
+        Notify notify = new Notify();
+        notify.setMessage("这是服务器端事件");
+        notify.show();
+    }
 }
 ```
 

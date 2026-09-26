@@ -32,7 +32,9 @@ ShowNotify("选中项：" + String.Join(", ", selectedValues));
 
 ```java
 public void btnSubmit_Click(Object sender, EventArgs e) {
-    showNotify("选中项：" + String.join(", ", DataList1.getSelectedValueArray()));
+    Notify notify = new Notify();
+    notify.setMessage("选中项：" + String.join(", ", DataList1.getSelectedValueArray()));
+    notify.show();
 }
 ```
 

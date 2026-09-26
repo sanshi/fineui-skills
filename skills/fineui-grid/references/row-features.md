@@ -179,7 +179,9 @@ public IActionResult Grid1_RowCommand(string rowId, string rowText, int rowIndex
 // FineUI.Java —— 注意：行命令参数是 GridCommandEventArgs（同 Pro，不是 RazorForms 的 GridRowCommandEventArgs）
 public void Grid1_RowCommand(Object sender, GridCommandEventArgs e) {
     Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());
-    showNotify(String.format("第 %d 行，命令 %s，ID %s", e.getRowIndex() + 1, e.getCommandName(), keys[0]));
+    Notify notify = new Notify();
+    notify.setMessage(String.format("第 %d 行，命令 %s，ID %s", e.getRowIndex() + 1, e.getCommandName(), keys[0]));
+    notify.show();
     // e.getColumnIndex() 取命令所在列
 }
 ```
@@ -228,7 +230,9 @@ public void Grid1_RowClick(Object sender, GridRowEventArgs e) {
     int rowIndex = e.getRowIndex();
     Object[] keys = Grid1.getDataKeys().get(rowIndex);
     String[] selectedCell = Grid1.getSelectedCell();   // [rowId, columnId]，可取当前单元格所在列
-    showNotify("单击第 " + (rowIndex + 1) + " 行，ID：" + keys[0]);
+    Notify notify = new Notify();
+    notify.setMessage("单击第 " + (rowIndex + 1) + " 行，ID：" + keys[0]);
+    notify.show();
 }
 ```
 

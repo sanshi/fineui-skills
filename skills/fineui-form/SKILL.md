@@ -91,7 +91,11 @@ F.create({
 // FineUI.Java 页面类：@FineUIPage 路由 + extends FineUIPageBase；void 处理器无需 return
 @FineUIPage("form/login")
 public class Login extends FineUIPageBase {
-    public void btnSubmit_Click(Object sender, EventArgs e) { showNotify("通过"); }
+    public void btnSubmit_Click(Object sender, EventArgs e) {
+        Notify notify = new Notify();
+        notify.setMessage("通过");
+        notify.show();
+    }
 }
 ```
 
