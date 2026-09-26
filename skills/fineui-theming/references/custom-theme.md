@@ -1,70 +1,35 @@
-# 自定义主题（Custom Theme）
+# 自定义主题
 
-## 主题的三个文件
+创建主题使用 [fineui-custom-theme](../../fineui-custom-theme/SKILL.md)。该技能覆盖配色、生成、三栈接入、实际运行验证和下载交付；附带可复制的“暮紫薄荷”配置。
 
-每个主题一个目录（`F/themes/{名}/`，自定义主题放 `res/themes/{名}/`）：
+## 文件与生成入口
 
-| 文件 | 作用 |
-|------|------|
-| `theme.config` | **颜色配置（必须）** —— 手写改这个 |
-| `theme-extra.css` | 主题特有样式（可选），如背景图 |
-| `theme.css` | **自动生成、勿手改** —— 由 `theme.config` 经 generate-theme 生成，输出 `:root { --f-*: ... }` CSS 变量 |
+每个主题一个目录：`theme.config` 是手写配置，`theme.css` 是生成物，`theme-extra.css` 是可选的附加样式，生成时合并进 `theme.css`。
 
-## 创建自定义主题（步骤）
+| 项目 | 主题目录 |
+|------|----------|
+| Pro / 纯 F.js 示例 | `res/themes/{主题名}/` |
+| Core 三种模式 | `wwwroot/res/themes/{主题名}/` |
+| Java | `src/main/resources/static/res/themes/{主题名}/` |
 
-1. 在 `F/themes/`（或示例项目 `res/themes/`）下新建目录，如 `my_theme/`。
-2. 复制一个现成 `theme.config`（如 `pure_black/theme.config` 或 `custom_default/theme.config`），改颜色值。
-3. （可选）建 `theme-extra.css` 加背景图等特有样式。
-4. 生成：`node generate-theme.mjs my_theme`，或根目录 `npm run theme-gen -- my_theme` / `F\generate-theme.bat my_theme`（不带参 = 生成全部主题）。
-5. 完成——用主题名 `my_theme`（走 `CustomTheme`，见 [set-theme.md](set-theme.md)）。
+上述公开示例均提供 `res/themes/generate-theme.mjs`。进入带脚本的目录执行：
 
-## theme.config 格式
-
-`key = value` 每行一项，`#` 为注释。核心分组：
-
-```ini
-# 核心颜色（6 组状态：content / header / default / hover / active / error，各 border/background/text）
-content-border-color = #e6e6e6
-content-background-color = #ffffff
-content-text-color = #444444
-default-border-color = #e6e6e6
-default-background-color = #ffffff
-default-text-color = #444444
-hover-border-color = #76b4ac
-hover-background-color = #edf9f7
-hover-text-color = #007465
-active-border-color = #76b4ac
-active-background-color = #e5f1ef
-active-text-color = #007465
-error-border-color = #ffa8a8
-error-background-color = #fff8f8
-error-text-color = #ff6c6c
-border-radius = 6px
-
-# 派生变量
-primary-background-color = #007465
-primary-text-color = #fff
-tabstrip-inkbar-color = #007465
-
-# 标志位
-is-dark-background = false      # 深色主题设 true（body 会加 f-theme-darkbg）
-is-dark-active-color = false    # 选中行底色深/淡
+```powershell
+node generate-theme.mjs my_theme
 ```
 
-> 深色主题：`is-dark-background = true`，并把 content/header/default 的 background 改深色、text 改浅色；`focus-shadow-alpha` 建议 `.4`。
+不传主题名会生成全部主题；增加 `--watch` 会持续监听配置和附加样式，保存后仍需刷新浏览器。不要删除生成器、监听用的批处理文件或说明文件。
 
-## 生成脚本原理（了解即可）
+## 接入入口
 
-- `generate-theme.mjs` 读 `theme.config` → 用类 Sass 的 `color.scale` 预计算派生色 → 输出 `theme.css`（CSS 变量 `:root { --f-*: ... }`）。
-- 打包时会把客户端版脚本同步分发到各示例项目的 `res/themes`（`F/examples` + 3 套 Core `wwwroot/res/themes` + Pro `res/themes`）。
+- Pro：`pm.CustomTheme = "my_theme"`，或 `Web.config` 的 `CustomTheme` 属性。
+- Core：`pm.CustomTheme("my_theme")`，或 `appsettings.json` 中的 `FineUI.CustomTheme`。
+- Java：在 `FineUIPageManagerInitializer` 中调用 `pm.customTheme("my_theme")`；`pm.theme(...)` 和 `fineui.theme` 用于内置主题。
 
-## FineUI.Java 侧自定义主题
+完整代码、目录基址和 Cookie 覆盖顺序见 [自定义主题接入与验证](../../fineui-custom-theme/references/integration.md)。
 
-**主题 CSS 变量机制与 F.js 完全一致**，自定义主题也是同一套文件：`theme.config`（手写配色）+ 自动生成的 `theme.css`（`:root { --f-*: ... }`），放在示例项目的 `src/main/resources/static/res/themes/{名}/`（如 `custom_default/`、`image_blue_sky/`）。
+## 配置注意事项
 
-- **Java 制品内没有独立的生成脚本**——`theme.css` 仍由 F.js 端的 `generate-theme` 生成，生成物随资源分发到 Java 项目的 `res/themes/`。改配色的流程不变：改 `theme.config` → 用 F.js 的 `generate-theme` 重新生成 `theme.css` → 放回 Java 的 `res/themes/{名}/`。
-- **引用自定义主题**：全局 `application.properties` 的 `fineui.theme={名}`；按用户在 `FineUIPageManagerInitializer` 里 `pm.theme("{名}")`——Java 不区分内置 / 自定义，主题名统一传 `pm.theme(...)`（对比 Core 需要 `pm.CustomTheme(...)`）。详见 [set-theme.md](set-theme.md)。
+配置是每行 `key = value`，`#` 注释必须独占一行，不支持行尾注释。六组核心状态与圆角需要完整保留；不要手改生成的 `theme.css`。
 
-## See also
-
-- [set-theme.md](set-theme.md)：用自定义主题名切换（`CustomTheme`）
+`is-dark-background` 控制生成时的深色派生样式，不会自动设置客户端 `F.isDarkTheme`。`is-dark-active-color` 控制强调式或染色式选中态，两者独立。

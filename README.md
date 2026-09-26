@@ -69,7 +69,8 @@ npx skills update
 | `fineui-panel` | 容器：Panel、ContentPanel、GroupPanel、工具栏、折叠、Tools、TabStrip 和 Accordion |
 | `fineui-layout` | 布局：Fit、Region、HBox、VBox、Block、Column、Anchor 和视口自适应 |
 | `fineui-button` | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
-| `fineui-theming` | 主题：CSS Variables、全局设置、运行时切换和自定义主题生成 |
+| `fineui-theming` | 主题设置：全局默认、PageManager 覆盖和运行时切换 |
+| `fineui-custom-theme` | 自定义主题：配色设计、配置生成、三栈接入、运行截图验证和主题包交付 |
 | `fineui-upgrade` | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
 
 ## 用法
@@ -79,6 +80,7 @@ npx skills update
 - “用 FineUI.Core 的 TagHelper 写一个带复选框多选、服务端读取选中行的员工表格”
 - “把这个 Grid 加一个日期格式化列，显示成 yyyy/MM/dd”
 - “F.js 里怎么给 Grid 列写自定义渲染函数”
+- “在 FineUI.Pro 示例的 res/themes 中创建一个深梅紫与薄荷绿的主题，运行验证并打包”
 
 AI 会自动命中相关技能，按 FineUI 官方写法生成对应端的代码。
 
