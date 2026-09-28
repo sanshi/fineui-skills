@@ -7,7 +7,7 @@ description: >
   自定义主题创建和主题生成；仅设置或切换已有主题时使用 fineui-theming。
 metadata:
   author: FineUI
-  version: "16.0.0-rc.2"
+  version: "16.0.0-rc.3"
   compatibility: FineUI v16；主题变量机制自 v15 起提供
 ---
 

@@ -12,7 +12,7 @@ description: >
   "showConfirm", "ActiveWindow", "setHidden".
 metadata:
   author: FineUI
-  version: "16.0.0-rc.2"
+  version: "16.0.0-rc.3"
   compatibility: FineUI v16.0（ClickHandler 与统一页面级自定义回发）
 ---
 
