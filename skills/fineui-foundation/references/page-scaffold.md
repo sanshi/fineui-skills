@@ -149,7 +149,7 @@ Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
 }
 ```
 
-服务注册只调用一次 `services.AddFineUI(Configuration)`。它会登记 FineUI 模型绑定器，并在 `EnableRazorForms=true` 时自动加入 RazorForms 所需过滤器；不要再在 `AddRazorPages(...)` 中手工添加 `RazorFormsFilter`，该配置已经多余。FineUI.Core v16.0 的最低运行环境是 .NET 8，Newtonsoft.Json 使用 13.x。
+服务注册只调用一次 `services.AddFineUI(Configuration)`。它会登记 FineUI 模型绑定器，并在 `EnableRazorForms=true` 时自动加入 RazorForms 所需过滤器；不要再在 `AddRazorPages(...)` 中手工添加 `RazorFormsFilter`，该配置已经多余。FineUI.Core v16.0 的最低运行环境是 .NET 8；NuGet 对 `Microsoft.AspNetCore.Mvc.NewtonsoftJson` 仅要求 8.0.31 或更高版本，不设上限。宿主应显式引用与自身 ASP.NET Core 主版本一致的适配包。
 
 ---
 

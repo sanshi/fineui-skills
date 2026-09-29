@@ -18,7 +18,7 @@
 - **[Pro/Core-RazorForms/Java] 普通控件回发参数改为以 F.js 客户端事件名开头**。Pro 不兼容空默认参数、旧 `Command` / `Page` / `ClearIcon` 标识和手写旧控件 target；若业务代码直接构造 `__doPostBack`，改为标准控件事件或 `F.customEvent`。
 - **[Pro] Grid 新代码用 `RenderField.Commands`**；`Command` 只属于 `RenderField`。`LinkButtonField` / `WindowField` 保留兼容，但不再作为行内编辑/删除的推荐方案。
 - **[Core/Pro] 新项目设置 `AllowDangerousRawTag=false` 与 `AllowDangerousScriptTag=false`**。把 `<raw>` 改为 RawHtml，把控件文案中的脚本移到页面具名函数。
-- **[Core] 最低运行环境提高到 .NET 8**，Newtonsoft.Json 依赖提高到 13.x。仍在 .NET 6/7 或引用旧 Newtonsoft.Json 的项目必须先升级。
+- **[Core] 最低运行环境提高到 .NET 8**；NuGet 对 `Microsoft.AspNetCore.Mvc.NewtonsoftJson` 仅要求 8.0.31 或更高版本，不设上限。仍在 .NET 6/7 的项目必须先升级；较高版本的宿主应显式引用与自身 ASP.NET Core 主版本一致的适配包。
 - **[Pro] 开启 `EnableFStateValidation` 的项目必须显式配置非 `AutoGenerate` 的 `<machineKey validationKey="...">`**；Web 农场节点使用同一密钥。
 - **[Pro] 单元格编辑改为 `GetModifiedData()`**；`GetModifiedDict` / `GetDeletedList` / `GetNewAddedList` 已废弃。
 - **[Core] `AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记所需过滤器**。Startup 不再需要手工添加这两项；老项目保留原手工登记也不会重复执行，建议升级后删除以简化 Startup。
