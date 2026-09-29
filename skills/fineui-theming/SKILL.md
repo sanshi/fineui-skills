@@ -6,7 +6,7 @@ description: >
   使用 fineui-custom-theme。
 metadata:
   author: FineUI
-  version: "16.0.0-rc.3"
+  version: "16.0.0-rc.4"
   compatibility: FineUI v15+（主题系统重构为 CSS Variables）
 ---
 
