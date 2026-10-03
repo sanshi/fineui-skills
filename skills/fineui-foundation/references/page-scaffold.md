@@ -174,7 +174,7 @@ public partial class HelloModel : BaseModel {
 }
 // Hello.cshtml.designer.cs（自动生成）：protected FineUI.Core.Button btnHello;
 ```
-PageManager 同样在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。
+PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。配置赋值统一放在后台：应用基类在 GET 处理器前调用 `AppPageManagerInitializer.Initialize(PageManager.Instance, Request)`；单页在 `OnGet` 使用 `PageManager.Instance` 属性赋值（MVC 用返回视图的 Action）。不要将 Cookie 初始化再放回布局，避免覆盖已经确定的单页配置。
 
 ---
 

@@ -76,7 +76,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
   - JS/C# 实例属性：`pagerAutoSimpleMode` / `PagerAutoSimpleMode`；Java 标签属性 `pager-auto-simple-mode`
   - C# 全局：`Grid` 前缀（`GridPagerAutoSimpleMode`，PageManager 或 `Web.config`/`appsettings.json` 设）
   - Java 全局：`application.properties` 的 `fineui.grid-pager-auto-simple-mode`（`fineui.` + kebab-case）
-- **全局配置入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或页面 `F.PageManager.GridXxx(...)`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
+- **全局配置入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或后台 `OnGet` / MVC Action 设置 `PageManager.Instance.GridXxx`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
   - Java 的服务端专用项同样是 `fineui.` 扁平键（无嵌套分组），如 `fineui.grid-convert-long-to-string`、`fineui.csp-scripts` 及配套 `fineui.csp-allow-*`、`fineui.security-csrf`、`fineui.mobile-adaption`、`fineui.home`（首页路由）。
 - **Java 最低要求 Spring Boot 3.5.16，也支持 4.1.x**；库的公开 API 不暴露任何 Jackson 类型。业务应用的 JSON 使用宿主 Spring Boot 自带的 Jackson：Boot 3.5 是 Jackson 2，Boot 4.1 是 Jackson 3（见 [events-postback.md](events-postback.md) 的自定义回发一节）。
 - **新项目安全默认值**：Pro/Core 设置 `AllowDangerousRawTag=false` 与 `AllowDangerousScriptTag=false`。Pro 另设置 `EnableImplicitPostBack=false`、`EnableImplicitChangeEvents=false`，使用“声明服务端事件才自动回发”的统一心智模型。完整规则见 [events-postback.md](events-postback.md) 与 [rawhtml.md](rawhtml.md)。

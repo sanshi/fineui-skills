@@ -39,10 +39,10 @@ pm.Theme = Theme.Pure_Blue;
 ```
 
 ```csharp
-// Core：视图中的 F 来自 Html.F()。
-var pm = F.PageManager;
-pm.CustomTheme(String.Empty);
-pm.Theme(Theme.Pure_Blue);
+// Core：放在 OnGet / 返回视图的 MVC Action，晚于应用公共初始化。
+var pm = PageManager.Instance;
+pm.CustomTheme = String.Empty;
+pm.Theme = Theme.Pure_Blue;
 ```
 
 ```java
@@ -51,7 +51,7 @@ pm.customTheme(null);
 pm.theme("pure_blue");
 ```
 
-应用静态资源中的自定义主题分别使用 `pm.CustomTheme = "my_theme"`、`pm.CustomTheme("my_theme")`、`pm.customTheme("my_theme")`。Java 的 `theme(...)` 与 `customTheme(...)` 也需要区分，不能混用。
+应用静态资源中的自定义主题分别使用 `pm.CustomTheme = "my_theme"`、`pm.CustomTheme = "my_theme"`、`pm.customTheme("my_theme")`。Java 的 `theme(...)` 与 `customTheme(...)` 也需要区分，不能混用。
 
 ## 运行时切换
 
@@ -64,7 +64,7 @@ window.location.reload();
 ```
 
 - Pro 示例的 `PageBase` 判断名称是否属于 `Theme` 枚举，内置名设置 `Theme` 并清空 `CustomTheme`，其它名设置 `CustomTheme`。
-- Core 示例的 `_InitPageManagerPartial.cshtml` 使用相同的区分逻辑，采用流式调用。
+- Core 项目的 `AppPageManagerInitializer.Initialize(pm, request)` 由页面基类在 GET 处理器前调用；内置名设置 `Theme` 并清空 `CustomTheme`，其它名设置 `CustomTheme`。单页设置随后可以覆盖公共偏好。
 - Java 示例的 `AppPageManagerInitializer` 目前读取 Cookie 后调用 `pm.theme(...)`，不能直接用这段逻辑加载应用自定义主题。需要扩展现有初始化器，以允许的自定义主题名清单区分两类入口。
 - 纯 F.js 应用需要自己读取偏好，在加载样式和初始化时使用；写 Cookie 本身不会换肤。
 

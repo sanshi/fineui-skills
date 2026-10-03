@@ -53,14 +53,14 @@ Pro 项目若显式列出内容文件，需要登记新增的三个文件；没�
 }
 ```
 
-或者在布局中已有的 PageManager 初始化位置使用流式写法：
+页面级主题在后台 `OnGet` 设置（MVC 放在返回视图的 Action）：
 
 ```csharp
-var pm = F.PageManager;
-pm.CustomTheme("plum_mint");
+var pm = PageManager.Instance;
+pm.CustomTheme = "plum_mint";
 ```
 
-这里的 `F` 是视图中已有的 `Html.F()`。官方示例的 `_InitPageManagerPartial.cshtml` 可能读取 `Theme` Cookie 覆盖默认值，排查时一并检查。
+用户偏好由现有 `AppPageManagerInitializer.Initialize(pm, request)` 处理，页面基类在 GET 处理器前调用。单页设置随后可以覆盖 Cookie，布局只保留资源与 PageManager 输出。排查全站默认值时同时检查旧 `Theme` Cookie。
 
 ## FineUI.Java
 
