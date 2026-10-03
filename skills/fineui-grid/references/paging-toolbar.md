@@ -56,9 +56,15 @@ pagerAutoSimpleMode: true
 <f:Grid ... PagerAutoSimpleMode="true"> ... </f:Grid>
 ```
 ```java
-// FineUI.Java —— 页面类 Page_Load 里经 PageManager 开启（本页生效）
+// FineUI.Java：在 Page_Get 配置本页默认值，Page_Load 操作已经绑定的表格。
+public void Page_Get(Object sender, EventArgs e) {
+    getPageManager().gridPagerAutoSimpleMode(true);
+}
+
 public void Page_Load(Object sender, EventArgs e) {
-    if (!isPostBack()) { getPageManager().gridPagerAutoSimpleMode(true); loadData(); }
+    if (!isPostBack()) {
+        loadData();
+    }
 }
 ```
 
