@@ -9,7 +9,7 @@ description: >
   "DataTextField", "DataValueField", "加载更多", "AppendData", "data-list", "data-list-item".
 metadata:
   author: FineUI
-  version: "16.0.0-rc.4"
+  version: "16.0.0"
   compatibility: FineUI v16.0（文本默认编码与 RawHtml 安全模型）
 ---
 
