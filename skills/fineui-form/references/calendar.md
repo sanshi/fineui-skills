@@ -9,7 +9,7 @@ Calendar 是直接显示在页面中的日期、月份、年份、时间或范�
 ```javascript
 F.create({
     type: 'Calendar', id: 'Calendar1', renderTo: '#wrap',
-    format: 'yyyy/MM/dd', value: new Date(),
+    format: 'yyyy-MM-dd', value: new Date(),
     listeners: {
         select: function () {
             showNotify('选择的日期：' + this.getText());
@@ -21,7 +21,7 @@ F.create({
 ### FineUI.Pro
 
 ```aspx
-<f:Calendar ID="Calendar1" runat="server" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" runat="server" DateFormatString="yyyy-MM-dd"
     ShowTodayButton="true" EnableDateSelectEvent="true" OnDateSelect="Calendar1_DateSelect" />
 ```
 
@@ -36,7 +36,7 @@ protected void Page_Load(object sender, EventArgs e)
 
 protected void Calendar1_DateSelect(object sender, EventArgs e)
 {
-    ShowNotify("选择的日期：" + Calendar1.SelectedDate.Value.ToString("yyyy/MM/dd"));
+    ShowNotify("选择的日期：" + Calendar1.SelectedDate.Value.ToString("yyyy-MM-dd"));
 }
 ```
 
@@ -44,7 +44,7 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
 
 ```csharp
 @(F.Calendar().ID("Calendar1")
-    .DateFormatString("yyyy/MM/dd")
+    .DateFormatString("yyyy-MM-dd")
     .SelectedDate(DateTime.Now)
     .OnDateSelect(Url.Action("Calendar1_DateSelect"),
         new Parameter("selectedDate", "F.ui.Calendar1.getText()")))
@@ -63,7 +63,7 @@ public IActionResult Calendar1_DateSelect(string selectedDate)
 ### FineUI.Core RazorForms（推荐）
 
 ```html
-<f:Calendar ID="Calendar1" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" DateFormatString="yyyy-MM-dd"
     OnDateSelect="Calendar1_DateSelect"></f:Calendar>
 ```
 
@@ -78,14 +78,14 @@ protected void Page_Load(object sender, EventArgs e)
 
 protected void Calendar1_DateSelect(object sender, EventArgs e)
 {
-    labResult.Text = "选择的日期：" + Calendar1.SelectedDate.Value.ToString("yyyy/MM/dd");
+    labResult.Text = "选择的日期：" + Calendar1.SelectedDate.Value.ToString("yyyy-MM-dd");
 }
 ```
 
 ### FineUI.Core RazorPages
 
 ```html
-<f:Calendar ID="Calendar1" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" DateFormatString="yyyy-MM-dd"
     OnDateSelect="@Url.Handler("Calendar1_DateSelect")"
     OnDateSelectParameter1="@(new Parameter("selectedDate", "F.ui.Calendar1.getText()"))">
 </f:Calendar>
@@ -102,7 +102,7 @@ public IActionResult OnPostCalendar1_DateSelect(string selectedDate)
 ### FineUI.Java
 
 ```html
-<f:calendar id="Calendar1" date-format-string="yyyy/MM/dd"
+<f:calendar id="Calendar1" date-format-string="yyyy-MM-dd"
     on-date-select="Calendar1_DateSelect"></f:calendar>
 ```
 
@@ -117,7 +117,7 @@ public void Page_Load(Object sender, EventArgs e) {
 }
 
 public void Calendar1_DateSelect(Object sender, EventArgs e) {
-    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     labResult.setText("选择的日期：" + format.format(Calendar1.getSelectedDate()));
 }
 ```
@@ -130,21 +130,21 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 
 ```aspx
 <!-- FineUI.Pro -->
-<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy-MM-dd"
     ShowConfirmButton="true" ConfirmToSelect="true" EnableDateSelectEvent="true"
     OnDateSelect="Calendar1_DateSelect" />
 ```
 
 ```html
 <!-- FineUI.Core RazorForms -->
-<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy-MM-dd"
     ShowConfirmButton="true" ConfirmToSelect="true" OnDateSelect="Calendar1_DateSelect">
 </f:Calendar>
 ```
 
 ```html
 <!-- FineUI.Core RazorPages -->
-<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy/MM/dd"
+<f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy-MM-dd"
     ShowConfirmButton="true" ConfirmToSelect="true"
     OnDateSelect="@Url.Handler("Calendar1_DateSelect")"
     OnDateSelectParameter1="@(new Parameter("selectedRange", "F.ui.Calendar1.getText()"))">
@@ -153,7 +153,7 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 
 ```html
 <!-- FineUI.Java -->
-<f:calendar id="Calendar1" display-type="DayRange" date-format-string="yyyy/MM/dd"
+<f:calendar id="Calendar1" display-type="DayRange" date-format-string="yyyy-MM-dd"
     show-confirm-button="true" confirm-to-select="true"
     on-date-select="Calendar1_DateSelect"></f:calendar>
 ```
@@ -174,10 +174,10 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 
 | 用途 | `DisplayType` | 建议格式 |
 |------|---------------|----------|
-| 日期 | `Day` | `yyyy/MM/dd` |
+| 日期 | `Day` | `yyyy-MM-dd` |
 | 月份 | `Month` | `yyyy/MM` |
 | 年份 | `Year` | `yyyy` |
-| 日期范围 | `DayRange` | `yyyy/MM/dd` |
+| 日期范围 | `DayRange` | `yyyy-MM-dd` |
 | 月份范围 | `MonthRange` | `yyyy/MM` |
 | 年份范围 | `YearRange` | `yyyy` |
 | 时间 | `Time` | `HH:mm:ss` |

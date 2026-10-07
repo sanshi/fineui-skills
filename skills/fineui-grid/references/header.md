@@ -282,7 +282,7 @@ public class DynamicColumns extends FineUIPageBase {
             RenderCheckField atSchool = new RenderCheckField();
             atSchool.setHeaderText("是否在校"); atSchool.setDataField("AtSchool"); atSchool.setRenderAsStaticField(true);
             Grid1.addColumn(atSchool);
-            // 日期列：logTime.setFieldType(FieldType.Date); logTime.setRenderer(Renderer.Date); logTime.setRendererArgument("yyyy/MM/dd");
+            // 日期列：logTime.setFieldType(FieldType.Date); logTime.setRenderer(Renderer.Date); logTime.setRendererArgument("yyyy-MM-dd");
             Grid1.setDataSource(getRows());
             Grid1.dataBind();
         }

@@ -95,19 +95,19 @@ F.NumberBox().Label("金额").Commas(true).NumberPrefix("￥").DecimalPrecision(
 ```
 ```aspx
 <%-- Pro --%>
-<f:DatePicker runat="server" ID="dp1" Label="开始日期" Required="true" DateFormatString="yyyy/MM/dd" EmptyText="请选择" />
+<f:DatePicker runat="server" ID="dp1" Label="开始日期" Required="true" DateFormatString="yyyy-MM-dd" EmptyText="请选择" />
 ```
 ```csharp
 // Core-MVC（Fluent）
-F.DatePicker().ID("dp1").Label("开始日期").Required(true).DateFormatString("yyyy/MM/dd").SelectedDate(DateTime.Now)
+F.DatePicker().ID("dp1").Label("开始日期").Required(true).DateFormatString("yyyy-MM-dd").SelectedDate(DateTime.Now)
 ```
 ```html
 <!-- Core-TagHelper -->
-<f:DatePicker ID="dp1" Label="开始日期" Required="true" DateFormatString="yyyy/MM/dd"></f:DatePicker>
+<f:DatePicker ID="dp1" Label="开始日期" Required="true" DateFormatString="yyyy-MM-dd"></f:DatePicker>
 ```
 ```html
 <!-- FineUI.Java（Thymeleaf 方言）-->
-<f:date-picker id="dp1" label="开始日期" required="true" show-red-star="true" date-format-string="yyyy/MM/dd" empty-text="请选择"></f:date-picker>
+<f:date-picker id="dp1" label="开始日期" required="true" show-red-star="true" date-format-string="yyyy-MM-dd" empty-text="请选择"></f:date-picker>
 ```
 
 ## DropDownList

@@ -81,13 +81,13 @@ columns: [
 
 ## 格式化列：日期与数字
 
-C# 三模式用**内置渲染器** `Renderer` + `RendererArgument`（日期 `yyyy/MM/dd`；数字 `N2` 千分位两位小数、`P1` 百分比、`D10` 十进制整数），并配 `FieldType`。F.js 用 `fieldType` + `fieldFormat`（内部走 `F.format.dateRenderer` / `numberRenderer`）。
+C# 三模式用**内置渲染器** `Renderer` + `RendererArgument`（日期 `yyyy-MM-dd`；数字 `N2` 千分位两位小数、`P1` 百分比、`D10` 十进制整数），并配 `FieldType`。F.js 用 `fieldType` + `fieldFormat`（内部走 `F.format.dateRenderer` / `numberRenderer`）。
 
 ### F.js
 
 ```javascript
 columns: [
-    { text: '入学日期', field: 'EntranceDate', fieldType: 'date', fieldFormat: 'yyyy/MM/dd' },
+    { text: '入学日期', field: 'EntranceDate', fieldType: 'date', fieldFormat: 'yyyy-MM-dd' },
     { text: '工资',     field: 'Salary',       fieldType: 'float', fieldFormat: 'n2' }
 ]
 ```
@@ -96,7 +96,7 @@ columns: [
 
 ```aspx
 <f:RenderField ColumnID="EntranceDate" DataField="EntranceDate" HeaderText="入学日期"
-    FieldType="Date" Renderer="Date" RendererArgument="yyyy/MM/dd" Width="150px" />
+    FieldType="Date" Renderer="Date" RendererArgument="yyyy-MM-dd" Width="150px" />
 <f:RenderField ColumnID="Salary" DataField="Salary" HeaderText="工资"
     FieldType="Double" Renderer="Number" RendererArgument="N2" Width="150px" />
 ```
@@ -105,7 +105,7 @@ columns: [
 
 ```csharp
 F.RenderField().HeaderText("入学日期").DataField("EntranceDate")
-    .FieldType(FieldType.Date).Renderer(Renderer.Date).RendererArgument("yyyy/MM/dd").Width(150),
+    .FieldType(FieldType.Date).Renderer(Renderer.Date).RendererArgument("yyyy-MM-dd").Width(150),
 F.RenderField().HeaderText("工资").DataField("Salary")
     .FieldType(FieldType.Double).Renderer(Renderer.Number).RendererArgument("N2").Width(150)
 ```
@@ -113,12 +113,12 @@ F.RenderField().HeaderText("工资").DataField("Salary")
 ### Core-TagHelper（RazorForms / RazorPages）
 
 ```html
-<f:RenderField HeaderText="入学日期" DataField="EntranceDate" FieldType="Date" Renderer="Date" RendererArgument="yyyy/MM/dd" Width="150" />
+<f:RenderField HeaderText="入学日期" DataField="EntranceDate" FieldType="Date" Renderer="Date" RendererArgument="yyyy-MM-dd" Width="150" />
 <f:RenderField HeaderText="工资" DataField="Salary" FieldType="Double" Renderer="Number" RendererArgument="N2" Width="150" />
 ```
 ```html
-<!-- FineUI.Java（Thymeleaf 方言）：属性名 kebab-case，值 Date/Number/N2/yyyy/MM/dd 保持不变 -->
-<f:render-field header-text="入学日期" data-field="EntranceDate" field-type="Date" renderer="Date" renderer-argument="yyyy/MM/dd" width="150"></f:render-field>
+<!-- FineUI.Java（Thymeleaf 方言）：属性名 kebab-case，值 Date/Number/N2/yyyy-MM-dd 保持不变 -->
+<f:render-field header-text="入学日期" data-field="EntranceDate" field-type="Date" renderer="Date" renderer-argument="yyyy-MM-dd" width="150"></f:render-field>
 <f:render-field header-text="工资" data-field="Salary" field-type="Double" renderer="Number" renderer-argument="N2" width="150"></f:render-field>
 ```
 

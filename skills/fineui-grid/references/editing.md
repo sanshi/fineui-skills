@@ -20,7 +20,7 @@ F.create({
           editor: { type: 'DropDownList', required: true, data: [['1', '男'], ['0', '女']] } },
         { text: '入学年份', field: 'EntranceYear', fieldType: 'int', editable: true,
           editor: { type: 'NumberBox', required: true, noDecimal: true, minValue: 2000, maxValue: 2025 } },
-        { text: '入学日期', field: 'EntranceDate', fieldType: 'date', fieldFormat: 'yyyy/MM/dd', editable: true,
+        { text: '入学日期', field: 'EntranceDate', fieldType: 'date', fieldFormat: 'yyyy-MM-dd', editable: true,
           editor: { type: 'DatePicker', required: true } },
         { text: '是否在校', field: 'AtSchool', columnType: 'checkboxfield', editable: true }
     ],

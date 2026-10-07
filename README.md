@@ -78,7 +78,7 @@ npx skills update
 装好后，在 AI 编程助手里正常提需求即可，例如：
 
 - “用 FineUI.Core 的 TagHelper 写一个带复选框多选、服务端读取选中行的员工表格”
-- “把这个 Grid 加一个日期格式化列，显示成 yyyy/MM/dd”
+- “把这个 Grid 加一个日期格式化列，显示成 yyyy-MM-dd”
 - “F.js 里怎么给 Grid 列写自定义渲染函数”
 - “在 FineUI.Pro 示例的 res/themes 中创建一个深梅紫与薄荷绿的主题，运行验证并打包”
 
