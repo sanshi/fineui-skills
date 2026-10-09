@@ -82,12 +82,16 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 | 模式 | 后台处理器 | 是否返回 `UIHelper.Result()` |
 |------|------------|------------------------------|
 | Pro WebForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` | 否 |
-| Core RazorForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` | 否 |
+| Core RazorForms 按钮点击 | `protected void btnSave_Click(object sender, EventArgs e)` 或 `protected async Task btnSave_ClickAsync(object sender, EventArgs e)` | 否 |
 | Core MVC | `[HttpPost] public IActionResult btnSave_Click()` | 是 |
 | Core RazorPages | `public IActionResult OnPostBtnSave_Click()` | 是 |
 | FineUI.Java | `public void btnSave_Click(Object sender, EventArgs e)` | 否 |
 
-**RazorForms 采用 WebForms 风格的有状态控件事件，不是 RazorPages 处理器。**看到 `<f:Button OnClick="btnSave_Click">` 和 `.designer.cs` 时，按钮点击生成 `void btnSave_Click(object sender, EventArgs e)`；不要改写成 `OnPostBtnSave_Click`，也不要返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
+**RazorForms 采用 WebForms 风格的有状态控件事件，不是 RazorPages 处理器。**看到 `<f:Button OnClick="btnSave_Click">` 和 `.designer.cs` 时，按钮点击使用上表的同步或异步事件签名；不要改写成 `OnPostBtnSave_Click`，也不要返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
+
+**Core RazorForms 推荐标签始终省略 `Async`**，如 `OnClick="btnSave_Click"`：框架优先查找 `btnSave_ClickAsync`，没有时才调用 `btnSave_Click`；后台切换同步／异步实现时标签不变。异步事件返回 `Task`，不要使用 `async void`；`Page_LoadAsync`、`Page_CustomEventAsync` 同样等待完成。
+
+兼容说明：优化后的 Core RazorForms 也接受标签中的完整 `Async` 名称，按该名称精确调用并等待返回的 `Task`，不再追加后缀或改名回退；新代码仍优先采用无后缀标签。此规则不适用于 Pro、Java、Core MVC 或 RazorPages。
 
 简单确认优先声明 `ConfirmText` / `ConfirmTarget`，不要手写 `F.confirm`：
 

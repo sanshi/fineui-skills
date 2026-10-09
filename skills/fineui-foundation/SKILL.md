@@ -75,7 +75,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 |------|--------|
 | [references/stacks.md](references/stacks.md) | 各写法差异总表、判定线索、命名约定、全局配置 |
 | [references/page-scaffold.md](references/page-scaffold.md) | 最小页面骨架、PageManager 位置、Region/ViewPort 布局、共享 `_Layout` |
-| [references/events-postback.md](references/events-postback.md) | `ClickHandler`、服务端事件、`F.customEvent`、Pro 两个兼容开关与 Grid 行命令 |
+| [references/events-postback.md](references/events-postback.md) | `ClickHandler`、服务端事件、Core RazorForms 同步／异步事件命名、`F.customEvent`、Pro 两个兼容开关与 Grid 行命令 |
 | [references/rawhtml.md](references/rawhtml.md) | 可信 HTML：`F.rawHtml` / `XxxRawHtml` / `new RawHtml(...)` |
 
 ## 相关技能（Related Skills）
@@ -93,6 +93,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 5. **各栈启用标签**：Core 启用 TagHelper 需 `_ViewImports.cshtml` 的 `@addTagHelper *, FineUI.Core`，CSS/JS 用 `@F.RenderCss()` / `@F.RenderScript()`；**Java 页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，CSS/JS 由母版里的 `<f:styles>` / `<f:scripts>` 输出**。
 6. **消息框与回发返回值必须按模式区分**：F.js 用 `F.alert({ message: ... })` / `showNotify(...)`；Pro 与 **Core-RazorForms** 的同步控件事件返回 `void`、直接操作控件，**不写 `OnPostXxx`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。按钮点击可写 `void Xxx_Click(object sender, EventArgs e)`；分页、排序、行命令等事件的第二参数必须使用各自的专用 `EventArgs`。RazorForms 后台类必须是 `partial` 并继承项目现有的 RazorForms 页面基类（官方示例为 `XxxModel : BaseModel`，而 `BaseModel` 本身可继承 `PageModel`）；不要改成非 `partial` 的 RazorPages 页面并使用 `OnGet` / `OnPostXxx`。只有 Core-MVC 的 action 和 Core-RazorPages 的 `OnPostXxx` 返回 `IActionResult`，结尾 `return UIHelper.Result();`；Java 用消息类 `Alert.show(...)`、`Confirm.show(...)` 或 `new Notify().show()`，同步处理器返回 `void`，事件参数同样按事件类型选择。
 7. **客户端动作只写具名函数**：Pro/Core 用 `ClickHandler="onXxxClick"`，Java 用 `click-handler="onXxxClick"`，函数首参为 `event`。不要在新代码中使用 `OnClientClick` / `on-client-click` 或把脚本塞进 Handler；详见 [references/events-postback.md](references/events-postback.md)。
+8. **Core RazorForms 事件名默认省略 `Async`**：标签推荐写 `OnClick="btnSave_Click"`，后台可用同步的 `void btnSave_Click(...)` 或异步的 `async Task btnSave_ClickAsync(...)`，切换实现时标签不变；两者并存时优先异步方法，异步事件不要使用 `async void`。完整 `Async` 名称只作兼容说明，详见 [references/events-postback.md](references/events-postback.md)；此命名规则不套用到 Pro、Java 或 Core 的其他模式。
 
 ## 官方资源（Official Resources）
 

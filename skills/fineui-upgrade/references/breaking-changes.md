@@ -22,6 +22,7 @@
 - **[Pro] 开启 `EnableFStateValidation` 的项目必须显式配置非 `AutoGenerate` 的 `<machineKey validationKey="...">`**；Web 农场节点使用同一密钥。
 - **[Pro] 单元格编辑改为 `GetModifiedData()`**；`GetModifiedDict` / `GetDeletedList` / `GetNewAddedList` 已废弃。
 - **[Core] `AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记所需过滤器**。Startup 不再需要手工添加这两项；老项目保留原手工登记也不会重复执行，建议升级后删除以简化 Startup。
+- **[Core-RazorForms] 事件方法按完整名称兼容调用并等待 `Task`**。标签省略 `Async` 仍是推荐写法，保留异步优先，后台可切换 `void` 同步方法或 `async Task` 异步方法；显式写 `SaveAsync` 时不再优先找 `SaveAsyncAsync`，依赖旧行为的页面应明确填写实际需要调用的完整方法名。普通控件事件方法缺失会报错，`async void`、空任务及未支持返回类型须改为有效的 `void` 或 `Task`。
 - **[Core-RazorForms] 点击时给后台带额外数据不再用 `OnClickParameter1..N`**，推荐改为自定义回发（`ClickHandler` + `F.customEvent`）；需要落进 `[BindProperty]` 命名表单字段时用 `F.doPostBack({ eventName, params })`。MVC 与 RazorPages 不受影响，继续使用 `OnClickParameter`。
 - **[Core] 配置项 `ExcludedURLs`（不使用 FineUI 中间件的网址列表）已废弃**，不再需要配置；已有配置继续生效，无需修改。
 - **[JS] 不再支持 IE**；移除 `F.isIE8()` / `F.isIE89()` / `F.isIE9()` / `F.isIE()`。
