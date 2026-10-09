@@ -4,6 +4,12 @@ FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor�
 
 > 这些技能供 AI 编程助手使用，不是应用程序的运行时依赖。仓库只包含 FineUI 的公开用法、文档和示例知识，不含 FineUI 源码或内部实现。
 
+<!-- fineui-community:start -->
+## 加入 FineUI 社区
+
+欢迎[加入 FineUI 社区](https://fineui.com/fans/)，一站式获取社区版、完整示例、空项目、快速入门和 AppBox 等配套资源，及时了解版本更新，交流控件用法与项目实践。**FineUI.Core、FineUI.Pro 与 FineUI.Java 社区版均可永久免费商用**，欢迎一起分享经验、讨论问题。
+<!-- fineui-community:end -->
+
 ## FineUI 部署栈与开发模式
 
 FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能集为每种写法给出可运行的最小代码：
