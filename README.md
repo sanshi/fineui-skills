@@ -1,5 +1,7 @@
 # FineUI Agent Skills
 
+本仓库独立维护 FineUI 开发技能及参考资料。只需技能时使用下文的 `npx skills add` 命令；要同时接入本地知识查询，请从官网[快速开始](https://fineui.com/docs/#/AgentSkills/quickstart)安装 `fineui-agent`。工具包包含 CLI、MCP 和离线知识，由独立项目维护。
+
 FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor、OpenCode、Codex** 等 AI 编程助手提供准确的 FineUI API、开发模式和代码示例，减少错误 API、版本混用和技术栈混用。
 
 > 这些技能供 AI 编程助手使用，不是应用程序的运行时依赖。仓库只包含 FineUI 的公开用法、文档和示例知识，不含 FineUI 源码或内部实现。
@@ -31,11 +33,11 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 - **FineUI v16.0**。技能中的客户端事件、回发语义和 RawHtml 安全模型均以此版本为准。
 
-## 安装
+## 仅安装 Skills
 
-技能采用开放的 **Agent Skills（`SKILL.md`）格式**，可供多种 AI 编程助手使用。
+完整接入请先看官网[快速开始](https://fineui.com/docs/#/AgentSkills/quickstart)。如果客户端只支持技能，可以单独安装本仓库的 **Agent Skills（`SKILL.md`）**；这种方式只提供开发指导，不配置本地 MCP 查询。
 
-### 项目级安装（推荐）
+### 项目级安装
 
 这是**项目级安装**。请先在终端进入需要使用这些技能的项目根目录，再执行安装命令。例如，要为 `D:\YourProject` 项目安装：
 
@@ -54,7 +56,7 @@ CLI 会检测可用的 Agent，并在需要时提示你选择技能、目标 Age
 npx skills add sanshi/fineui-skills -g
 ```
 
-## 更新
+## 仅更新 Skills
 
 ```bash
 npx skills update

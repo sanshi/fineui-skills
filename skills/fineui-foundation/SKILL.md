@@ -44,6 +44,8 @@ metadata:
 
 ## 开始前（Before You Start）—— 先判定写法
 
+如果已安装 FineUI 本地 MCP 或 CLI，先确认项目模式与准确产品版本，再查询 API 和同模式示例。流程见 [references/agent-tools.md](references/agent-tools.md)；工具缺失时继续使用本技能，不推测已经检索到的证据。
+
 > 判定线索：纯前端 `.html` + `F.create` → **F.js**；`.aspx` + `<f:Xxx runat="server">` → **Pro**；`Controllers/` + `Views/*/Index.cshtml` 用 `Html.F()` → **Core-MVC**；`Pages/*.cshtml` + `<f:Xxx>` 标签 → **Core-RazorForms**（有 `.designer.cs`）或 **Core-RazorPages**（无 designer）；`.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:xxx>` 小写标签、`pom.xml`/`mvnw` + 页面类带 `@FineUIPage` → **Java（Spring Boot）**。
 
 ## 各写法速览（创建一个组件）
