@@ -12,7 +12,7 @@ description: >
 metadata:
   author: FineUI
   version: "16.0.1"
-  compatibility: FineUI v16.0
+  compatibility: FineUI v16.0，并记录待发布的 FormRow 自动列宽规则。
 ---
 
 # FineUI 布局技能（Layout System）
@@ -87,7 +87,7 @@ metadata:
 4. **视口自适应两种入口**：根面板 `IsViewPort="true"`（Java `is-view-port="true"`），或 Pro `<f:PageManager AutoSizePanelID="Panel1">`。
 5. **Block 一行总和 12**：子项 `Block/BlockSM/BlockMD/BlockLG`（Java `block/block-sm/block-md/block-lg`）值 1–12，行内和为 12（超出换行）；间距 `BlockConfigSpace`（Java `block-config-space`）；`InlineBlock` 是另一种布局，别与 `Block` 混淆。
 6. **HBox/VBox 弹性用 `BoxFlex`**（Java `box-flex`）：弹性子项 `BoxFlex`，固定子项用 `Width`/`Height`；"撑满 + 放 Grid"给弹性子项加 `Layout="Fit"`。见 [references/hbox-vbox.md](references/hbox-vbox.md)。
-7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc；Java 属性名 = Core 属性名转 kebab-case。
+7. **绝不编造 API**：不确定就查官网公开 API 与同模式官方示例；Java 属性名 = Core 属性名转 kebab-case。
 8. **HBox/VBox 统一间隔优先用 `BoxConfigSpace`**（Java `box-config-space`，F.js `layout.space`），末项不追加间隔；四周留白用 `BodyPadding`。仅在说明等效写法或需要特殊边距时使用 `BoxConfigChildMargin` 与 `BoxConfigLastChildMargin`，不要机械保留旧写法留下的尾部空隙。迁移与覆盖顺序见 [references/hbox-vbox.md](references/hbox-vbox.md)。
 
 ## 官方资源（Official Resources）

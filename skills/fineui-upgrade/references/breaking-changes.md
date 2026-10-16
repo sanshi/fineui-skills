@@ -4,6 +4,45 @@
 
 > **完整逐条以官方在线发布历史为准**：https://fineui.com/versions/ （在其中搜索“不兼容”）。本清单是高影响项的精炼；升级跨越多个大版本时，把区间内每个版本的“不兼容”条目都过一遍。
 
+## 待发布：Pro/Core 的 FormRow 按钮直接参与列布局
+
+- Pro 和 Core 的 RazorForms、MVC、RazorPages 不再给 `FormRow.Items` 中的按钮自动加一层 `Panel`。按钮直接接受这一列的宽度；Java 原本如此，没有这项旧行为需要迁移。
+- **先查页面**：找出“字段 + 按钮”直接放在同一 `FormRow` 中的地方。不设置 `ColumnWidths` 和明确写 `50% 50%` 都是两列均分；升级后按钮也占半行。业务本来就想让按钮占半行时无需修改。
+- **需要窄按钮时**：给该行设置 `ColumnWidths="100% auto"`；Core MVC 使用 `.ColumnWidths("100% auto")`。下面的 Core TagHelper 示例只改 `FormRow` 起始标签，按钮仍保留原来的 ID、文字和事件：
+
+  ```cshtml
+  <!-- 改前：未指定列宽，按钮升级后也占半行 -->
+  <f:FormRow ID="SearchRow">
+      <Items>
+          <f:TextBox ID="SearchText" Label="关键词"></f:TextBox>
+          <f:Button ID="SearchButton" Text="查询"></f:Button>
+      </Items>
+  </f:FormRow>
+
+  <!-- 改后：文本框使用剩余空间，按钮保持内容宽度 -->
+  <f:FormRow ID="SearchRow" ColumnWidths="100% auto">
+      <Items>
+          <f:TextBox ID="SearchText" Label="关键词"></f:TextBox>
+          <f:Button ID="SearchButton" Text="查询"></f:Button>
+      </Items>
+  </f:FormRow>
+  ```
+
+  Pro 的服务器控件继续保留原有 `runat="server"`；Java 标签写 `column-widths="100% auto"`，但 Java 原本就直接布局，没有这项迁移要求。
+- `50% auto` 会让字段只占扣除按钮后剩余宽度的一半，行尾仍有空白；不要把它误当作保留旧窄按钮效果的通用替代。`auto` 列保留明确设置的 `Width`，否则按控件默认或内容宽度显示。窄窗口下仍需检查标签与输入框是否有足够空间。
+
+## 待发布：Core 三种模式统一 JSON 与严格 CSP
+
+- 默认首屏与受控回发改为 JSON，普通控件回发使用当前完整 URL，不再自动增加 `handler`。无需新增架构开关；MVC、RazorPages 使用相同首屏/响应 JSON 的无状态子集，保留原生路由与参数绑定；独立业务数据、下载保留原结果合同。
+- `AuthenticationTimeout` 等搜索响应 JS 的拦截代码必须改为解析 JSON，查找 `commands` 中的 `page.redirect`；不提供旧脚本正文模拟。
+- 普通策略保留 `RegisterStartupScript`、旧引用方法和字符串消息回调。严格内容安全策略（Content Security Policy，CSP）下使用结构化动作、`XxxAjaxHelper` 和具名函数。`CspScriptsAllowUnsafeEval` 未显式配置时三种 Core 模式均为 `false`；nonce 不能放行动态编译脚本。
+- 官方 Core RazorForms、MVC、RazorPages 示例和空项目，以及 AppBox、QuickStart，已显式启用同源脚本和每请求 nonce，关闭 `unsafe-inline`、`unsafe-eval`；类库仍默认关闭 CSP。客户项目若开启严格策略，须检查自己的脚本、消息回调、内联事件与第三方组件。
+- 全局开启 RF 时，特定原生页面在模型类或共同基类上添加可继承的 `[NoRazorForms]`。删除 PageManager 每页模式设置、旧名及对应标签/流式设置；这些入口已废弃，setter 明确报迁移错误。普通独立上传、下载、JSON 的 OnPost 接口不要求标记。Core 请求删除 __FPROTOCOL，没有增加签名模式凭据。
+- MVC/RazorPages 的旧 Parameter 字符串表达式在严格 CSP 下改为 FromFunction/FromEventArgument/FromData；不执行响应脚本文本。首屏配置中只有顶层 debug，不新增数字协议 version。
+- 显式表格 `ColumnID` 必须在整个列树中唯一，点号转下划线后也不能冲突。匿名动态列和编辑器由框架分配 ID。
+- 更新或回滚时一起替换服务器 DLL 与客户端资源，并刷新旧页签；协议不匹配或保存请求失败后不自动重发，先核对保存结果。
+- 随官方项目分发的 `node tools/razorforms/check-razorforms-upgrade.mjs .` 只读报告协议、严格 CSP 和人工审计项，不自动改业务代码。
+
 ## v16.0.0（2026-09-30）
 
 - **[Core/Pro] 客户端点击统一到具名函数 + `ClickHandler`**。新代码不再使用 `OnClientClick`，也不把脚本串塞进 Handler；Java 只提供 `click-handler`。

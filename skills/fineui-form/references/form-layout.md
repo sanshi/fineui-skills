@@ -49,7 +49,27 @@ F.create({
 
 ## 多列布局（Form + FormRow）
 
-每个 `<f:FormRow>` = 一行；行内 `<Items>` 放几个字段就是几列。`ColumnWidths` 显式指定列宽（可混用 px 与 %）。
+每个 `<f:FormRow>` = 一行；行内 `<Items>` 放几个字段就是几列。`ColumnWidths` 显式指定列宽，可混用 px、% 与 auto；未设置时仍按子项数均分。
+
+Pro、Core 的 RazorForms/MVC/RazorPages 与 Java 均把行内 Button 直接作为列项，不自动包装。两列默认均分时按钮占半行；需要窄按钮时使用 `ColumnWidths="100% auto"`：字段占剩余空间，按钮保留内容宽度或明确设置的 `Width`。Pro、Core 旧页面升级后按钮可能变宽，应检查布局。
+
+| 两个子项时的设置 | 字段和按钮的效果 |
+| --- | --- |
+| 不设置 `ColumnWidths` | 默认各占约半行；按钮也会变宽 |
+| `50% 50%` | 明确各占约半行，与默认均分相同 |
+| `50% auto` | 按钮保持自身宽度，字段只用扣除按钮后剩余空间的一半，行尾留空 |
+| `100% auto` | 按钮保持自身宽度，字段使用全部剩余空间；窄按钮推荐此写法 |
+
+`auto` 不会自动换行；窄屏下若标签和输入框被挤窄，需要另行安排布局。下面是 Core TagHelper 写法；Pro 服务器控件还需保留 `runat="server"`，Core MVC 用 `.ColumnWidths("100% auto")`，Java 用 `column-widths="100% auto"`。
+
+```cshtml
+<f:FormRow ColumnWidths="100% auto">
+    <Items>
+        <f:TextBox ID="SearchText" Label="关键词" />
+        <f:Button ID="SearchButton" Text="搜索" />
+    </Items>
+</f:FormRow>
+```
 
 ```aspx
 <%-- Pro --%>

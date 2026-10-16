@@ -118,7 +118,7 @@ F.create({
 4. **读选中的方式随写法不同**：RazorForms / **Java** 用控件字段 `Tree1.GetCheckedNodes()` / `Tree1.getCheckedNodes()`；MVC/RazorPages 用客户端 `getCheckedNodes(true)` 序列化后回发 `JArray`。详见 [references/checkbox-events.md](references/checkbox-events.md)。
 5. **懒加载用 `OnNodeLazyLoad` / `on-node-lazy-load` + `AutoLeafIdentification="false"` / `auto-leaf-identification="false"` + 节点 `Leaf` / `leaf`**（不是 `EnableAjax`）；`Leaf=false` 的节点展开时触发懒加载，`Leaf=true` 为叶子。
 6. **节点客户端动作使用 `ClickHandler` / `click-handler`**：值只写页面具名函数，签名为 `(event, nodeId)`；显式返回 `false` 可取消后续默认动作与服务端事件。不要在新代码中写 `OnClientClick` / `on-client-click`。
-7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+7. **绝不编造 API**：不确定就查官网公开 API 与同模式官方示例。
 
 ## 官方资源（Official Resources）
 

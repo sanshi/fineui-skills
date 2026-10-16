@@ -196,7 +196,7 @@ public IActionResult Tree1_NodeLazyLoad(string nodeId) {
 ```csharp
 // Core-RazorForms —— OnNodeLazyLoad="Tree1_NodeLazyLoad"
 protected void Tree1_NodeLazyLoad(object sender, TreeNodeEventArgs e) {
-    RegisterStartupScript(Tree1.GetLoadDataReference(e.NodeID, DynamicAppendNode(e.NodeID)));  // 控件字段
+    Tree1.LoadData(e.NodeID, DynamicAppendNode(e.NodeID));  // 控件字段直接登记结构化动作
 }
 // Core-RazorPages —— OnNodeLazyLoad="@Url.Handler("Tree1_NodeLazyLoad")" + Parameter → OnPostTree1_NodeLazyLoad(string nodeId) + UIHelper.Tree(...).LoadData
 ```
@@ -209,7 +209,7 @@ protected void Tree1_NodeLazyLoad(object sender, TreeNodeEventArgs e) {
 ```
 ```java
 // FineUI.Java 页面类 —— 容器 auto-leaf-identification="false" + on-node-lazy-load="Tree1_NodeLazyLoad"
-// 用 Tree1.loadData(nodeId, 子节点列表) 回灌（对应 RazorForms 的 GetLoadDataReference / MVC 的 UIHelper.Tree().LoadData）
+// 用 Tree1.loadData(nodeId, 子节点列表) 回灌（对应 RazorForms 的 Tree1.LoadData / MVC 的 UIHelper.Tree().LoadData）
 public void Tree1_NodeLazyLoad(Object sender, TreeNodeEventArgs e) {
     Tree1.loadData(e.getNodeID(), dynamicAppendNode(e.getNodeID()));
 }

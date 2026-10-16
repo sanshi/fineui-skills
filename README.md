@@ -4,6 +4,8 @@
 
 FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor、OpenCode、Codex** 等 AI 编程助手提供准确的 FineUI API、开发模式和代码示例，减少错误 API、版本混用和技术栈混用。
 
+也可以使用接入 DeepSeek、GLM、Kimi、MiniMax、MiMo 等模型的编程 Agent；技能读取和工具调用由所用编程客户端及模型接入方式支持。
+
 > 这些技能供 AI 编程助手使用，不是应用程序的运行时依赖。仓库只包含 FineUI 的公开用法、文档和示例知识，不含 FineUI 源码或内部实现。
 
 <!-- fineui-community:start -->
@@ -27,11 +29,13 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 > RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见 `fineui-grid`。
 >
-> FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
+> FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。两端首屏用 `Page_Get`、控件绑定后用 `Page_Load`；FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
+
+Core 三种模式与 Java 的 FineUI 首屏和 UI 回发均使用 JSON。官方 Core 示例、空项目、AppBox 和 QuickStart 显式启用严格 CSP；客户项目仍需自行配置 CSP，并把旧脚本字符串迁到控件动作、结构化命令或具名函数。
 
 ## 前置要求
 
-- **FineUI v16.0**。技能中的客户端事件、回发语义和 RawHtml 安全模型均以此版本为准。
+- 当前技能源码包含待发布的 v16.1.0 用法；v16.0.1 项目应使用对应发行版的技能或知识包。客户端事件与 RawHtml 的基础写法从 v16.0 起适用。
 
 ## 仅安装 Skills
 

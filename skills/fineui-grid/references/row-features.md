@@ -100,7 +100,7 @@ protected void Grid1_RowDoubleClick(object sender, GridRowClickEventArgs e) {
 // FineUI.Java —— <f:grid data-key-names="Id,Name" on-row-double-click="Grid1_RowDoubleClick">；参数 GridRowEventArgs
 public void Grid1_RowDoubleClick(Object sender, GridRowEventArgs e) {
     Object[] keys = Grid1.getDataKeys().get(e.getRowIndex());   // keys[0]=Id, keys[1]=Name
-    // 窗体通信在被弹页面类里用 ActiveWindow.hidePostBack() / hideRefresh() / hideCallParentFunction("removeActiveTab")
+    // 窗体通信在被弹页面类里用 ActiveWindow.hidePostBack() / hideRefresh() / hideInvokeFunction("removeActiveTab")
 }
 ```
 
@@ -108,7 +108,21 @@ public void Grid1_RowDoubleClick(Object sender, GridRowEventArgs e) {
 
 ## 3. 行内命令按钮（RowCommand）
 
-行里放“编辑/删除”等按钮，点击回发命令。**Pro/RazorForms/Java 使用 `RenderField.Commands` 和真正的服务端命令事件；MVC/RazorPages 基础版是纯客户端，服务端交互走明确 action/handler。**
+行里放“编辑/删除”等按钮，各端共用 `RenderField.Commands` 的客户端命令配置。**Pro/RazorForms/Java 可登记后台命令事件；MVC/RazorPages 通过具名 `rowcommand` 监听器调用明确的 Action/Handler，保持原生参数绑定。**
+
+Core MVC 的列声明示例：
+
+```csharp
+F.RenderField().HeaderText("操作").Commands(new GridCommand
+{
+    CommandName = "Delete",
+    Text = "删除",
+    ConfirmText = "确定删除？",
+    ConfirmTarget = Target.Top
+})
+```
+
+RazorPages 使用与 RazorForms 相同的 `<Commands>` 标签；监听器与确认提示由共同客户端运行时处理，原生 POST 不恢复控件树或重跑视图。
 
 ```aspx
 <%-- Pro —— RenderField.Commands + OnRowCommand（Command 只属于 RenderField） --%>
@@ -312,8 +326,8 @@ function onRowDensityChange(event) {
 ## 关键约束
 
 1. **事件 EventArgs 按栈不同**：行单击 Pro `GridRowClickEventArgs` / RazorForms 与 **Java** `GridRowEventArgs`；行选中 Pro `GridRowSelectEventArgs` / RazorForms `GridRowEventArgs`；行命令 Pro 与 **Java** `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`；行数据绑定 Pro `GridRowEventArgs` / RazorForms 与 **Java** `GridRowDataBoundEventArgs`（getter 取值：`e.getRowIndex()`/`e.getCommandName()`/`e.getFieldValue("列")`/`e.setRowCssClass(...)`）。别照抄错类名。
-2. **行命令服务端**：Pro / RazorForms / **Java** 有真正的服务端命令事件（`OnRowCommand` / `on-row-command`），新代码统一用 `RenderField.Commands`。`Command` 只属于 `RenderField`。MVC/RazorPages 基础版纯客户端，服务端走明确 action/handler（非 `OnRowCommand`）。
-3. **弹窗列多套机制**：Pro、RazorForms 与 **Java** 使用 `<f:Command WindowID=…>` / `<f:command window-id=…>`；F.js/MVC/RazorPages 手写 `renderer` + `F.ui.Window1.show`。
+2. **行命令的后台入口**：各端共用 `RenderField.Commands` 的客户端配置，`Command` 只属于 `RenderField`。Pro / RazorForms / **Java** 可登记后台命令事件；MVC/RazorPages 使用具名监听器调用明确的 Action/Handler，不恢复 RF 状态。
+3. **命令弹窗配置**：Pro、Core 三种模式及 **Java** 都可使用列命令的 Window 配置；MVC 使用 `GridCommand` 的 Window 属性，RazorPages/RazorForms 使用 `<f:Command WindowID=…>`，Java 使用 `<f:command window-id=…>`。纯 JS 或需要自定义展示时仍可用具名 `renderer` 配合 `F.ui.Window1.show`。
 4. **行扩展列与单元格合并互斥**（见 [advanced.md](advanced.md)）。
 5. **行样式服务端事件仅 Pro / RazorForms / Java**（`on-row-data-bound` → `GridRowDataBoundEventArgs`）；MVC/RazorPages 用客户端 `RowDataBoundFunction`。
 

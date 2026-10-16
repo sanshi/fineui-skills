@@ -96,7 +96,7 @@ public class ButtonClick extends FineUIPageBase {
 5. **确认按钮**：声明式 `ConfirmText="..." ConfirmTarget="Top"`（点击先弹确认，确认后才回发）。`ConfirmTitle`/`ConfirmIcon` 也是控件属性（默认图标 Warning）。
 6. **下拉菜单项用 MenuButton/MenuHyperLink 等，不是 `MenuItem`（C#/Java）**：C# 菜单项是 `MenuButton`（可点/带子菜单）、`MenuHyperLink`（链接）、`MenuCheckBox`（可勾选）、`MenuText`（标题）、`MenuSeparator`（分隔）；**Java 对应 `<f:menu-button>`/`<f:menu-hyper-link>`/`<f:menu-check-box>`/`<f:menu-text>`/`<f:menu-separator>`**。F.js 用 `type: 'MenuItem'`。详见 [references/menu.md](references/menu.md)。
 7. **按钮分组「按下」用 `enablePress`（不是废弃的 `enableToggle`）**：F.js `enablePress`/`pressGroup`；C# `EnablePress`/`EnablePressGroup`（**不是 `PressGroup`**）；Java `enable-press`/`enable-press-group`。
-8. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+8. **绝不编造 API**：不确定就查官网公开 API 与同模式官方示例。
 
 ## 官方资源（Official Resources）
 

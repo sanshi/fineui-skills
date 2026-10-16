@@ -6,12 +6,37 @@
 
 1. **PageManager 是必备控件，但放置位置不同**：
    - **Pro（WebForms）**：`<f:PageManager>` 写在 **aspx 页面内**（`<form runat="server">` 里）。
-   - **Core 三模式**：PageManager **不写在业务页**，而是统一放在**共享布局 `_Layout.cshtml`** 里的 `@F.PageManager`。**Core 没有 `<f:PageManager>` TagHelper 写法**——业务页里不要写它。
+   - **Core 三模式**：PageManager **不写在业务页**，而是统一放在**共享布局 `_Layout.cshtml`** 里的 `@F.PageManager`。Core 也提供 `<f:PageManager>` 标签，但普通业务页沿用共享布局，不重复声明。
    - **Java（Spring Boot）**：不写 PageManager 控件；共享母版 `shared/layout.html` 用 `<f:styles>`/`<f:scripts>` 输出 CSS/JS，页面级/按用户配置由实现 `FineUIPageManagerInitializer` bean 完成（渲染前回调）。
 2. **CSS/JS 引入**：Core 在 `_Layout.cshtml` 里用 `@F.RenderCss()` / `@F.RenderScript()`（Pro 由 PageManager 自动注入）；**Java 由母版里的 `<f:styles>`（head）/ `<f:scripts>`（body 末）输出**。
 3. **启用标签**：Core 需 `_ViewImports.cshtml` 里 `@addTagHelper *, FineUI.Core` + `@using FineUI.Core`；**Java 在页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，并用 `layout:decorate="~{shared/layout}"` 装饰母版**。
 
 ---
+
+## Core 混合项目中的原生页面
+
+全局开启 RazorForms 时，某个 FineUI 页面需要采用原生 OnPost 交互，在模型类或共同基类上添加可继承的 `[NoRazorForms]`：
+
+```csharp
+[NoRazorForms]
+public class StudentEditModel : BaseModel
+{
+    public void OnGet()
+    {
+        // 加载首屏资料。
+    }
+
+    public IActionResult OnPostSave(string name)
+    {
+        UIHelper.Label("labResult").Text(name);
+        return UIHelper.Result();
+    }
+}
+```
+
+不要生成 `PageManager.Instance.EnableRazorForms=false`、旧名或标签/流式模式设置，它们已废弃，设置时明确报迁移错误。全局 `EnableRazorForms` 配置仍保留。普通独立上传、下载、JSON 接口不要求标记，不带 RF 字段时自然走原生 Handler。
+
+三种 Core 模式共用首屏和响应 JSON；只有 RF 使用模板重跑、dirtyKeys 和 __FSTATE。原生 POST 不执行 OnGet、Page_Load 或模板重跑，也不保持后台控件状态。CSP 策略独立于模式，原生页面可以使用严格策略。
 
 ## 1) F.js —— 纯前端
 
@@ -167,6 +192,7 @@ Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
 ```csharp
 // Hello.cshtml.cs（partial，WebForms 风格）
 public partial class HelloModel : BaseModel {
+    public void Page_Get(object sender, EventArgs e) { }
     protected void Page_Load(object sender, EventArgs e) { }
     protected void btnHello_Click(object sender, EventArgs e) {
         Alert.Show("你好 FineUI！", MessageBoxIcon.Warning);
@@ -174,7 +200,7 @@ public partial class HelloModel : BaseModel {
 }
 // Hello.cshtml.designer.cs（自动生成）：protected FineUI.Core.Button btnHello;
 ```
-PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。配置赋值统一放在后台：应用基类在 GET 处理器前调用 `AppPageManagerInitializer.Initialize(PageManager.Instance, Request)`；单页在 `OnGet` 使用 `PageManager.Instance` 属性赋值（MVC 用返回视图的 Action）。不要将 Cookie 初始化再放回布局，避免覆盖已经确定的单页配置。
+PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。配置赋值统一放在后台：应用基类在 GET 处理器前调用 `AppPageManagerInitializer.Initialize(PageManager.Instance, Request)`；RazorForms 单页在 `Page_Get` 使用 `PageManager.Instance` 属性赋值（MVC 用返回视图的 Action，原生 RazorPages 用 `OnGet`）。不要将 Cookie 初始化再放回布局，避免覆盖已经确定的单页配置。
 
 ---
 
@@ -232,6 +258,7 @@ public class HelloPage extends FineUIPageBase {
 
     Button btnHello;   // 与标签 id="btnHello" 同名，框架自动绑定
 
+    public void Page_Get(Object sender, EventArgs e) { }
     public void Page_Load(Object sender, EventArgs e) { }
 
     public void btnHello_Click(Object sender, EventArgs e) {   // 返回 void，无需 UIHelper.Result()
@@ -240,7 +267,7 @@ public class HelloPage extends FineUIPageBase {
 }
 ```
 
-**共享母版**（PageManager 相当物在此）`templates/shared/layout.html`：唯一写 `html/head/body` 骨架的地方，`<f:styles>` 在 head 输出 CSS、`<f:scripts>` 在 body 末输出 `FineUI.js` + 语言包 + `F.render`：
+**共享母版**（PageManager 相当物在此）`templates/shared/layout.html`：唯一写 `html/head/body` 骨架的地方，`<f:styles>` 在 head 输出 CSS、`<f:scripts>` 在 body 末输出 `FineUI.js`、语言包与 `FineUIPageConfig` 非执行 JSON 数据块，由外部运行时读取配置并启动页面：
 
 ```html
 <!DOCTYPE html>
@@ -252,7 +279,7 @@ public class HelloPage extends FineUIPageBase {
 </head>
 <body>
     <th:block layout:fragment="body"></th:block>   <!-- 各页 body 片段注入这里 -->
-    <f:scripts></f:scripts>                         <!-- JS + 语言包 + F.render 输出到 body 末 -->
+    <f:scripts></f:scripts>                         <!-- JS、语言包和页面 JSON 配置输出到 body 末 -->
     <th:block layout:fragment="script"></th:block> <!-- 页面专属脚本（在 f:scripts 之后） -->
 </body>
 </html>
@@ -268,7 +295,7 @@ public class HelloPage extends FineUIPageBase {
 |------|----------------|----------|-----------------|-----------------|--------------------|
 | 页面语法 | `.aspx` `<f:...>` | `Index.cshtml` Fluent | `.cshtml` TagHelper | `.cshtml` TagHelper | `.html` Thymeleaf `<f:xxx>` |
 | 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） | 2（html + 页面类 java） |
-| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Load` |
+| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Get`+`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Get`+`Page_Load` |
 | 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` | `on-click="方法名"` |
 | 回发结尾 | 无返回（void） | `return UIHelper.Result()` | 无返回（void） | `return UIHelper.Result()` | 无返回（void） |
 | **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |

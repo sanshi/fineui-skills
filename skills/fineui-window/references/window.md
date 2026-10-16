@@ -103,8 +103,8 @@ PageContext.RegisterStartupScript(Window1.GetShowReference("edit.aspx?id=1", "�
 UIHelper.Window("Window1").Show();
 ```
 ```csharp
-// Core-RazorForms —— 控件属性
-Window1.Hidden = false;
+// Core-RazorForms —— 已有后台控件实例，直接登记显示动作
+Window1.Show("edit.aspx?id=1", "编辑 - 张三");
 ```
 ```java
 // FineUI.Java —— Bean setter（对齐 Core-RazorForms 的控件属性写法）
@@ -120,11 +120,19 @@ Window1.setHidden(true);    // 隐藏
 ### 子页关闭自身
 
 ```csharp
-// Pro / Core —— 服务端注册脚本，ActiveWindow = 承载本 iframe 的父页窗口
+// Pro —— 旧版服务端脚本接口，严格 CSP 页面不采用这组写法
 PageContext.RegisterStartupScript(ActiveWindow.GetHideReference());            // 仅关闭
 PageContext.RegisterStartupScript(ActiveWindow.GetHidePostBackReference("arg"));// 关闭 + 带参回发父页(触发 OnClose)
 PageContext.RegisterStartupScript(ActiveWindow.GetHideRefreshReference());     // 关闭 + 刷新父页
 PageContext.RegisterStartupScript(ActiveWindow.GetHideExecuteScriptReference("parent.removeActiveTab();")); // 关闭 + 执行 JS
+```
+```csharp
+// Core —— 立即登记 JSON 动作；需等用户确认时改用相应的 XxxCommand 方法
+ActiveWindow.Hide();
+ActiveWindow.HidePostBack("arg");
+ActiveWindow.HideRefresh();
+ActiveWindow.HideInvokeFunction("removeActiveTab");
+// 例如 Alert 的 OkCommand = ActiveWindow.HidePostBackCommand("arg")
 ```
 ```java
 // FineUI.Java —— ActiveWindow 静态方法直接派发命令（无需 RegisterStartupScript，纯 JSON 命令、无 eval）
@@ -132,14 +140,14 @@ ActiveWindow.hide();                                  // 仅关闭
 ActiveWindow.hidePostBack("arg");                     // 关闭 + 带参回发父页（触发 on-close，参数 → e.getArgument()）
 ActiveWindow.hideRefresh();                           // 关闭 + 刷新父页
 ActiveWindow.writeBackValue(ddlSheng.getSelectedValue()); // 把值写回父页登记控件（配 ActiveWindow.hide()）
-ActiveWindow.hideCallParentFunction("removeActiveTab");   // 关闭 + 按名调父页全局函数（替代「执行 JS」，无 eval）
+ActiveWindow.hideInvokeFunction("removeActiveTab");       // 关闭 + 按名调打开本窗体的页面中的具名函数
 ```
 ```javascript
 // 子页客户端（F.activeWindow 方法集）
 F.activeWindow.hide();                 // 仅关闭
 F.activeWindow.hidePostBack('arg');    // 关闭 + 带参回发父页（触发 OnClose/close 事件，e.CloseArgument='arg'）
 F.activeWindow.hideRefresh();          // 关闭 + 刷新父页
-F.activeWindow.hideExecuteScript('parent.F.ui.Grid1.getStore().reload();'); // 关闭 + 执行父页 JS
+// 服务端若需关闭后调用原页面函数，使用 HideInvokeFunction / hideInvokeFunction
 F.activeWindow.close();                // 关闭（触发 close 事件，但不传 closeArgument；服务端 e.CloseArgument 为空串）
 ```
 
@@ -178,7 +186,7 @@ public void Window1_Close(Object sender, EventArgs e) {
 }
 ```
 
-> 另一种回传：**直接写回发起控件**——子页 `ActiveWindow.GetWriteBackValueReference(值) + ActiveWindow.GetHideReference()`（C#）/ **`ActiveWindow.writeBackValue(值) + ActiveWindow.hide()`（Java，父页先 `Window1.saveStateControlIds("控件id")` 登记目标）**，把值写回父页打开窗口的那个控件（如 TriggerBox），无需 OnClose。
+> 另一种回传：**直接写回发起控件**。Pro 子页使用 `ActiveWindow.GetWriteBackValueReference(值) + ActiveWindow.GetHideReference()` 注册旧脚本；Core 子页调用 `ActiveWindow.WriteBackValue(值)` 和 `ActiveWindow.Hide()`；Java 子页调用 `ActiveWindow.writeBackValue(值)` 和 `ActiveWindow.hide()`。父页先登记回写控件（Java 示例为 `Window1.saveStateControlIds("控件id")`），即可把值写回打开窗口的控件（如 TriggerBox），无需 OnClose。
 
 ## 五、窗口内嵌表单
 

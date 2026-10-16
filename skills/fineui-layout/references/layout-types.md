@@ -167,7 +167,9 @@ F.create({ type: 'Panel', renderTo: '#wrap', layout: 'block', isFluid: true, hea
 
 ## Column / Anchor
 
-- **Column**：`Layout="Column"`，子面板用 `ColumnWidth="60%"`（F.js `columnWidth: 0.6`；Java `layout="Column"` + 子 `column-width="60%"`）或固定 `Width`。官方推荐改用 HBox（见 [hbox-vbox.md](hbox-vbox.md)）。
+- **Column**：普通 `Panel` 设置 `Layout="Column"` 时，子项可用 `ColumnWidth="60%"`（F.js `columnWidth: 0.6`；Java `layout="Column"` + 子 `column-width="60%"`）或固定 `Width`；未设置的按钮保留自身宽度。复杂普通容器布局可考虑 HBox（见 [hbox-vbox.md](hbox-vbox.md)）。
+
+  普通 Panel 不自动均分；`FormRow` 虽也使用 Column 布局，却会在未指定 `ColumnWidths` 时为子项均分列宽。FormRow 需要窄按钮时设置 `100% auto`，详见 `fineui-form` 的 `form-layout.md`。
 - **Anchor**：`Layout="Anchor"`（表单默认），子控件用 `AnchorValue="100% 70%"`（百分比）或 `"100% -72"`（百分比 + 像素偏移）；Java `layout="Anchor"` + 子 `anchor-value="100% 70%"` / `anchor-value="100% -72"`。
 
 ```html

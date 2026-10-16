@@ -4,7 +4,7 @@
 
 > 消息框在 C# 服务端与 JS 客户端调用方式基本一致；跨写法的唯一差异是**触发按钮怎么绑事件**（MVC `OnClick(Url.Action)` / RazorForms `OnClick="方法名"` / RazorPages `OnClick="@Url.Handler(...)"` / **Java `on-click="方法名"`**）。
 >
-> **FineUI.Java 服务端入口在消息类上**：`Alert.Show(...)`→`Alert.show(...)`，`Confirm.Show(...)`→`Confirm.show(...)`，`Prompt.Show(...)`→`Prompt.show(...)`；四类复杂配置都可创建实例再调用 `show()`，`Notify` 与 Core 一样只提供实例显示。Java 的 `FineUIPageBase` 不提供 `showAlert` 等消息方法。官方示例自己的 `PageBase.showNotify` 仅统一通知样式。可信 HTML 用 `RawHtml` 显式声明。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
+> **FineUI.Java 服务端入口在消息类上**：`Alert.Show(...)`→`Alert.show(...)`，`Confirm.Show(...)`→`Confirm.show(...)`，`Prompt.Show(...)`→`Prompt.show(...)`；四类复杂配置都可创建实例再调用 `show()`，`Notify` 与 Core 一样只提供实例显示。Java 的 `FineUIPageBase` 不提供 `showAlert` 等消息方法；从 v16.1.0 起，四个消息类不再提供返回脚本字符串的 `getShow*Reference`。官方示例自己的 `PageBase.showNotify` 仅统一通知样式。可信 HTML 用 `RawHtml` 显式声明。**客户端 `F.alert`/`F.confirm`/`F.notify` 四栈完全相同**。
 
 ## 图标值（MessageBoxIcon）
 
@@ -34,7 +34,7 @@ Alert.showInTop("保存成功！", null, MessageBoxIcon.Success);
 Alert alert = new Alert();
 alert.setMessage("保存成功！");
 alert.setTarget(Target.Top);
-alert.setOkCommand(ActiveWindow.hidePostBackReference("已保存"));
+alert.setOkCommand(ActiveWindow.hidePostBackCommand("已保存"));
 alert.show();
 ```
 

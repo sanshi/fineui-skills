@@ -84,9 +84,13 @@ UIHelper.TabStrip("TabStrip1").AddTab("tab_x", "https://x.com/", "新标签", Ic
 UIHelper.TabStrip("TabStrip1").CloseTab("tab_x");
 ```
 ```csharp
-// Pro / Core-RazorForms —— 注册脚本 + GetAddTabReference
+// Pro —— 注册旧脚本
 PageContext.RegisterStartupScript(TabStrip1.GetAddTabReference("tab_x", "https://x.com/", "新标签", IconHelper.GetIconUrl(Icon.Application), true));
-// RazorForms 用 RegisterStartupScript(TabStrip1.GetAddTabReference(...))
+```
+```csharp
+// Core-RazorForms —— 已有后台控件实例，直接登记结构化动作
+TabStrip1.AddTab("tab_x", "https://x.com/", "新标签", IconHelper.GetIconUrl(Icon.Application), true);
+TabStrip1.CloseTab("tab_x");
 ```
 ```java
 // FineUI.Java 页面类 —— 直接在控件字段上调 addTab / hideTab（框架下发运行时命令，无需注册脚本）

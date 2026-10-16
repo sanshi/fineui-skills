@@ -115,9 +115,9 @@ public class Window extends FineUIPageBase {
 1. **先定写法、不混用**：F.js camelCase（`modal`/`maximizable`）；C# PascalCase（`IsModal`/`EnableMaximize`）；**Java kebab-case（`is-modal`/`enable-maximize`），内联内容用 `content` 属性而非 `<Content>` 子标签**。
 2. **`CloseAction="HidePostBack"` + `OnClose`**：要在窗口关闭时触发服务端事件（如刷新父表格），窗口需设 `CloseAction="HidePostBack"`（Java `close-action="HidePostBack"`，默认 `Hide` 不触发）并绑定 `OnClose`/`on-close`。
 3. **OnClose 事件签名各写法不同**：Pro / RazorForms `方法名(object sender, WindowCloseEventArgs e)`（读 `e.CloseArgument`）；MVC `[HttpPost] 方法名()`；RazorPages `OnPost方法名()`；**Java `void 方法名(Object sender, EventArgs e)`，关闭参数读 `e.getArgument()`（不是 `WindowCloseEventArgs.CloseArgument`）**。
-4. **iframe 窗口回传数据**：服务端子页用 `ActiveWindow.GetHidePostBackReference(参数)`（Pro/Core）或 `ActiveWindow.hidePostBack("参数")`（Java）；客户端用 `F.activeWindow.hidePostBack("参数")`。MVC/RazorPages 的回发参数名是窗口 ID + `_closeArgument`；Pro/RazorForms 读 `WindowCloseEventArgs.CloseArgument`，Java 读 `e.getArgument()`。详见 [references/window.md](references/window.md)。
+4. **iframe 窗口回传数据**：服务端子页用 `ActiveWindow.GetHidePostBackReference(参数)`（Pro）、`ActiveWindow.HidePostBack(参数)`（Core）或 `ActiveWindow.hidePostBack("参数")`（Java）；客户端用 `F.activeWindow.hidePostBack("参数")`。确认框需要延后关窗时，Core/Java 分别使用 `ActiveWindow.HidePostBackCommand(参数)` / `ActiveWindow.hidePostBackCommand(参数)`。MVC/RazorPages 的回发参数名是窗口 ID + `_closeArgument`；Pro/RazorForms 读 `WindowCloseEventArgs.CloseArgument`，Java 读 `e.getArgument()`。详见 [references/window.md](references/window.md)。
 5. **iframe 内弹消息用 `Alert.ShowInTop` / `target:'_top'`**：iframe 里直接 `Alert.Show` 会显示在小框里，跨到顶层用 `ShowInTop`（C#）/ **`Alert.showInTop(...)`（Java）** / `target: '_top'`（JS）。
-6. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc。
+6. **绝不编造 API**：不确定就查官网公开 API 与同模式官方示例。
 
 ## 官方资源（Official Resources）
 

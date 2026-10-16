@@ -9,20 +9,20 @@ FineUI 有 **4 部署栈**（F.js / Pro / Core / Java），其中 **Core 含 3 �
 | **F.js** | —（纯 JS） | JavaScript + jQuery | `F.create({ type:'Xxx', ... })` | 纯前端 |
 | **Pro** | WebForms | .NET Framework | `<f:Xxx runat="server">` | `Page_Load`/`IsPostBack` + designer |
 | **Core** | **MVC**（经典 MVC） | ASP.NET Core | **Fluent API** `Html.F().Xxx()...` | Controller + `ViewBag` |
-| **Core** | **RazorForms**（Core 推荐） | ASP.NET Core | **TagHelper** `<f:Xxx>`（PascalCase） | 三件套 + `Page_Load`/`IsPostBack` |
+| **Core** | **RazorForms**（Core 推荐） | ASP.NET Core | **TagHelper** `<f:Xxx>`（PascalCase） | 三件套 + `Page_Get`/`Page_Load`/`IsPostBack` |
 | **Core** | **RazorPages** | ASP.NET Core | **TagHelper** `<f:Xxx>`（PascalCase） | 两件套（无 designer）+ `OnGet`/`OnPost` |
-| **Java** | Spring Boot | Java + Spring Boot + Thymeleaf | **Thymeleaf 方言** `<f:xxx>`（kebab-case） | 两件套（`.html` + 页面类 `.java`，无 designer）+ `Page_Load`/`isPostBack()` |
+| **Java** | Spring Boot | Java + Spring Boot + Thymeleaf | **Thymeleaf 方言** `<f:xxx>`（kebab-case） | 两件套（`.html` + 页面类 `.java`，无 designer）+ `Page_Get`/`Page_Load`/`isPostBack()` |
 
 > **术语纪律**：`Fluent API`、`TagHelper`、`Thymeleaf 方言` 是**前台写法**，不是模式名；Core 模式永远说 MVC / RazorForms / RazorPages。**RazorForms 与 RazorPages 共用 TagHelper 标签**，但数据初始化与事件不同（见下）。
 >
-> **Java 与 Core-RazorForms 是「孪生栈」**：两者都是「标签式有状态服务端组件 + `Page_Load`/`IsPostBack` + 控件字段 + `xxx_Click` 事件」。差异**只在后台栈**：Thymeleaf vs Razor 模板、kebab-case vs PascalCase、Java Bean setter/getter vs C# 属性。**客户端 F.js 运行时四栈完全相同**——`F.ui.Grid1.xxx()`、渲染函数、监听器 JS 一字不差，Java 侧一行不改地复用。
+> **Java 与 Core-RazorForms 是「孪生栈」**：两者都采用「标签式有状态服务端组件 + `Page_Load`/`IsPostBack` + 控件字段 + `xxx_Click` 事件」。后台使用 Thymeleaf / Razor、kebab-case / PascalCase、Java setter / C# 属性；客户端共用 F.js 控件 API。两端共用客户端配置、请求运输、稀疏影子状态、更新和命令机制，服务器适配仍有平台差异，不能直接互换服务端制品。Core 三种模式共用 JSON 首屏与 UI 响应；RF 使用模板重跑和有限状态，MVC/RazorPages 使用无状态子集，保留原生 Action/OnPost 与参数绑定。Pro 保持自己的引导和回发适配。
 
 ## 判定线索（拿到项目怎么认）
 
 - 纯前端 `.html` + `F.create` → **F.js**
 - `.aspx` + `<f:Xxx runat="server">` → **Pro（WebForms）**
 - `Controllers/` + `Views/*/Index.cshtml` 且用 `Html.F()` → **Core-MVC**
-- `Pages/*.cshtml` + `<f:Xxx>` 标签：有 `.cshtml.designer.cs` → **Core-RazorForms**；无 designer → **Core-RazorPages**
+- `Pages/*.cshtml` + `<f:Xxx>` 标签：检查应用级 EnableRazorForms 和模型类/共同基类上的 `[NoRazorForms]`：全局开启且未标记 → **Core-RazorForms**；全局关闭或有可继承标记 → **Core-RazorPages**。RazorPages 无 designer；RF 页面没有可声明控件字段时也可能没有，故不能仅凭文件缺失判定模式
 - `.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:xxx>` 小写标签、`layout:decorate`；`pom.xml`/`mvnw`；页面类 `.java` 带 `@FineUIPage(...)` + `extends FineUIPageBase` → **Java（Spring Boot）**
 
 ## 前台写法差异（同一个组件，各写法）
@@ -55,8 +55,8 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 | 维度 | Pro (WebForms) | Core-MVC | Core-RazorForms | Core-RazorPages | Java (Spring Boot) |
 |------|----------------|----------|-----------------|-----------------|--------------------|
 | 数据绑定 | `x.DataSource=...; x.DataBind();`（`!IsPostBack`） | Controller 设 `ViewBag`，View `.DataSource(ViewBag.x)` | 后台 `Page_Load` 里 `DataBind()` | 标签内联 `DataSource="@Model.GetX()"` | `x.setDataSource(...); x.dataBind();`（`!isPostBack()`） |
-| 生命周期 | `Page_Load` + `IsPostBack` | Controller action | `Page_Load` + `IsPostBack` | `OnGet` / `OnPost` | `Page_Load(Object,EventArgs)` + `isPostBack()` |
-| 控件字段 | designer 声明 | 无（View 内局部） | designer 声明 `protected FineUI.Core.Xxx x;` | 无 | **手动在页面类声明** `Xxx x;`（同名 = 标签 id） |
+| 生命周期 | `Page_Load` + `IsPostBack` | Controller action | 首屏 `Page_Get`，绑定控件后 `Page_Load` | `OnGet` / `OnPost` | 首屏 `Page_Get`，绑定控件后 `Page_Load` |
+| 控件字段 | designer 声明 | 无（View 内局部） | 有控件字段时由 designer 声明 `protected FineUI.Core.Xxx x;` | 无 designer；不跨请求恢复控件字段 | **手动在页面类声明** `Xxx x;`（同名 = 标签 id） |
 | 按钮事件 | `OnClick="方法名"` | `.OnClick(Url.Action("方法名"), "参数控件")` | `OnClick="方法名"` | `OnClick="@Url.Handler(\"方法名\")"` | `on-click="方法名"` |
 | 服务端回发 | `方法名(object s, EventArgs e)` | `[HttpPost] IActionResult 方法名(...)` | `方法名(object s, EventArgs e)` | `IActionResult OnPost方法名(...)` | `void 方法名(Object s, EventArgs e)`（**返回 void**） |
 | 服务端操作控件 | 直接用控件字段 `x.Xxx=...` | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 | `UIHelper.Xxx("id").Yyy(...)` | 直接用控件字段 `x.setYyy(...)`（Bean setter） |
@@ -76,10 +76,11 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
   - JS/C# 实例属性：`pagerAutoSimpleMode` / `PagerAutoSimpleMode`；Java 标签属性 `pager-auto-simple-mode`
   - C# 全局：`Grid` 前缀（`GridPagerAutoSimpleMode`，PageManager 或 `Web.config`/`appsettings.json` 设）
   - Java 全局：`application.properties` 的 `fineui.grid-pager-auto-simple-mode`（`fineui.` + kebab-case）
-- **全局配置入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段或后台 `OnGet` / MVC Action 设置 `PageManager.Instance.GridXxx`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
+- **全局配置入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 段或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段，RazorForms 在 `Page_Get`、原生 RazorPages 在 `OnGet`、MVC 在返回视图的 Action 中设置 `PageManager.Instance.GridXxx`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）+ `FineUIPageManagerInitializer` bean（页面级/按用户，`pm.theme(...)`/`pm.language(...)`/`pm.displayMode(...)`）**。
   - Java 的服务端专用项同样是 `fineui.` 扁平键（无嵌套分组），如 `fineui.grid-convert-long-to-string`、`fineui.csp-scripts` 及配套 `fineui.csp-allow-*`、`fineui.security-csrf`、`fineui.mobile-adaption`、`fineui.home`（首页路由）。
 - **Java 最低要求 Spring Boot 3.5.16，也支持 4.1.x**；库的公开 API 不暴露任何 Jackson 类型。业务应用的 JSON 使用宿主 Spring Boot 自带的 Jackson：Boot 3.5 是 Jackson 2，Boot 4.1 是 Jackson 3（见 [events-postback.md](events-postback.md) 的自定义回发一节）。
 - **新项目安全默认值**：Pro/Core 设置 `AllowDangerousRawTag=false` 与 `AllowDangerousScriptTag=false`。Pro 另设置 `EnableImplicitPostBack=false`、`EnableImplicitChangeEvents=false`，使用“声明服务端事件才自动回发”的统一心智模型。完整规则见 [events-postback.md](events-postback.md) 与 [rawhtml.md](rawhtml.md)。
+- **Core 官方项目的严格 CSP**：官方 RazorForms、MVC、RazorPages 示例和空项目，以及 AppBox、QuickStart，显式开启同源脚本与每请求 nonce，关闭 `unsafe-inline`、`unsafe-eval`。Core 类库默认不开 CSP；客户项目启用后，旧脚本字符串要改为控件动作、结构化命令或具名函数。
 
 ## See also
 

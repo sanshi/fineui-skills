@@ -96,10 +96,10 @@ F.create({ type: 'Panel', isFluid: true, id: 'Panel1', renderTo: '#wrap', title:
 1. **先定写法、不混用**：F.js camelCase（`collapsible`/`bodyPadding`）；C# PascalCase（`EnableCollapse`/`BodyPadding`）；**Java kebab-case（`enable-collapse`/`body-padding`）**。工具栏 F.js 放 `bars`，C# 放 `<Toolbars>`，**Java 放 `<f:toolbars>`/`<f:toolbar>`/`<f:items>`（内含 `<f:toolbar-text>`/`<f:toolbar-separator>`/`<f:button>`/`<f:toolbar-fill>`）**。
 2. **纯内容用 ContentPanel**：只放内容、无需再嵌套时用 `<f:ContentPanel>`（C#）/ **`<f:content-panel>`（Java）**。
 3. **分组内容用 GroupPanel**：需要带标题边框组织一组表单字段或子控件时用 GroupPanel；它可以折叠、包含 Items 和 Toolbars，不是表单字段本身。
-4. **动态选项卡各写法不同**：F.js `F.ui.TabStrip1.addTab({...})`；Core-MVC/RazorPages `UIHelper.TabStrip("id").AddTab(...)`；Pro/RazorForms `RegisterStartupScript(TabStrip1.GetAddTabReference(...))`；**Java 直接在控件字段上调 `TabStrip1.addTab(id, url, title, iconUrl, closable)` / `TabStrip1.hideTab(id)`**。详见 [references/tab.md](references/tab.md)。
+4. **动态选项卡各写法不同**：F.js `F.ui.TabStrip1.addTab({...})`；Core-MVC/RazorPages `UIHelper.TabStrip("id").AddTab(...)`；Core-RazorForms 直接调用 `TabStrip1.AddTab(...)` / `HideTab(...)`；Pro 使用 `RegisterStartupScript(TabStrip1.GetAddTabReference(...))`；**Java 直接在控件字段上调 `TabStrip1.addTab(id, url, title, iconUrl, closable)` / `TabStrip1.hideTab(id)`**。详见 [references/tab.md](references/tab.md)。
 5. **Accordion 面板用 `<Panes>`/`AccordionPane`**（Java `<f:panes>`/`<f:accordion-pane>`；不是 `<Items>`/Tab）；面板切换**服务端事件** `OnPaneIndexChanged`（Java `on-pane-index-changed`）在 **Pro / Core-RazorForms / Java** 上都能直接声明。Pro 推荐设置 `EnableImplicitChangeEvents="false"`，声明事件即可自动回发；Core-MVC/RazorPages 读客户端 `getActivePaneIndex()`。详见 [references/accordion.md](references/accordion.md)。
 6. **Java 折叠事件直接写属性**：`on-collapse`/`on-expand`（不像 Pro 需 `EnableCollapseEvent`/`EnableExpandEvent` 开关）。Region 布局 Java 另有 `<f:region-panel>`/`<f:regions>`/`<f:region>` 便捷控件（见 `fineui-layout`）。
-7. **绝不编造 API**：不确定就查官网 API 或 `F/doc/` JSDoc；Java 属性名 = Core 属性名转 kebab-case，属性「值」（枚举/图标）仍 PascalCase。
+7. **绝不编造 API**：不确定就查官网公开 API 与同模式官方示例；Java 属性名 = Core 属性名转 kebab-case，属性「值」（枚举/图标）仍 PascalCase。
 
 ## 官方资源（Official Resources）
 

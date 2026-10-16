@@ -42,7 +42,7 @@ metadata:
 > - **RazorForms**：数据在后台 `Page_Load` 里 `Grid1.DataSource=...; Grid1.DataBind();`（`<f:Grid>` 标签上**不写** `DataSource`）；按钮 `OnClick="方法名"`。
 > - **RazorPages**：数据在标签上**内联** `DataSource="@Model.GetXxx()"`；按钮 `OnClick="@Url.Handler(\"方法名\")"`。
 >
-> **FineUI.Java 是 Core-RazorForms 的「孪生栈」**：同样「标签式有状态服务端组件 + `Page_Load`/`isPostBack()` + 控件字段 + `xxx_Click`/事件处理器」，差异**只在后台栈**——标签/属性全 **kebab-case**（`<f:grid>`/`<f:render-field data-field=…>`），页面类用 Java Bean setter/getter（`Grid1.setDataSource(...); Grid1.dataBind();`），处理器**返回 `void`**（纯 JSON 增量回发，无需 `UIHelper.Result()`）。**客户端 F.js 运行时四栈完全相同**——`F.ui.Grid1.xxx()`、渲染函数、`notifySelectedRows('Grid1')`、监听器 JS 一字不改。详见 `fineui-foundation`。
+> **FineUI.Java 是 Core-RazorForms 的「孪生栈」**：同样「标签式有状态服务端组件 + `Page_Load`/`isPostBack()` + 控件字段 + `xxx_Click`/事件处理器」，后台 API 与状态恢复存在差异——标签/属性全 **kebab-case**（`<f:grid>`/`<f:render-field data-field=…>`），页面类用 Java Bean setter/getter（`Grid1.setDataSource(...); Grid1.dataBind();`），处理器**返回 `void`**（纯 JSON 增量回发，无需 `UIHelper.Result()`）。四栈共享 F.js 控件 API、渲染函数和监听器；请求接线仍按产品与开发模式适配。RF 控件交互必须走本页 RF 事件，不能让原生 MVC/RazorPages UI 接口替换本页表格结构。详见 `fineui-foundation`。
 
 ## 何时使用（When to Use）
 
@@ -53,7 +53,7 @@ metadata:
 
 ## 开始前（Before You Start）—— 先判定"哪个模式"
 
-> 判定线索：`.aspx` → **Pro（WebForms）**；`Controllers/` + `Views/*/Index.cshtml` 且用 `Html.F()`（Fluent API）→ **Core-MVC**；`Pages/*.cshtml` 用 `<f:Grid>` 标签 → **Core-RazorForms**（有 `.designer.cs`）或 **Core-RazorPages**（无 `.designer.cs`）；纯前端 `.html` → **F.js**；`.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:grid>` 小写标签、`pom.xml`/`mvnw`、页面类 `.java` 带 `@FineUIPage(...)` + `extends FineUIPageBase` → **Java（Spring Boot）**。
+> 判定线索：`.aspx` → **Pro（WebForms）**；`Controllers/` + `Views/*/Index.cshtml` 且用 `Html.F()` → **Core-MVC**；`Pages/*.cshtml` 用 `<f:Grid>` 时，核查全局 `EnableRazorForms` 和继承链上的 `[NoRazorForms]`，据此区分 **Core-RazorForms** 与原生 **Core-RazorPages**。RazorPages 不生成 designer；RF 页面没有可声明控件字段时也可能没有 designer，因此不能仅凭文件缺失判定模式。纯前端 `.html` → **F.js**；`.html` 里 `<html xmlns:f="http://fineui.com/java">` + 小写 `<f:grid>`、`pom.xml`/`mvnw`、页面类 `.java` 带 `@FineUIPage(...)` + `extends FineUIPageBase` → **Java（Spring Boot）**。
 
 再确认：**数据从哪来？**（本地内联 / 服务端）**要不要编辑？要不要选择？**
 
@@ -224,7 +224,7 @@ public class Grid extends FineUIPageBase {
 
 ## 约束与规则（Constraints & Rules）
 
-1. **绝不编造 API**：不确定的属性去查官网 API（见下方 Official Resources）或 `F/doc/` 的 JSDoc，别猜。不同模式属性名不同，尤其别把某模式的名字用到另一模式。
+1. **绝不编造 API**：不确定的属性去查官网公开 API（见下方 Official Resources）与同模式官方示例，别猜。不同模式属性名不同，尤其别把某模式的名字用到另一模式。
 2. **先定模式、不混用**：一个页面只用一种模式的写法。判定见「开始前」。F.js 用 `text`/`field`，C# 三模式用 `HeaderText`/`DataField`，**Java 用 `header-text`/`data-field`（全 kebab-case）**——不要串；Fluent API（MVC）与 TagHelper（RazorForms/RazorPages）不要混写。
 3. **文本默认 HTML 编码（RawHtml 安全模型）**：Grid 单元格/列头文本默认转义。要输出可信 HTML：
    - F.js：列 `renderer` 返回的字符串会作为 HTML 插入（渲染函数内自行保证可信）；普通文本属性用 `F.rawHtml(...)`。
@@ -236,14 +236,14 @@ public class Grid extends FineUIPageBase {
    - **RazorForms**：后台 `Page_Load`（`!IsPostBack`）里 `Grid1.DataSource=...; Grid1.DataBind();`，`<f:Grid>` 标签**不写** `DataSource`。
    - **RazorPages**：标签上内联 `DataSource="@Model.GetXxx()"`。
    - **Java（同 RazorForms 范式）**：页面类 `Page_Load`（`!isPostBack()`）里 `Grid1.setDataSource(list); Grid1.dataBind();`，`<f:grid>` 标签**不写** `data-source`；控件字段**手动在类里声明**（`com.fineui.java.core.controls.Grid Grid1;`，字段名 = 标签 `id`）；事件/命令处理器**返回 `void`**（如 `public void Grid1_PageIndexChanged(Object sender, GridPageEventArgs e)`）。
-6. **RazorForms vs RazorPages（同为 TagHelper，但后台模型不同）**：RazorForms 三件套（`.cshtml` + `.cshtml.cs` **partial** + `.designer.cs`），后台继承项目现有的 RazorForms 页面基类（官方示例为 `BaseModel`，它本身可继承 `PageModel`），使用 `Page_Load`/`IsPostBack`、`OnClick="方法名"`；同步控件事件返回 `void`，按钮点击示例为 `protected void 方法名(object sender, EventArgs e)`，分页、排序、行命令等则使用各自的专用 `EventArgs`，**不写 `OnPost`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。RazorPages 两件套（**非** partial、**无** designer）、`OnGet`/`OnPostXxx`、`OnClick="@Url.Handler(\"方法名\")"`，`OnPostXxx` 返回 `IActionResult` 和 `UIHelper.Result()`；**Java 两件套（`.html` + `.java`，无 designer）、`Page_Load`/`isPostBack()`、`on-click="方法名"`、`@FineUIPage("area/page")` 定路由。**
+6. **RazorForms vs RazorPages（同为 TagHelper，但后台模型不同）**：RazorForms 页面模型是 `partial`，声明控件字段时会有 `.cshtml.designer.cs`；后台继承项目现有的 RazorForms 页面基类（官方示例为 `BaseModel`，它本身可继承 `PageModel`），首次加载用 `Page_Get`，控件绑定后用 `Page_Load`/`IsPostBack`，事件写 `OnClick="方法名"`；同步控件事件返回 `void`，按钮点击示例为 `protected void 方法名(object sender, EventArgs e)`，分页、排序、行命令等则使用各自的专用 `EventArgs`，**不写 `OnPost`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。RazorPages 是无 designer 的页面与模型两件套，使用原生 `OnGet`/`OnPostXxx` 和 `OnClick="@Url.Handler(\"方法名\")"`，`OnPostXxx` 返回 `IActionResult` 和 `UIHelper.Result()`；**Java 两件套（`.html` + `.java`，无 designer）、`Page_Get`/`Page_Load`/`isPostBack()`、`on-click="方法名"`、`@FineUIPage("area/page")` 定路由。**
 7. **新代码只使用三栈共有列**：普通列用 `RenderField`，布尔展示列用 `RenderCheckField`，另有 `RowNumberField`、`GroupField` 及 `RenderField.Commands`。不要根据 FineUI.Pro 的历史示例生成仅 Pro 存在的服务端渲染列。
 8. **行选择统一使用稳定行 ID**：初始化、读取与服务端主动选中都先设置 `DataIDField` / `data-id-field`，再使用 `SelectedRowID` / `SelectedRowIDArray` / `getSelectedRowIdArray()`。Pro/Core 的 `SelectedRowIndex` / `SelectedRowIndexArray` 已废弃，只用于识别和迁移旧代码；Java 已直接删除同名 getter/setter 与模板属性。读取选中行数据时，Pro / Core-RazorForms 调 `Grid1.GetSelectedDataKeys()`，Java 调 `Grid1.getSelectedDataKeys()`；必须让 `DataKeyNames` / `_DataKeyNames` / `data-key-names` 包含行 ID 字段。数据库分页跨页选择或敏感业务只取稳定行 ID，再查询数据库。详见 [references/selection.md](references/selection.md)。
 9. **三个"分组/层级"概念别混**：**多表头**（列的分组，`GroupField`，[header.md](references/header.md)）≠ **行分组**（数据行按字段分组，`EnableRowGroup`，[row-group.md](references/row-group.md)）≠ **树表格**（行父子层级，`EnableTree`，[tree-grid.md](references/tree-grid.md)）。用户说"分组"时先确认是哪一种。
 10. **F.js 嵌套配置 vs .NET 拍平属性**：多个高级功能 F.js 把选项收进一个对象（`tree:{...}`/`rowGroup:{...}`/`rowExpander:{...}`/`filter:{...}`），而 Pro/Core 拍平成一堆独立属性（`EnableTree`/`TreeColumn`/...）。转写时注意这种结构差异。
 11. **行事件 EventArgs 类名按栈不同**：同一行事件，Pro 与 RazorForms 的参数类名不一样（如行命令 Pro `GridCommandEventArgs` / RazorForms `GridRowCommandEventArgs`）。**Java 的类名与 Core 又不完全一致**：行命令用 `GridCommandEventArgs`（同 Pro），行单击/双击用 `GridRowEventArgs`，行数据绑定用 `GridRowDataBoundEventArgs`，翻页 `GridPageEventArgs`、排序 `GridSortEventArgs`（getter 取值，如 `e.getRowIndex()`/`e.getCommandName()`）。详见 [row-features.md](references/row-features.md)，别照抄错。
 12. **合并/拖拽无服务端属性**：单元格合并（`mergeCells`/`mergeColumns`）、行拖拽（`moveRowUp` 等）都是客户端方法；列/行顺序持久化使用 `F.customEvent` + `Page_CustomEvent`，结构化参数传 JSON 对象/数组。详见 [advanced.md](references/advanced.md)。
-13. **行命令统一用 `RenderField.Commands`**：Pro、Core RazorForms 与 Java 都使用 `RenderField.Commands`；`Command` 只属于 `RenderField`。客户端附加逻辑监听 Grid 的 `rowcommand`，服务端声明 `OnRowCommand`。
+13. **行命令统一用 `RenderField.Commands`**：Pro、Core 三种模式与 Java 都使用列命令配置；`Command` 只属于 `RenderField`。MVC 用 `.Commands(new GridCommand { CommandName = "Edit", Text = "编辑" })`，RazorPages/RazorForms 用 `<Commands><f:Command ... /></Commands>`。客户端附加逻辑监听 Grid 的 `rowcommand`；RF/Java/Pro 可声明后台 `OnRowCommand`，原生模式调用明确的 Action/Handler，不恢复 RF 状态。
 
 ## 官方资源（Official Resources）
 

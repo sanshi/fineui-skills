@@ -5,7 +5,7 @@ description: >
   DatePicker / DropDownList / CheckBox / RadioButtonList 等）、Calendar 内嵌日历、字段与整表校验、读取字段值。
   覆盖 F.js（JavaScript）、Pro（WebForms）、FineUI.Core 的 MVC（Fluent API）/ RazorForms / RazorPages（TagHelper），
   以及 FineUI.Java（Spring Boot + Thymeleaf 方言标签，kebab-case）。
-  Trigger phrases（触发词）: "FineUI 表单", "F.Form", "SimpleForm", "FormRow", "表单校验",
+  Trigger phrases（触发词）: "FineUI 表单", "F.Form", "SimpleForm", "FormRow", "ColumnWidths", "表单校验",
   "ValidateForms", "Required", "TextBox", "NumberBox", "DatePicker", "DropDownList",
   "RadioButtonList", "CheckBox", "CheckBoxList", "TimePicker", "Label", "Hidden",
   "FileUpload", "TriggerBox", "DropDownBox", "HtmlEditor", "MarkInvalid", "字段标签",
@@ -15,7 +15,7 @@ description: >
 metadata:
   author: FineUI
   version: "16.0.1"
-  compatibility: FineUI v16.0（事件驱动变化回发与 RawHtml 安全模型）
+  compatibility: FineUI v16.0，并记录待发布的 FormRow 自动列宽与按钮布局变化。
 ---
 
 # FineUI 表单技能（Form）
@@ -115,6 +115,7 @@ public class Login extends FineUIPageBase {
 
 - `fineui-foundation`：写法判定、页面骨架、命名约定、RawHtml
 - `fineui-grid`：Grid 单元格编辑用同一套字段控件作 `editor`
+- `fineui-upgrade`：旧 FormRow 行内按钮升级后的宽度变化与迁移检查
 
 ## 约束与规则（Constraints & Rules）
 
@@ -124,8 +125,9 @@ public class Login extends FineUIPageBase {
 4. **整表校验在提交按钮上**：`ValidateForms="表单ID"`（Core-TagHelper 用 `_ValidateForms`；**FineUI.Java 直接写 `validate-forms="表单ID"`，逗号分隔多表单，无下划线前缀**）；不是设在 Form 容器上。
 5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUI.Java 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
 6. **Pro 变化事件采用推荐模式**：项目全局设置 `EnableImplicitChangeEvents="false"` 后，声明 `OnTextChanged`、`OnSelectedIndexChanged`、`OnCheckedChanged` 等服务端事件即可自动回发，无需再写 `AutoPostBack="true"`；显式 `AutoPostBack` 始终优先。其他控件回发只同步字段值，不会连带触发该字段的变化事件。
-7. **绝不编造 API**：字段属性不确定就查官网 API 或 `F/doc/` JSDoc。
+7. **绝不编造 API**：字段属性不确定就查官网公开 API 与同模式官方示例。
 8. **Calendar 与 DatePicker 不同**：Calendar 是直接显示在页面中的日期/时间面板；需要输入框弹出日期面板时使用 DatePicker。Calendar 的日期型面板读写 `SelectedDate`，月/年/时间等部分值按 [references/calendar.md](references/calendar.md) 使用 `Text`。
+9. **FormRow 的按钮直接参与列宽**：Pro、Core、Java 两列未设置 `ColumnWidths` 时仍均分，按钮也占半行；需要窄按钮并让字段填满剩余空间时，写 `ColumnWidths="100% auto"`（Java 为 `column-widths`）。旧页面迁移时查阅 `fineui-upgrade` 的破坏性变更清单。
 
 ## 官方资源（Official Resources）
 
