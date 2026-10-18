@@ -248,4 +248,4 @@ Core RazorForms 使用相同标签结构；Java 对应 `<f:render-field><f:comma
 
 Pro、Core RazorForms 与 Java 的普通控件回发参数都以 F.js 客户端事件名开头，例如 `click`、`change`、`rowcommand$...`。这是框架协议，不是业务自定义事件的替代品。
 
-FineUI.Java 普通控件回发不把后台方法名放进 URL；服务端根据本次模板和 `Page_Load` 重建的事件映射分派。回发保留当前页面的查询字符串，因此页面类仍可通过 `getQueryParam()` 读取首次 URL 参数。业务代码不应依赖或自行构造内部控件回发参数。
+FineUI.Java 普通控件回发不把后台方法名放进 URL；服务端根据本次模板和 `Page_Load` 重建的事件映射分派。回发保留当前页面的查询字符串，因此页面类仍可通过 `getQueryValue()` 读取首次 URL 参数。业务代码不应依赖或自行构造内部控件回发参数。

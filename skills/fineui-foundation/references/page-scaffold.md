@@ -298,6 +298,8 @@ public class HelloPage extends FineUIPageBase {
 | 回发结尾 | 无返回（void） | `return UIHelper.Result()` | 无返回（void） | `return UIHelper.Result()` | 无返回（void） |
 | **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |
 
+Core RazorForms / RazorPages 官方项目的 `PageBase` 继承 FineUI.Core 的 `FineUIPageBase`；Java 官方项目的 `PageBase` 继承 FineUI.Java 的 `FineUIPageBase`。两端的框架基类都提供回发判断与 URL 查询参数辅助方法：Core 用 `GetQueryIntValue("id")`，Java 用 `getQueryIntValue("id")`，缺失或无效时默认返回 `0`。需要其他回退值时传第二个参数；查出 ID 后仍要检查记录和权限。MVC 控制器不使用这两个页面基类。
+
 > Region 布局各端一致：顶层 `Layout=Region` 的 Panel（Pro 用 `AutoSizePanelID` 撑满、Core/Java 用 `IsViewPort=true` / `is-view-port="true"`），子 Panel 用 `RegionPosition = Top/Left/Center/Right/Bottom`（Java `region-position="Top"`）定位。
 
 ## See also
