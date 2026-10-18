@@ -29,7 +29,7 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 
 > RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见 `fineui-grid`。
 >
-> FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。两端首屏用 `Page_Get`、控件绑定后用 `Page_Load`；FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
+> FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。两端首屏用 `Page_Init`、控件绑定后用 `Page_Load`；FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
 
 Core 三种模式与 Java 的 FineUI 首屏和 UI 回发均使用 JSON。官方 Core 示例、空项目、AppBox 和 QuickStart 显式启用严格 CSP；客户项目仍需自行配置 CSP，并把旧脚本字符串迁到控件动作、结构化命令或具名函数。
 

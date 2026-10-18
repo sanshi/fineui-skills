@@ -98,7 +98,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 6. **消息框与回发返回值必须按模式区分**：F.js 用 `F.alert({ message: ... })` / `showNotify(...)`；Pro 与 **Core-RazorForms** 的同步控件事件返回 `void`、直接操作控件，**不写 `OnPostXxx`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。按钮点击可写 `void Xxx_Click(object sender, EventArgs e)`；分页、排序、行命令等事件的第二参数必须使用各自的专用 `EventArgs`。RazorForms 后台类必须是 `partial` 并继承项目现有的 RazorForms 页面基类（官方示例为 `XxxModel : BaseModel`，而 `BaseModel` 本身可继承 `PageModel`）；不要改成非 `partial` 的 RazorPages 页面并使用 `OnGet` / `OnPostXxx`。只有 Core-MVC 的 action 和 Core-RazorPages 的 `OnPostXxx` 返回 `IActionResult`，结尾 `return UIHelper.Result();`；Java 用消息类 `Alert.show(...)`、`Confirm.show(...)` 或 `new Notify().show()`，同步处理器返回 `void`，事件参数同样按事件类型选择。
 7. **客户端动作只写具名函数**：Pro/Core 用 `ClickHandler="onXxxClick"`，Java 用 `click-handler="onXxxClick"`，函数首参为 `event`。不要在新代码中使用 `OnClientClick` / `on-client-click` 或把脚本塞进 Handler；详见 [references/events-postback.md](references/events-postback.md)。
 8. **Core RazorForms 事件名默认省略 `Async`**：标签推荐写 `OnClick="btnSave_Click"`，后台可用同步的 `void btnSave_Click(...)` 或异步的 `async Task btnSave_ClickAsync(...)`，切换实现时标签不变；两者并存时优先异步方法，异步事件不要使用 `async void`。完整 `Async` 名称只作兼容说明，详见 [references/events-postback.md](references/events-postback.md)；此命名规则不套用到 Pro、Java 或 Core 的其他模式。
-9. **RazorForms 与 Java 的首屏入口**：仅首屏 GET 执行 `Page_Get`，Core 异步查询可用 `Task Page_GetAsync`；控件绑定后执行 `Page_Load`。原生 RazorPages 仍用 `OnGet`，MVC 仍用 Action。Core 三模式与 Java 的 FineUI 首屏和 UI 回发都使用 JSON；官方 Core 示例项目显式启用严格 CSP，类库本身默认不开启。
+9. **RazorForms 与 Java 的页面入口**：首屏和 FineUI 控件回发都执行 `Page_Init`，Core 异步查询可用 `Task Page_InitAsync`；控件绑定后执行 `Page_Load`。原生 RazorPages 仍用 `OnGet`，MVC 仍用 Action。Core 三模式与 Java 的 FineUI 首屏和 UI 回发都使用 JSON；官方 Core 示例项目显式启用严格 CSP，类库本身默认不开启。
 
 ## 官方资源（Official Resources）
 

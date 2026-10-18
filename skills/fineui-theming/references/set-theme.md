@@ -39,7 +39,7 @@ pm.Theme = Theme.Pure_Blue;
 ```
 
 ```csharp
-// Core：RazorForms 放在 Page_Get，原生 RazorPages 放在 OnGet，MVC 放在返回视图的 Action；均晚于应用公共初始化。
+// Core：RazorForms 放在 Page_Init，原生 RazorPages 放在 OnGet，MVC 放在返回视图的 Action；均晚于应用公共初始化。
 var pm = PageManager.Instance;
 pm.CustomTheme = String.Empty;
 pm.Theme = Theme.Pure_Blue;

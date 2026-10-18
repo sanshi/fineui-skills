@@ -56,8 +56,8 @@ pagerAutoSimpleMode: true
 <f:Grid ... PagerAutoSimpleMode="true"> ... </f:Grid>
 ```
 ```java
-// FineUI.Java：在 Page_Get 配置本页默认值，Page_Load 操作已经绑定的表格。
-public void Page_Get(Object sender, EventArgs e) {
+// FineUI.Java：在 Page_Init 配置本页默认值，Page_Load 操作已经绑定的表格。
+public void Page_Init(Object sender, EventArgs e) {
     getPageManager().gridPagerAutoSimpleMode(true);
 }
 
@@ -79,8 +79,8 @@ F.init({ gridPagerAutoSimpleMode: true });
 <f:PageManager ID="PageManager1" runat="server" GridPagerAutoSimpleMode="true" />
 ```
 ```csharp
-// Core-RazorForms：首次加载时在 Page_Get 设置本页配置。
-public void Page_Get(object sender, EventArgs e)
+// Core-RazorForms：每次请求在 Page_Init 设置本页配置。
+public void Page_Init(object sender, EventArgs e)
 {
     PageManager.Instance.GridPagerAutoSimpleMode = true;
 }
@@ -183,7 +183,7 @@ fineui.grid-show-selection-message=true
 
 1. **没有“全局每页条数”配置**：`PageSize` **只能逐 Grid 设**。Core **不存在** `GridPageSize` 全局项，Pro 亦无 `GridPageSize` 全局键——不要凭空写。
 2. **`pagerAutoSimpleMode` 全局键名**：F.js `gridPagerAutoSimpleMode`（`F.init`）；Pro/Core 全局 `GridPagerAutoSimpleMode`；实例属性 F.js `pagerAutoSimpleMode` / C# `PagerAutoSimpleMode`；**Java 全局 `fineui.grid-pager-auto-simple-mode`，页面级 `getPageManager().gridPagerAutoSimpleMode(true)`**（四段命名规律）。
-3. **全局项两处入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段，RazorForms 在 `Page_Get`、原生 RazorPages 在 `OnGet`、MVC 在返回视图的 Action 中设置 `PageManager.Instance.GridXxx`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）或页面类 `getPageManager().gridXxx(...)` / `FineUIPageManagerInitializer` bean（页面级/按用户）**。
+3. **全局项两处入口**：Pro = `Web.config` 的 `<FineUI.Pro>` 或页面 `<f:PageManager>`；Core = `appsettings.json` 的 `FineUI` 段，RazorForms 在 `Page_Init`、原生 RazorPages 在 `OnGet`、MVC 在返回视图的 Action 中设置 `PageManager.Instance.GridXxx`；**Java = `application.properties` 的 `fineui.*` 键（全站默认）或页面类 `getPageManager().gridXxx(...)` / `FineUIPageManagerInitializer` bean（页面级/按用户）**。
 4. **分页行号**：行号列跨页连续编号用 `EnablePagingNumber="true"`（Core）/ **Java `<f:row-number-field enable-paging-number="true">`** / F.js `columnType:'rownumberfield'` + `pagingNumber:true`。
 
 ## See also

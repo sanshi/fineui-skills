@@ -53,7 +53,7 @@ Pro 项目若显式列出内容文件，需要登记新增的三个文件；没�
 }
 ```
 
-页面级主题在 RazorForms 的 `Page_Get` 设置；原生 RazorPages 使用 `OnGet`，MVC 放在返回视图的 Action：
+页面级主题在 RazorForms 的 `Page_Init` 设置；原生 RazorPages 使用 `OnGet`，MVC 放在返回视图的 Action：
 
 ```csharp
 var pm = PageManager.Instance;

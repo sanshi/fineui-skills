@@ -192,7 +192,6 @@ Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
 ```csharp
 // Hello.cshtml.cs（partial，WebForms 风格）
 public partial class HelloModel : BaseModel {
-    public void Page_Get(object sender, EventArgs e) { }
     protected void Page_Load(object sender, EventArgs e) { }
     protected void btnHello_Click(object sender, EventArgs e) {
         Alert.Show("你好 FineUI！", MessageBoxIcon.Warning);
@@ -200,7 +199,7 @@ public partial class HelloModel : BaseModel {
 }
 // Hello.cshtml.designer.cs（自动生成）：protected FineUI.Core.Button btnHello;
 ```
-PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。配置赋值统一放在后台：应用基类在 GET 处理器前调用 `AppPageManagerInitializer.Initialize(PageManager.Instance, Request)`；RazorForms 单页在 `Page_Get` 使用 `PageManager.Instance` 属性赋值（MVC 用返回视图的 Action，原生 RazorPages 用 `OnGet`）。不要将 Cookie 初始化再放回布局，避免覆盖已经确定的单页配置。
+PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `@F.RenderCss()`/`@F.RenderScript()`，结构与 MVC 版一致）。配置赋值统一放在后台：应用基类的 `OnPageHandlerExecuting` 在首屏和控件回发时调用 `AppPageManagerInitializer.Initialize(PageManager.Instance, Request)`；RazorForms 单页在 `Page_Init` 使用 `PageManager.Instance` 属性赋值（MVC 用返回视图的 Action，原生 RazorPages 用 `OnGet`）。不要将 Cookie 初始化再放回布局，避免覆盖已经确定的单页配置。
 
 ---
 
@@ -258,7 +257,6 @@ public class HelloPage extends FineUIPageBase {
 
     Button btnHello;   // 与标签 id="btnHello" 同名，框架自动绑定
 
-    public void Page_Get(Object sender, EventArgs e) { }
     public void Page_Load(Object sender, EventArgs e) { }
 
     public void btnHello_Click(Object sender, EventArgs e) {   // 返回 void，无需 UIHelper.Result()
@@ -295,7 +293,7 @@ public class HelloPage extends FineUIPageBase {
 |------|----------------|----------|-----------------|-----------------|--------------------|
 | 页面语法 | `.aspx` `<f:...>` | `Index.cshtml` Fluent | `.cshtml` TagHelper | `.cshtml` TagHelper | `.html` Thymeleaf `<f:xxx>` |
 | 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） | 2（html + 页面类 java） |
-| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Get`+`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Get`+`Page_Load` |
+| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Init`+`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Init`+`Page_Load` |
 | 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` | `on-click="方法名"` |
 | 回发结尾 | 无返回（void） | `return UIHelper.Result()` | 无返回（void） | `return UIHelper.Result()` | 无返回（void） |
 | **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |
