@@ -19,7 +19,7 @@
 
 ```csharp
 [NoRazorForms]
-public class StudentEditModel : BaseModel
+public class StudentEditModel : PageBase
 {
     public void OnGet()
     {
@@ -191,7 +191,7 @@ Core 新项目的 `appsettings.json` 同时关闭两类危险兼容入口：
 ```
 ```csharp
 // Hello.cshtml.cs（partial，WebForms 风格）
-public partial class HelloModel : BaseModel {
+public partial class HelloModel : PageBase {
     protected void Page_Load(object sender, EventArgs e) { }
     protected void btnHello_Click(object sender, EventArgs e) {
         Alert.Show("你好 FineUI！", MessageBoxIcon.Warning);
@@ -216,7 +216,7 @@ PageManager 的输出仍在 `Pages/Shared/_Layout.cshtml`（`@F.PageManager` + `
 ```
 ```csharp
 // Hello.cshtml.cs（普通 PageModel，无 designer）
-public class HelloModel : BaseModel {
+public class HelloModel : PageBase {
     public void OnGet() { }
     public IActionResult OnPostBtnHello_Click() {
         Alert.Show("你好 FineUI！", MessageBoxIcon.Warning);
@@ -293,7 +293,7 @@ public class HelloPage extends FineUIPageBase {
 |------|----------------|----------|-----------------|-----------------|--------------------|
 | 页面语法 | `.aspx` `<f:...>` | `Index.cshtml` Fluent | `.cshtml` TagHelper | `.cshtml` TagHelper | `.html` Thymeleaf `<f:xxx>` |
 | 文件件数 | 3（aspx/cs/designer） | 2（cshtml + Controller） | 3（cshtml/cs/designer） | 2（cshtml/cs） | 2（html + 页面类 java） |
-| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `BaseModel`(partial)·`Page_Init`+`Page_Load` | `BaseModel`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Init`+`Page_Load` |
+| 后置基类·方法 | `PageBase`·`Page_Load` | Controller·`Index()`+`[HttpPost]` | `PageBase`(partial)·`Page_Init`+`Page_Load` | `PageBase`·`OnGet`+`OnPostXxx` | `FineUIPageBase`·`Page_Init`+`Page_Load` |
 | 事件绑定 | `OnClick="方法名"` | `Url.Action("...")` | `OnClick="方法名"` | `@Url.Handler("...")` | `on-click="方法名"` |
 | 回发结尾 | 无返回（void） | `return UIHelper.Result()` | 无返回（void） | `return UIHelper.Result()` | 无返回（void） |
 | **PageManager 位置** | **页面内 `<f:PageManager>`** | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 共享 `_Layout` `@F.PageManager` | 母版 `<f:styles>`/`<f:scripts>` + Initializer bean |
