@@ -14,7 +14,7 @@ description: >
   "FineUI.Java", "Spring Boot", "Thymeleaf", "@FineUIPage", "text-box", "simple-form", "form-row".
 metadata:
   author: FineUI
-  version: "16.0.1"
+  version: "16.1.0"
   compatibility: FineUI v16.0，并记录待发布的 FormRow 自动列宽与按钮布局变化。
 ---
 

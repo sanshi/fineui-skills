@@ -11,7 +11,7 @@ description: >
   "region-panel", "region-position", "box-flex", "is-view-port".
 metadata:
   author: FineUI
-  version: "16.0.1"
+  version: "16.1.0"
   compatibility: FineUI v16.0，并记录待发布的 FormRow 自动列宽规则。
 ---
 

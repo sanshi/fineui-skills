@@ -9,7 +9,7 @@ description: >
   当用户要把 FineUI 从旧版本升级到新版本、或问“升级会不会有不兼容”时使用本技能。
 metadata:
   author: FineUI
-  version: "16.0.1"
+  version: "16.1.0"
   compatibility: 覆盖 v10.0 → v16.0 的高影响破坏性变更，并记录待发布变更；只处理源版本与目标版本均为 v10 及以上的升级。
 ---
 
