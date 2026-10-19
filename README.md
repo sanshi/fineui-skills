@@ -1,8 +1,8 @@
 # FineUI Agent Skills
 
-本仓库独立维护 FineUI 开发技能及参考资料。只需技能时使用下文的 `npx skills add` 命令；要同时接入本地知识查询，请从官网[快速开始](https://fineui.com/docs/#/AgentSkills/quickstart)安装 `fineui-agent`。工具包包含 CLI、MCP 和离线知识，由独立项目维护。
+本仓库维护一个对用户可见的 `fineui` 技能及按任务分类的参考资料。使用下文的 `npx skills add` 命令安装；需要更详细的公开 API、示例或主题资料时，可沿 [官网 AI 文档索引](https://fineui.com/llms.txt)逐层读取。
 
-FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor、OpenCode、Codex** 等 AI 编程助手提供准确的 FineUI API、开发模式和代码示例，减少错误 API、版本混用和技术栈混用。
+FineUI 官方技能为 **Claude Code、GitHub Copilot、Cursor、OpenCode、Codex** 等 AI 编程助手提供开发模式、代码示例和资料导航，减少错误 API、版本混用和技术栈混用。
 
 也可以使用接入 DeepSeek、GLM、Kimi、MiniMax、MiMo 等模型的编程 Agent；技能读取和工具调用由所用编程客户端及模型接入方式支持。
 
@@ -16,7 +16,7 @@ FineUI 官方 Agent Skills 集合，为 **Claude Code、GitHub Copilot、Cursor�
 
 ## FineUI 部署栈与开发模式
 
-FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能集为每种写法给出可运行的最小代码：
+FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。技能为每种写法给出可运行的最小代码：
 
 | 部署栈 | 开发模式 | 前台写法 |
 |--------|---------|---------|
@@ -27,7 +27,7 @@ FineUI 有 **4 部署栈**，其中 **Core 含 3 种开发模式**。本技能�
 | **Core** | **RazorPages** | `<f:Grid>` **TagHelper**（数据在标签内联 `DataSource`） |
 | **Java** | Spring Boot | `<f:grid>` **Thymeleaf 方言标签**（kebab-case，数据在页面类 `Page_Load` 绑定） |
 
-> RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见 `fineui-grid`。
+> RazorForms 与 RazorPages 共用 TagHelper 标签，主要区别在数据初始化和事件处理，详见[表格分类](skills/fineui/references/grid/overview.md)。
 >
 > FineUI.Java 与 Core RazorForms 都采用标签式有状态服务端组件。两端首屏用 `Page_Init`、控件绑定后用 `Page_Load`；FineUI.Java 基于 Spring Boot 和 Thymeleaf 方言，标签与属性使用 kebab-case，页面类使用 Java。
 
@@ -35,11 +35,11 @@ Core 三种模式与 Java 的 FineUI 首屏和 UI 回发均使用 JSON。官方 
 
 ## 前置要求
 
-- 当前技能源码包含待发布的 v16.1.0 用法；v16.0.1 项目应使用对应发行版的技能或知识包。客户端事件与 RawHtml 的基础写法从 v16.0 起适用。
+- 当前技能源码的版本以 `plugin.json` 和技能顶部的 `metadata.version` 为准。旧版项目优先使用与项目版本一致的技能、源码和示例；不能把官网当前 API 直接当作旧版已支持的 API。
 
-## 仅安装 Skills
+## 安装技能
 
-完整接入请先看官网[快速开始](https://fineui.com/docs/#/AgentSkills/quickstart)。如果客户端只支持技能，可以单独安装本仓库的 **Agent Skills（`SKILL.md`）**；这种方式只提供开发指导，不配置本地 MCP 查询。
+官网[快速开始](https://fineui.com/docs/#/AgentSkills/quickstart)介绍安装、模式判定与在线资料的使用。安装后，技能选择适合当前任务的分类，按需读取官网文档。
 
 ### 项目级安装
 
@@ -66,24 +66,28 @@ npx skills add sanshi/fineui-skills -g
 npx skills update
 ```
 
-技能跟随 FineUI 版本发布；升级 FineUI 后请同步更新技能。
+技能跟随 FineUI 版本发布；升级 FineUI 后请同步更新技能。官网在线资料只对应当前版本，旧项目应先核对自身依赖与同版示例。
 
-## 已含技能
+如果项目以前安装过 12 个独立的 `fineui-*` 技能，更新后运行 `npx skills list` 检查安装结果；全局安装用 `npx skills list -g`。若旧技能仍在，运行 `npx skills remove`（全局安装加 `-g`）选择这些旧入口，再安装或保留新的 `fineui` 技能，避免选择器同时出现新旧技能。
 
-| 技能 | 说明 |
+## 技能分类
+
+安装时只显示一个 `fineui` 技能。技能内提供以下分类：
+
+| 分类 | 说明 |
 |------|------|
-| `fineui-foundation` | 基础：写法判定、`F.create`、PageManager、页面骨架、客户端事件与回发、RawHtml 安全模型、命名约定 |
-| `fineui-grid` | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据 |
-| `fineui-form` | 表单与日历：容器、常用字段、高级字段、Calendar、字段校验、整表校验和取值 |
-| `fineui-datalist` | 数据列表：静态项、数据绑定、图文内容、单选多选、分组、导航和加载更多 |
-| `fineui-window` | 窗口与消息框：Window、iframe、关闭回传、Alert、Confirm 和 Notify |
-| `fineui-tree` | 树：节点、图标、后台建树、数据绑定、复选框、级联、节点事件和异步加载 |
-| `fineui-panel` | 容器：Panel、ContentPanel、GroupPanel、工具栏、折叠、Tools、TabStrip 和 Accordion |
-| `fineui-layout` | 布局：Fit、Region、HBox、VBox、Block、Column、Anchor 和视口自适应 |
-| `fineui-button` | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
-| `fineui-theming` | 主题设置：全局默认、PageManager 覆盖和运行时切换 |
-| `fineui-custom-theme` | 自定义主题：配色设计、配置生成、三栈接入、运行截图验证和主题包交付 |
-| `fineui-upgrade` | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
+| [基础与模式](skills/fineui/references/foundation/overview.md) | 基础：写法判定、`F.create`、PageManager、页面骨架、客户端事件与回发、RawHtml 安全模型、命名约定 |
+| [表格](skills/fineui/references/grid/overview.md) | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据 |
+| [表单](skills/fineui/references/form/overview.md) | 表单与日历：容器、常用字段、高级字段、Calendar、字段校验、整表校验和取值 |
+| [数据列表](skills/fineui/references/datalist/overview.md) | 数据列表：静态项、数据绑定、图文内容、单选多选、分组、导航和加载更多 |
+| [窗口](skills/fineui/references/window/overview.md) | 窗口与消息框：Window、iframe、关闭回传、Alert、Confirm 和 Notify |
+| [树](skills/fineui/references/tree/overview.md) | 树：节点、图标、后台建树、数据绑定、复选框、级联、节点事件和异步加载 |
+| [容器](skills/fineui/references/panel/overview.md) | 容器：Panel、ContentPanel、GroupPanel、工具栏、折叠、Tools、TabStrip 和 Accordion |
+| [布局](skills/fineui/references/layout/overview.md) | 布局：Fit、Region、HBox、VBox、Block、Column、Anchor 和视口自适应 |
+| [按钮](skills/fineui/references/button/overview.md) | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
+| [主题设置](skills/fineui/references/theming/overview.md) | 主题设置：全局默认、PageManager 覆盖和运行时切换 |
+| [自定义主题](skills/fineui/references/custom-theme/overview.md) | 自定义主题：配色设计、配置生成、三栈接入、运行截图验证和主题包交付 |
+| [版本升级](skills/fineui/references/upgrade/overview.md) | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
 
 ## 用法
 
