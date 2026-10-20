@@ -9,7 +9,7 @@
 | 初始单选 | `selectedItems: ['cn']` | `SelectedValue="cn"` | `selected-value="cn"` |
 | 初始多选 | `selectedItems: ['cn','us']` | Pro 后台赋 `string[]`；Core 标签传 `string[]` | `selected-value-array="cn,us"` |
 | 读取单选 | `getSelectedItem()` | `SelectedValue` | `getSelectedValue()` |
-| 读取多选 | `getSelectedItems()` | `SelectedValueArray` | `getSelectedValueArray()` |
+| 读取多选 | `getSelectedItems()` | `SelectedValueArray`（`string[]`） | `getSelectedValueArray()`（`String[]`） |
 
 ```html
 <!-- FineUI.Core RazorForms -->

@@ -258,9 +258,9 @@ F.CheckBoxList().ID("cbl1").Label("兴趣").ColumnNumber(3)
 string[] selected = cbl1.SelectedValueArray;   // 如 ["music", "read"]
 ```
 ```java
-// FineUI.Java 页面类：读/写选中值用 List<String>（不是数组）
-java.util.List<String> selected = cbl1.getSelectedValues();      // 如 ["music", "read"]
-cbl1.setSelectedValues(java.util.List.of("music", "read"));
+// FineUI.Java 页面类：多选值与 Core 一样使用数组
+String[] selected = cbl1.getSelectedValueArray();            // 如 ["music", "read"]
+cbl1.setSelectedValueArray(new String[] { "music", "read" });
 cbl1.addCheckItem("read", "阅读", true, false);                   // 运行时加项（值, 文本, ...）
 ```
 
@@ -288,6 +288,15 @@ F.TimePicker().ID("tp1").Label("预约时间").MinValue("09:00").MaxValue("18:00
 <!-- FineUI.Java（Thymeleaf 方言）：范围属性是 min-time-text/max-time-text（不是 min-value/max-value）-->
 <f:time-picker id="tp1" label="预约时间" increment="30" min-time-text="8:30" max-time-text="20:30" enable-edit="false"></f:time-picker>
 ```
+
+```java
+// FineUI.Java：设置时只保留小时和分钟；读取时日期取服务器当天。
+tp1.setSelectedDate(java.time.LocalDateTime.of(2026, 10, 20, 9, 30));
+java.time.LocalDateTime selectedTime = tp1.getSelectedDate();
+String timeFormat = tp1.getTimeFormatString(); // 固定为 "HH:mm"
+```
+
+时间文本为 `"09:30"` 时可读出当天 09:30；`"9:30"` 或 `"24:00"` 格式不符时返回 `null`。清空时调用 `setSelectedDate(null)`。
 
 ## Label（只读文本标签）
 
@@ -401,7 +410,7 @@ String name = tbxName.getValue();                    // TextBox/TextArea
 String v    = ddl1.getSelectedValue();               // DropDownList 值；ddl1.getText() = 选中文本
 boolean on  = cb1.isChecked();                       // CheckBox
 String sex  = rbl1.getSelectedValue();               // RadioButtonList
-java.util.List<String> cs = cbl1.getSelectedValues();// CheckBoxList（List，非数组）
+String[] cs = cbl1.getSelectedValueArray();           // CheckBoxList 多选值
 ddl1.setSelectedValue("1");                          // 回填
 labResult.setText("用户名：" + name);                 // 更新只读标签
 ```

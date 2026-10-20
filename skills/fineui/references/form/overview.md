@@ -103,7 +103,7 @@ public class Login extends FineUIPageBase {
 2. **单列用 SimpleForm、多列用 Form**：Form 的字段必须包在 `<Rows><f:FormRow><Items>` 里；SimpleForm 字段直接在 `<Items>`。
 3. **必填红星**：`Required="true"` 需配 `ShowRedStar="true"` 才显示红星。
 4. **整表校验在提交按钮上**：`ValidateForms="表单ID"`（Core-TagHelper 用 `_ValidateForms`；**FineUI.Java 直接写 `validate-forms="表单ID"`，逗号分隔多表单，无下划线前缀**）；不是设在 Form 容器上。
-5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUI.Java 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValues()`）**。详见 [references/fields.md](references/fields.md)。
+5. **读值方式随写法不同**：Pro / Core-RazorForms 用控件字段（`tbxName.Text`）；Core-MVC / RazorPages 用回发参数或 `UIHelper.TextBox("id")`；**FineUI.Java 用控件字段的 getter/setter（`tbxName.getValue()`、`ddl.getSelectedValue()`、`cbx.isChecked()`、`cbl.getSelectedValueArray()`）**。详见 [references/fields.md](references/fields.md)。
 6. **Pro 变化事件采用推荐模式**：项目全局设置 `EnableImplicitChangeEvents="false"` 后，声明 `OnTextChanged`、`OnSelectedIndexChanged`、`OnCheckedChanged` 等服务端事件即可自动回发，无需再写 `AutoPostBack="true"`；显式 `AutoPostBack` 始终优先。其他控件回发只同步字段值，不会连带触发该字段的变化事件。
 7. **绝不编造 API**：字段属性不确定就查官网公开 API 与同模式官方示例。
 8. **Calendar 与 DatePicker 不同**：Calendar 是直接显示在页面中的日期/时间面板；需要输入框弹出日期面板时使用 DatePicker。Calendar 的日期型面板读写 `SelectedDate`，月/年/时间等部分值按 [references/calendar.md](references/calendar.md) 使用 `Text`。

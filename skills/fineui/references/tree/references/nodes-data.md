@@ -15,7 +15,7 @@
 | 提示 | `qtip` | `ToolTip` | `tool-tip=` |
 | 初始勾选 | `checked` | `Checked` | `checked=` |
 
-> **命名陷阱（Java）**：模板标签属性叫 `node-id=`，但服务端 `TreeNode` Bean 的方法是 `getId()/setId(...)`（不是 `getNodeID`）。`Tree1.getSelectedNodeId()` 读取当前选中节点 id。
+> **命名陷阱（Java）**：模板标签属性叫 `node-id=`，但服务端 `TreeNode` Bean 的方法是 `getId()/setId(...)`（不是 `getNodeID`）。`Tree1.getSelectedNodeID()` 读取当前选中节点 id。
 
 ## 节点客户端点击
 

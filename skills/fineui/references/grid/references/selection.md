@@ -167,7 +167,7 @@ public void Button1_Click(Object sender, EventArgs e) {
 
 `GetSelectedDataKeys()` / `getSelectedDataKeys()` 的返回顺序与选中行 ID 顺序一致，每行字段顺序与数据键声明一致。内部按 `DataIDField` 对应的数据键关联，不使用行索引，所以内存分页、排序和行移动无需计算偏移。配置缺失、ID 重复或选中 ID 找不到数据键时会抛错，不会按索引猜测。
 
-返回值来自客户端回传，只适合界面交互与展示。数据库分页跨页选择，或删除、审批、金额、权限等需要权威数据的业务，应读取 `SelectedRowIDArray` / `getSelectedRowIdArray()` 后查询数据库。
+返回值来自客户端回传，只适合界面交互与展示。数据库分页跨页选择，或删除、审批、金额、权限等需要权威数据的业务，应读取 `SelectedRowIDArray` / `getSelectedRowIDArray()` 后查询数据库。
 
 > 客户端读取（如 `notifySelectedRows('Grid1')`、`F.ui.Grid1.getSelectedRows(true)`、`getCheckedRows(true)`）与 F.js 完全相同；需回发服务端时用 `F.customEvent('事件名', 数据)` 触发页面类的 `Page_CustomEvent`。
 
