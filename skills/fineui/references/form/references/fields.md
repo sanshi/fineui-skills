@@ -22,6 +22,8 @@
 
 密码框：F.js `inputType: 'password'`；C# `TextMode="Password"`。TextArea 自动增高：`AutoGrowHeight`。
 
+Core 与 Java 的 `TextBox` 可以同时设置 `TextMode` 和 `InputType`：`TextMode=Password` 是预设，非空的 `InputType="email"` 优先决定实际输入类型；清空 `InputType` 后重新使用 `TextMode`。Java 的 `getTextMode()`、`getInputType()` 分别返回原来设置的值，不能用后者读取由前者生成的显示类型。Java 布局宽高、最小宽高和绝对坐标的 getter 返回可空 `Integer`，未设置为 `null`，明确设置为零才是 `0`。
+
 ```javascript
 // F.js
 { type: 'TextBox', id: 'tbxName', fieldLabel: '用户名', required: true, emptyText: '请输入' }
