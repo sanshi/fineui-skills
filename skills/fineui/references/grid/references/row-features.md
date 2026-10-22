@@ -196,10 +196,12 @@ public void Grid1_RowCommand(Object sender, GridCommandEventArgs e) {
     Notify notify = new Notify();
     notify.setMessage(String.format("第 %d 行，命令 %s，ID %s", e.getRowIndex() + 1, e.getCommandName(), keys[0]));
     notify.show();
-    // e.getColumnIndex() 取命令所在列
+    // e.getColumnIndex() 是点击时从零开始的当前可见叶子列位置；隐藏或拖动列后会变化。
 }
 ```
 > 纯客户端命令（不回发）：`<f:grid>` 上 `<f:listeners><f:listener event="rowcommand" handler="onGrid1RowCommand">`，JS 签名与 F.js 相同：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName, commandArgument)`。
+
+Core RazorForms 与 Java 的普通无字段行命令列不用为回发设置 `ColumnID` / `column-id`。服务端按本次声明核对命令；判断操作使用 `CommandName`，需要稳定识别业务列时才显式命名并读取 `ColumnID`。两端的 `ColumnIndex` 都是当前可见叶子列从零开始的位置，隐藏列与分组标题不计入，显示的选择列和行扩展列计入，拖动或隐藏后会变化。
 
 客户端 `rowcommand` listener 签名：`function onGrid1RowCommand(event, rowId, rowIndex, columnId, commandName, commandArgument)`。有服务端 `OnRowCommand` 时，监听器显式返回 `false` 可阻止后续回发。
 
