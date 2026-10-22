@@ -137,7 +137,7 @@ ActiveWindow.HideInvokeFunction("removeActiveTab");
 ```java
 // FineUI.Java —— ActiveWindow 静态方法直接派发命令（无需 RegisterStartupScript，纯 JSON 命令、无 eval）
 ActiveWindow.hide();                                  // 仅关闭
-ActiveWindow.hidePostBack("arg");                     // 关闭 + 带参回发父页（触发 on-close，参数 → e.getArgument()）
+ActiveWindow.hidePostBack("arg");                     // 关闭 + 带参回发父页（触发 on-close，参数 → e.getArgument("closeArgument")）
 ActiveWindow.hideRefresh();                           // 关闭 + 刷新父页
 ActiveWindow.writeBackValue(ddlSheng.getSelectedValue()); // 把值写回父页登记控件（配 ActiveWindow.hide()）
 ActiveWindow.hideInvokeFunction("removeActiveTab");       // 关闭 + 按名调打开本窗体的页面中的具名函数
@@ -179,9 +179,9 @@ public IActionResult Window1_Close(string Window1_closeArgument) {
 // Core-RazorPages —— OnPostWindow1_Close(string Window1_closeArgument)
 ```
 ```java
-// FineUI.Java —— on-close 处理器读 e.getArgument()（不是 WindowCloseEventArgs.CloseArgument）
+// FineUI.Java —— on-close 处理器按字段名读取关闭参数（不是 WindowCloseEventArgs.CloseArgument）
 public void Window1_Close(Object sender, EventArgs e) {
-    String arg = String.valueOf(e.getArgument());
+    String arg = (String) e.getArgument("closeArgument");
     if (arg != null && arg.startsWith("SelectProvince$")) { /* 用 arg 更新父页 */ }
 }
 ```
