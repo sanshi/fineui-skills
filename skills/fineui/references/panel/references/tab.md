@@ -9,11 +9,10 @@
 ```javascript
 // F.js
 F.create({ type: 'TabStrip', isFluid: true, id: 'TabStrip1', renderTo: '#wrap', height: 350, tabPosition: 'top', activeTabIndex: 1,
-    defaults: { autoScroll: true, bodyPadding: 10 },
     items: [
-        { type: 'Tab', title: '标签一', layout: 'fit', items: [ /* 表单/表格 */ ] },
-        { type: 'Tab', title: F.rawHtml('<span class="hot">标签二</span>'), content: '内容', closable: true },
-        { type: 'Tab', title: '标签三', disabled: true, content: '内容' }
+        { type: 'Tab', autoScroll: true, bodyPadding: 10, title: '标签一', layout: 'fit', items: [ /* 表单/表格 */ ] },
+        { type: 'Tab', autoScroll: true, bodyPadding: 10, title: F.rawHtml('<span class="hot">标签二</span>'), content: '内容', closable: true },
+        { type: 'Tab', autoScroll: true, bodyPadding: 10, title: '标签三', disabled: true, content: '内容' }
     ] });
 ```
 ```aspx
