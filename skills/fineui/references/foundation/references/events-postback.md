@@ -15,7 +15,7 @@ Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updat
 
 RF 页面类上可继承的 `[NoRazorForms]` 用于全局开启时关闭特定页面；不生成 PageManager 每页模式 setter。普通独立上传、下载、JSON 接口不要求标记。Core 请求不发送 __FPROTOCOL，浏览器资源与服务器随同一产品包发布，不新增独立协议版本或签名模式凭据。
 
-MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 RF 的事件目标入口。业务数据结果使用 fetch 或明确 `responseType:'data'`，不按 JSON 外形猜测 UI 通道。RF 控件交互必须走本页完整 RF 后台流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页 RF 状态。
+MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 RF 的事件目标入口。独立业务 JSON 或文本接口直接使用原生 `fetch` 或 `jQuery.ajax`，`F.doPostBack` 只处理 FineUI 控件回发，不按 JSON 外形猜测 UI 通道。RF 控件交互必须走本页完整 RF 后台流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页 RF 状态。
 
 严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
 
@@ -214,12 +214,12 @@ Pro 的 `PageManager.CustomEvent` / ASPX `OnCustomEvent` 与 `GetCustomEventRefe
 
 | 产品 / 模式 | 请求入口与特有选项 |
 |---|---|
-| Pro | 当前页面，后台 `Page_CustomEvent`；支持 `enableAjax`，不支持 `url/fields/params/responseType` |
+| Pro | 当前页面，后台 `Page_CustomEvent`；支持 `enableAjax`，不支持 `url/fields/params` |
 | Core RazorForms | 当前完整网址，后台 `Page_CustomEvent`；页面事件省略 `url`，`params` 可补充命名字段 |
 | Core MVC / RazorPages | 必须提供 Action / Handler 的 `url`，可用 `fields/params`；不进入 `Page_CustomEvent` |
-| Java | 当前页面，后台 `Page_CustomEvent`；不支持 `url/fields/params/responseType` |
+| Java | 当前页面，后台 `Page_CustomEvent`；不支持 `url/fields/params` |
 
-以上 AJAX 请求都支持 `disableControl`、五项加载提示和 `complete/success/error`。Pro 设置 `enableAjax:false` 后为整页提交，不执行 AJAX 回调。Core 默认处理控件 JSON；独立业务接口使用 `responseType:'data'`，回调自行读取原文。
+以上 AJAX 请求都支持 `disableControl`、五项加载提示和 `complete/success/error`。Pro 设置 `enableAjax:false` 后为整页提交，不执行 AJAX 回调。Core 始终处理控件 JSON；独立业务接口用原生 `fetch` 或 `jQuery.ajax`，自行处理参数、防伪令牌和错误。
 
 `complete` 先于成功或错误回调执行；成功时是 `success → F.beforeAjaxSuccess → 应用响应`，失败时是 `error → F.beforeAjaxError → 默认提示`。严格返回 `false` 停止后续处理，但仍清理加载状态。回调不等待 Promise；`complete/success` 均早于控件更新，需要更新后操作时由后台追加具名函数调用。
 
