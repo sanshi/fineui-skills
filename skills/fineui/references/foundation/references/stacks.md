@@ -15,14 +15,14 @@ FineUI 有 **4 部署栈**（F.js / Pro / Core / Java），其中 **Core 含 3 �
 
 > **术语纪律**：`Fluent API`、`TagHelper`、`Thymeleaf 方言` 是**前台写法**，不是模式名；Core 模式永远说 MVC / RazorForms / RazorPages。**RazorForms 与 RazorPages 共用 TagHelper 标签**，但数据初始化与事件不同（见下）。
 >
-> **Java 与 Core-RazorForms 是「孪生栈」**：两者都采用「标签式有状态服务端组件 + `Page_Load`/`IsPostBack` + 控件字段 + `xxx_Click` 事件」。后台使用 Thymeleaf / Razor、kebab-case / PascalCase、Java setter / C# 属性；客户端共用 F.js 控件 API。两端共用客户端配置、请求运输、稀疏影子状态、更新和命令机制，服务器适配仍有平台差异，不能直接互换服务端制品。Core 三种模式共用 JSON 首屏与 UI 响应；RF 使用模板重跑和有限状态，MVC/RazorPages 使用无状态子集，保留原生 Action/OnPost 与参数绑定。Pro 保持自己的引导和回发适配。
+> **Java 与 Core-RazorForms 是「孪生栈」**：两者都采用「标签式有状态服务端组件 + `Page_Load`/`IsPostBack` + 控件字段 + `xxx_Click` 事件」。后台使用 Thymeleaf / Razor、kebab-case / PascalCase、Java setter / C# 属性；客户端共用 F.js 控件 API。两端共用客户端配置、请求运输、稀疏影子状态、更新和命令机制，服务器适配仍有平台差异，不能直接互换服务端制品。Core 三种模式共用 JSON 首屏与 UI 响应；Core RazorForms 使用模板重跑和有限状态，MVC/RazorPages 使用无状态子集，保留原生 Action/OnPost 与参数绑定。Pro 保持自己的引导和回发适配。
 
 ## 判定线索（拿到项目怎么认）
 
 - 纯前端 `.html` + `F.create` → **F.js**
 - `.aspx` + `<f:Xxx runat="server">` → **Pro（WebForms）**
 - `Controllers/` + `Views/*/Index.cshtml` 且用 `Html.F()` → **Core-MVC**
-- `Pages/*.cshtml` + `<f:Xxx>` 标签：检查应用级 EnableRazorForms 和模型类/共同基类上的 `[NoRazorForms]`：全局开启且未标记 → **Core-RazorForms**；全局关闭或有可继承标记 → **Core-RazorPages**。RazorPages 无 designer；RF 页面没有可声明控件字段时也可能没有，故不能仅凭文件缺失判定模式
+- `Pages/*.cshtml` + `<f:Xxx>` 标签：检查应用级 EnableRazorForms 和模型类/共同基类上的 `[NoRazorForms]`：全局开启且未标记 → **Core-RazorForms**；全局关闭或有可继承标记 → **Core-RazorPages**。RazorPages 不生成 `.designer.cs`；Core RazorForms 页面没有可声明控件字段时，也可能不生成该文件，因此不能仅凭文件缺失判定模式
 - `.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:xxx>` 小写标签、`layout:decorate`；`pom.xml`/`mvnw`；页面类 `.java` 带 `@FineUIPage(...)` + `extends FineUIPageBase` → **Java（Spring Boot）**
 
 ## 前台写法差异（同一个组件，各写法）

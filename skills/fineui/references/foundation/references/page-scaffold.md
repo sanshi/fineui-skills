@@ -34,9 +34,9 @@ public class StudentEditModel : PageBase
 }
 ```
 
-不要生成 `PageManager.Instance.EnableRazorForms=false`、旧名或标签/流式模式设置，它们已废弃，设置时明确报迁移错误。全局 `EnableRazorForms` 配置仍保留。普通独立上传、下载、JSON 接口不要求标记，不带 RF 字段时自然走原生 Handler。
+不要生成 `PageManager.Instance.EnableRazorForms=false`、旧名或标签/流式模式设置，它们已废弃，设置时明确报迁移错误。全局 `EnableRazorForms` 配置仍保留。普通独立上传、下载、JSON 接口不要求标记，请求不携带 Core RazorForms 专属字段时，会自然进入原生 Handler。
 
-三种 Core 模式共用首屏和响应 JSON；只有 RF 使用模板重跑、dirtyKeys 和 __FSTATE。原生 POST 不执行 OnGet、Page_Load 或模板重跑，也不保持后台控件状态。CSP 策略独立于模式，原生页面可以使用严格策略。
+三种 Core 模式共用首屏和响应 JSON；只有 Core RazorForms 使用模板重跑、控件内 `_dirtyKeys` 和 `__FSTATE`。原生 POST 不执行 OnGet、Page_Load 或模板重跑，也不保持后台控件状态。CSP 策略独立于模式，原生页面可以使用严格策略。
 
 ## 1) F.js —— 纯前端
 

@@ -6,16 +6,16 @@
 |------|----------|------------|
 | 只在浏览器执行 | 页面具名函数 + `ClickHandler` / `click-handler` | 无 |
 | 控件的标准服务端事件 | `OnClick`、`OnSelectedIndexChanged`、`OnRowCommand` 等 | 对应控件事件方法 |
-| 有状态页面的业务动作或自定义数据 | `F.customEvent(name, payload)`（Pro、Core RF、Java） | `Page_CustomEvent` |
+| 有状态页面的业务动作或自定义数据 | `F.customEvent(name, payload)`（Pro、Core RazorForms、Java） | `Page_CustomEvent` |
 | 需要非 AJAX、loading、命名表单字段或完成回调 | `F.doPostBack({ ... })` | `Page_CustomEvent` 或指定 MVC/RazorPages 地址 |
 
 ## Core 三种模式的共同 JSON 与独立接口
 
-Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updates/commands 响应。MVC/RazorPages 使用无状态子集，保留 Action/OnPost、模型绑定及 URL 编码表单或 multipart，不上传 RF 状态或事件身份字段，不执行模板重跑和 Page_Load。
+Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updates/commands 响应。MVC/RazorPages 使用无状态子集，保留 Action/OnPost、模型绑定及 URL 编码表单或 multipart，不上传 Core RazorForms 的控件状态或事件身份字段，不执行模板重跑和 Page_Load。
 
-RF 页面类上可继承的 `[NoRazorForms]` 用于全局开启时关闭特定页面；不生成 PageManager 每页模式 setter。普通独立上传、下载、JSON 接口不要求标记。Core 请求不发送 __FPROTOCOL，浏览器资源与服务器随同一产品包发布，不新增独立协议版本或签名模式凭据。
+项目全局开启 Core RazorForms 后，可在页面模型类或共同基类上添加可继承的 `[NoRazorForms]`，让特定页面改用原生 RazorPages 模式；不生成 PageManager 每页模式 setter。普通独立上传、下载、JSON 接口不要求标记。Core 请求不发送 __FPROTOCOL，浏览器资源与服务器随同一产品包发布，不新增独立协议版本或签名模式凭据。
 
-MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 RF 的事件目标入口。独立业务 JSON 或文本接口直接使用原生 `fetch` 或 `jQuery.ajax`，`F.doPostBack` 只处理 FineUI 控件回发，不按 JSON 外形猜测 UI 通道。RF 控件交互必须走本页完整 RF 后台流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页 RF 状态。
+MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 Core RazorForms 的事件目标入口。独立业务 JSON 或文本接口直接使用原生 `fetch` 或 `jQuery.ajax`，`F.doPostBack` 只处理 FineUI 控件回发，不按 JSON 外形猜测 UI 通道。Core RazorForms 的控件交互必须经过本页完整的后台处理流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页的 Core RazorForms 控件状态。
 
 严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
 
@@ -101,7 +101,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 | Core RazorPages | `public IActionResult OnPostBtnSave_Click()` | 是 |
 | FineUI.Java | `public void btnSave_Click(Object sender, EventArgs e)` | 否 |
 
-**RazorForms 采用 WebForms 风格的有状态控件事件。**先核查项目的全局模式与页面继承链上的 `[NoRazorForms]`；RF 页面没有可声明控件字段时也可能没有 `.designer.cs`，不能仅凭文件缺失判定为 RazorPages。真正 RF 页面的 `<f:Button OnClick="btnSave_Click">` 使用上表的同步或异步事件签名，不返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
+**RazorForms 采用 WebForms 风格的有状态控件事件。**先核查项目的全局模式与页面继承链上的 `[NoRazorForms]`；Core RazorForms 页面没有可声明控件字段时也可能没有 `.designer.cs`，不能仅凭文件缺失判定为 RazorPages。采用 Core RazorForms 模式的页面中，`<f:Button OnClick="btnSave_Click">` 使用上表的同步或异步事件签名，不返回 `IActionResult`。表格分页、排序、行命令等事件仍须使用各自的专用 `EventArgs`，不能一律套用普通 `EventArgs`。
 
 **Core RazorForms 推荐标签始终省略 `Async`**，如 `OnClick="btnSave_Click"`：框架优先查找 `btnSave_ClickAsync`，没有时才调用 `btnSave_Click`；后台切换同步／异步实现时标签不变。异步事件返回 `Task`，不要使用 `async void`；`Page_LoadAsync`、`Page_CustomEventAsync` 同样等待完成。
 
@@ -109,7 +109,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 
 Core RazorForms 的普通控件回发默认请求当前完整 URL，保留已有查询参数；事件名称通过当次重跑服务器模板取得的可信声明查找，不通过新增 `?handler=...` 选择。首屏和受控回发响应均为 JSON，不需要启用另一种架构。独立上传、下载或自定义 JSON 入口仍使用显式地址；RazorPages 的 `@Url.Handler(...)` 与 MVC action 保留原合同。
 
-普通策略下，旧 `RegisterStartupScript` 与字符串消息回调仍可运行。严格内容安全策略（Content Security Policy，CSP）中，RF 使用控件即时方法，MVC/RazorPages 使用 `UIHelper`；共同动作使用 `PageContext.Execute(ClientCommand...)` 或 `PageContext.InvokeFunction("具名函数", ...)`，不要拼接脚本。RazorForms 页面模型有同名属性，在后台代码中须写 `FineUI.Core.PageContext.InvokeFunction(...)` 等完整类名。可信 Razor 内联脚本可自动获得本次请求 nonce；nonce 不允许 `eval`，也不会自动授权 `RawHtml` 数据中的脚本。回调收到的是原始 JSON 文本；超时登录等拦截逻辑应解析 `commands` 中的 `page.redirect`，不能搜索旧 JS 片段。
+普通策略下，旧 `RegisterStartupScript` 与字符串消息回调仍可运行。严格内容安全策略（Content Security Policy，CSP）中，Core RazorForms 使用控件即时方法，MVC/RazorPages 使用 `UIHelper`；共同动作使用 `PageContext.Execute(ClientCommand...)` 或 `PageContext.InvokeFunction("具名函数", ...)`，不要拼接脚本。RazorForms 页面模型有同名属性，在后台代码中须写 `FineUI.Core.PageContext.InvokeFunction(...)` 等完整类名。可信 Razor 内联脚本可自动获得本次请求 nonce；nonce 不允许 `eval`，也不会自动授权 `RawHtml` 数据中的脚本。回调收到的是原始 JSON 文本；超时登录等拦截逻辑应解析 `commands` 中的 `page.redirect`，不能搜索旧 JS 片段。
 
 简单确认优先声明 `ConfirmText` / `ConfirmTarget`，不要手写 `F.confirm`：
 
@@ -239,7 +239,7 @@ F.doPostBack({
 });
 ```
 
-不要把 RazorPages 的 `@Url.Handler(...)` 形态套到 RazorForms、Pro 或 Java；RF 控件交互必须使用本页事件。表单验证在发送前显式调用 `F.validateForm`，客户端点击处理器主动发送业务事件后返回 `false`，避免继续默认动作。
+不要把 RazorPages 的 `@Url.Handler(...)` 形态套到 RazorForms、Pro 或 Java；Core RazorForms 的控件交互必须使用本页事件。表单验证在发送前显式调用 `F.validateForm`，客户端点击处理器主动发送业务事件后返回 `false`，避免继续默认动作。
 
 ## 6. Grid 行命令
 

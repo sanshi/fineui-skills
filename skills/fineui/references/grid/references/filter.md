@@ -179,7 +179,7 @@ Grid1.findColumn("Name").setColumnFilteredData(data);
 
 ## 4. 服务端过滤处理（重点，各栈读取 API 不同）
 
-过滤变更时回发，**读取当前过滤条件 → 按条件查询 → 重绑**。仓库示例把"按条件筛选 DataTable"的逻辑抽到了 `Code/` 下的辅助类里（Pro/RF 用 `NewFilteredTable`，MVC/RP 用 `FilteredTable`）。
+过滤变更时回发，**读取当前过滤条件 → 按条件查询 → 重绑**。仓库示例把"按条件筛选 DataTable"的逻辑抽到了 `Code/` 下的辅助类里（Pro 和 Core RazorForms 使用 `NewFilteredTable`，MVC 和 RazorPages 使用 `FilteredTable`）。
 
 ### 读取条件的差异
 

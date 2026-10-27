@@ -28,9 +28,9 @@
 
 先确认项目模式与准确产品版本，再查对应的在线资料和同模式示例。读取顺序见 [在线资料](references/agent-tools.md)；官网不可访问时继续使用本分类与项目中的证据，不推测已经核对过的 API。
 
-> 判定线索：纯前端 `.html` + `F.create` → **F.js**；`.aspx` + `<f:Xxx runat="server">` → **Pro**；`Controllers/` + `Views/*/Index.cshtml` 用 `Html.F()` → **Core-MVC**；`Pages/*.cshtml` + `<f:Xxx>` 标签 → **Core-RazorForms** 或 **Core-RazorPages**，以全局 EnableRazorForms 和服务器类上的可继承 `[NoRazorForms]` 为准。RazorPages 无 designer；RF 页面没有可声明控件字段时也可能没有，故不能仅凭文件缺失判定模式；`.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:xxx>` 小写标签、`pom.xml`/`mvnw` + 页面类带 `@FineUIPage` → **Java（Spring Boot）**。
+> 判定线索：纯前端 `.html` + `F.create` → **F.js**；`.aspx` + `<f:Xxx runat="server">` → **Pro**；`Controllers/` + `Views/*/Index.cshtml` 用 `Html.F()` → **Core-MVC**；`Pages/*.cshtml` + `<f:Xxx>` 标签 → **Core-RazorForms** 或 **Core-RazorPages**，以全局 EnableRazorForms 和服务器类上的可继承 `[NoRazorForms]` 为准。RazorPages 不生成 `.designer.cs`；Core RazorForms 页面没有可声明控件字段时，也可能不生成该文件，因此不能仅凭文件缺失判定模式；`.html` 里 `<html xmlns:f="http://fineui.com/java">` + `<f:xxx>` 小写标签、`pom.xml`/`mvnw` + 页面类带 `@FineUIPage` → **Java（Spring Boot）**。
 
-混合项目全局开启 RF 时，特定原生页面使用可继承的 `[NoRazorForms]` 类标记，不生成 PageManager 每页模式 setter。独立上传、下载和 JSON 接口无需标记；三种 Core 共用 UI JSON，但原生模式没有 RF 状态和模板重跑。具体骨架与请求边界见下方 page-scaffold、events-postback。
+混合项目全局开启 Core RazorForms 时，需要原生 RazorPages 行为的页面使用可继承的 `[NoRazorForms]` 类标记，不生成 PageManager 每页模式 setter。独立上传、下载和 JSON 接口无需标记；三种 Core 共用 UI JSON，但原生模式不使用 Core RazorForms 的控件状态恢复和模板重跑。具体骨架与请求边界见下方 page-scaffold、events-postback。
 
 ## 各写法速览（创建一个组件）
 

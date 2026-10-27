@@ -8,7 +8,7 @@
 
 完整操作见 [v16.1.0 升级检查](v16.1.md)，覆盖以下影响：
 
-- Core 三种模式统一 JSON；RF 每轮处理模板，初始化数据按 Page_Init/Page_Load 用途迁移，单页模式改用 `[NoRazorForms]`。
+- Core 三种模式统一 JSON；Core RazorForms 每轮处理模板，初始化数据按 Page_Init/Page_Load 用途迁移，单页模式改用 `[NoRazorForms]`。
 - 严格 CSP 的脚本、动态参数和窗体回调改用结构化动作及具名函数；服务器与浏览器资源同时升级并刷新旧页面。
 - Java 首屏 Page_Load 时机改变；选择、查询和页面动作采用新名称，数组及可空类型按新签名读取，已移除的消息脚本入口更换为 show/Command。
 - FormRow 按钮直接按列宽布局，窄按钮用 `100% auto`；分页选项、事件参数、列定位及默认值按新版检查。

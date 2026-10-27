@@ -13,7 +13,7 @@ metadata:
 ## 判定版本和模式
 
 1. 从项目的包、依赖声明或运行资源确认**准确版本**；缺少证据时询问用户或说明版本未确定。技能版本以本文件顶部的 `metadata.version` 为准，官网在线文档只提供当前版本。项目版本不一致时，不把当前文档中的 API 当作旧版已验证事实；优先查看项目依赖的源码、已有代码和同版示例。
-2. `.aspx` 与 `<f:Xxx runat="server">` 属于 Pro；`F.create(...)` 属于 F.js；Core 的 `Html.F()` 属于 MVC，`<f:Xxx>` 标签需结合全局配置和页面类区分 RazorForms、RazorPages；Spring Boot、Thymeleaf 的 `<f:xxx>` 属于 Java。混合项目按当前页面判断。
+2. `.aspx` 与 `<f:Xxx runat="server">` 属于 Pro；`F.create(...)` 属于 F.js；Core 的 `Html.F()` 属于 MVC，`<f:Xxx>` 标签需结合全局配置和页面类区分 RazorForms、RazorPages；Spring Boot、Thymeleaf 的 `<f:xxx>` 属于 Java。混合项目按当前页面判断。说明开发模式时使用 Core RazorForms 全称，避免用缩写增加理解成本。
 3. 先读 [基础与模式](references/foundation/overview.md)，再选择下面一个或少数几个分类。跨模式复制代码前核对标签、事件和后台生命周期。
 
 ## 按任务选择参考资料
