@@ -40,6 +40,14 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
 }
 ```
 
+MVC/RazorPages 的日期参数使用下面的具名函数；在当前页面脚本区声明一次，避免严格 CSP 下编译字符串表达式：
+
+```javascript
+function getCalendar1Text() {
+    return F.ui.Calendar1.getText();
+}
+```
+
 ### FineUI.Core MVC
 
 ```csharp
@@ -47,7 +55,7 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
     .DateFormatString("yyyy-MM-dd")
     .SelectedDate(DateTime.Now)
     .OnDateSelect(Url.Action("Calendar1_DateSelect"),
-        new Parameter("selectedDate", "F.ui.Calendar1.getText()")))
+        Parameter.FromFunction("selectedDate", "getCalendar1Text")))
 ```
 
 ```csharp
@@ -87,7 +95,7 @@ protected void Calendar1_DateSelect(object sender, EventArgs e)
 ```html
 <f:Calendar ID="Calendar1" DateFormatString="yyyy-MM-dd"
     OnDateSelect="@Url.Handler("Calendar1_DateSelect")"
-    OnDateSelectParameter1="@(new Parameter("selectedDate", "F.ui.Calendar1.getText()"))">
+    OnDateSelectParameter1="@(Parameter.FromFunction("selectedDate", "getCalendar1Text"))">
 </f:Calendar>
 ```
 
@@ -147,7 +155,7 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 <f:Calendar ID="Calendar1" DisplayType="DayRange" DateFormatString="yyyy-MM-dd"
     ShowConfirmButton="true" ConfirmToSelect="true"
     OnDateSelect="@Url.Handler("Calendar1_DateSelect")"
-    OnDateSelectParameter1="@(new Parameter("selectedRange", "F.ui.Calendar1.getText()"))">
+    OnDateSelectParameter1="@(Parameter.FromFunction("selectedRange", "getCalendar1Text"))">
 </f:Calendar>
 ```
 
@@ -183,9 +191,11 @@ Java 页面如果也命名为 `Calendar`，控件字段使用全限定名 `com.f
 | 时间 | `Time` | `HH:mm:ss` |
 | 时间范围 | `TimeRange` | `HH:mm:ss` |
 
-日期型面板用 `SelectedDate` / `getSelectedDate()`。月份、年份和纯时间不是完整日期，服务端应使用 `Text` / `getText()` 读写格式化后的字符串，不要强行解析为日期。
+Core/Java 的 `SelectedDate`、`RangeStartDate`、`RangeEndDate` 是当前 `Text/value` 的日期视图，读取按当前格式解析，非法文本返回 `null`。年格式补一月一日，年月补每月第一天，纯时间使用服务器当天；也可直接用 `Text/getText()` 保留格式化文字。Pro 的日期属性仍按对应版本核对，不套用 Core/Java 的内部保存方式。
 
-显示日期和时间组合面板时设置 `ShowTime="true"` / `show-time="true"`；`StackDateTime` 控制日期与时间面板是否上下排列。通过 `ShowMinute`、`ShowSecond` 控制时间精度。
+修改范围一端会保留当前另一端；任一端赋 `null` 清空整个范围。先设置起点、再设置终点时，完整有效后才生成范围文字；未完成的范围只在本请求暂存。修改范围最终记为 `value`，不额外保存两份端点。修改日期格式前先读取当前有效值，再按新格式输出，已被格式舍弃的时分秒不会恢复。
+
+显示日期和时间组合面板时设置 `ShowTime="true"` / `show-time="true"`；`StackDateTime` 控制日期与时间面板是否上下排列。`ShowMinute`、`ShowSecond` 控制面板是否显示分钟和秒，不会截断已有时间值；保存及解析精度由 `DateFormatString` 决定。Core/Java 可在后台动态切换这些开关，以及今天/确定按钮、层叠布局和范围面板独立导航；DatePicker 的弹层同步采用新设置。
 
 ## 可选范围与确认按钮
 

@@ -87,7 +87,7 @@ npx skills update
 | [按钮](skills/fineui/references/button/overview.md) | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
 | [主题设置](skills/fineui/references/theming/overview.md) | 主题设置：全局默认、PageManager 覆盖和运行时切换 |
 | [自定义主题](skills/fineui/references/custom-theme/overview.md) | 自定义主题：配色设计、配置生成、三栈接入、运行截图验证和主题包交付 |
-| [版本升级](skills/fineui/references/upgrade/overview.md) | 版本升级：识别 v10 以来的破坏性变更并生成迁移清单 |
+| [版本升级](skills/fineui/references/upgrade/overview.md) | 版本升级：覆盖 v10 至 v16.1.0，按模式核对生命周期、API、空值与类型变化并生成迁移清单 |
 
 ## 用法
 

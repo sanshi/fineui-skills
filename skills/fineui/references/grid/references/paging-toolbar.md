@@ -6,7 +6,7 @@
 
 ## 1. 页大小选择器
 
-内置选择器：开 `ShowPageSizeSelector`，可选 `PageSizeOptions`（不设用默认）。
+内置选择器开启 `ShowPageSizeSelector`。Core/Java 的 `PageSizeOptions` 是创建分页栏时使用的正整数数组，后台分别传 `int[]` 或 `int...`；未设置、`null` 或空数组使用 10、20、50、100，非法项会报错。它不是动态更新开关，不能靠回发修改已有分页栏的选项。Pro 的既有属性类型不变，F.js 使用数字数组。
 
 ```javascript
 // F.js
@@ -18,11 +18,11 @@ paging: true, pageSize: 10, showPageSizeSelector: true   // 可选：pageSizeOpt
 ```
 ```csharp
 // Core-MVC（Fluent）
-@(F.Grid()...AllowPaging(true).ShowPageSizeSelector(true).PageSizeOptions("5,10,15,20"))
+@(F.Grid()...AllowPaging(true).ShowPageSizeSelector(true).PageSizeOptions(5, 10, 15, 20))
 ```
 ```html
 <!-- Core-TagHelper（RazorForms/RazorPages）-->
-<f:Grid ... AllowPaging="true" ShowPageSizeSelector="true" PageSizeOptions="5,10,15,20"> ... </f:Grid>
+<f:Grid ... AllowPaging="true" ShowPageSizeSelector="true" _PageSizeOptions="5,10,15,20"> ... </f:Grid>
 ```
 ```html
 <!-- FineUI.Java（Thymeleaf 方言）：未设 page-size-options 时用默认 10,20,50,100 -->
@@ -142,7 +142,9 @@ protected void ddlPageSize_SelectedIndexChanged(object sender, EventArgs e) {
 ```
 ```java
 // FineUI.Java 页面类：分页栏按钮的 void 处理器
-public void btnClearData_Click(Object sender, EventArgs e) { Grid1.setDataSource(null); Grid1.dataBind(); }
+public void btnClearData_Click(Object sender, EventArgs e) {
+    Grid1.clearData();
+}
 public void btnRebindData_Click(Object sender, EventArgs e) { Grid1.setDataSource(getAll()); Grid1.dataBind(); }
 public void btnSelectAll_Click(Object sender, EventArgs e) { Grid1.selectAllRows(); }   // 清空选中：Grid1.deselectAllRows()
 ```

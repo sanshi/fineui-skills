@@ -80,6 +80,10 @@ F.create({
 
 > Java 结构与 Core-RazorForms 完全对应：容器 `<f:tree>`、子节点集合标签 `<f:nodes>`（Core 是 `<Nodes>`）、节点 `<f:tree-node>`。属性全 kebab-case（`is-fluid`/`show-header`/`node-id`）；初始选中节点用容器属性 `selected-node-id="..."`。
 
+## 后台切换与清空（v16.1.0）
+
+Core/Java 可动态切换复选框及图标、选中/悬停样式、链接、多选、双击或单击展开、同级单节点展开、右键选中及父子级联；Java 使用相应的 `set...` 方法，Core 可直接给控件属性赋值。切换保留已有节点、勾选、选择和展开结果，从下一次交互采用新规则。清空整棵树使用 `Tree1.ClearData()` / `Tree1.clearData()`，F.js 使用 `clearData()`；它们同时清除选择且不触发选择事件。Pro 的动态能力按其公开属性与对应版本核对，不将 Core/Java 新增接口直接套用。
+
 ## 参考文档（Documentation Reference Files）
 
 | 文件 | 何时读 |

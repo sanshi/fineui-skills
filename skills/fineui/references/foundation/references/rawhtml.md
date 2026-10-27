@@ -4,7 +4,7 @@
 
 v15.2 起，FineUI 控件的文本类属性（按钮/标签/菜单项文本、面板标题、列头、提示、消息框等）**默认一律 HTML 转义**。要让某段文本按 HTML **原样输出**（不转义），必须由开发者**显式声明其为“可信 HTML”**。
 
-底层机制：值 + 类型标记。`new RawHtml(html)` 构造出的对象被视为可信；普通用户输入永远是 `string`，**伪造不出这个类型**，从根上防 XSS。
+`RawHtml` 只表达开发者选择的显示方式，不检查或清洗内容。Core RazorForms/Java 的 Raw 布尔标记可跨回发保留，也能被客户端修改；后台不能根据标记认定内容安全。拼接用户输入前仍须编码，确需接收用户 HTML 时应按业务规则清洗。
 
 > **书写偏好（强约定）：优先用「单一便捷属性」声明可信 HTML**，命名规律是「属性名 + `RawHtml`」（`Text`→`TextRawHtml`、`Title`→`TitleRawHtml`、`ToolTip`→`ToolTipRawHtml`、`HeaderText`→`HeaderTextRawHtml`、消息 `Message`→`MessageRawHtml` …）。**不要**手写「值 + 独立布尔标记」两个属性。
 
@@ -20,8 +20,11 @@ v15.2 起，FineUI 控件的文本类属性（按钮/标签/菜单项文本、�
 { type: 'Button', tooltip: F.rawHtml('第一行<br>第二行') }
 
 // 消息 / 通知
-showNotify(F.rawHtml('已选择：<b>' + name + '</b>'));
-F.alert({ message: F.rawHtml(errors.join('<br/>')), title: '错误', messageIcon: 'error' });
+showNotify(F.rawHtml('已选择：<b>' + F.htmlEncode(name) + '</b>'));
+var errorText = errors.map(function (message) {
+    return F.htmlEncode(message);
+}).join('<br/>');
+F.alert({ message: F.rawHtml(errorText), title: '错误', messageIcon: 'error' });
 ```
 
 ### Pro（WebForms，aspx）—— 声明式 `XxxRawHtml="..."` / 后置 `new RawHtml(...)`
@@ -33,7 +36,7 @@ F.alert({ message: F.rawHtml(errors.join('<br/>')), title: '错误', messageIcon
 ```
 ```csharp
 // 后置代码
-node.TextRawHtml = new RawHtml("<span class=\"highlight\">{0}</span>", node.Text);
+node.TextRawHtml = new RawHtml("<span class=\"highlight\">{0}</span>", HttpUtility.HtmlEncode(node.Text));
 ShowNotify(new RawHtml("已选择：" + sb.ToString()));   // 消息框
 ```
 
@@ -51,12 +54,12 @@ ShowNotify(new RawHtml("已选择：" + sb.ToString()), MessageBoxIcon.None);
 ### Core-RazorForms / RazorPages（TagHelper）—— 下划线便捷 `_XxxRawHtml="..."`
 
 ```html
-<%-- 字符串便捷形式（推荐）：直接写 HTML 字符串 --%>
+@* 字符串便捷形式（推荐）：直接写 HTML 字符串 *@
 <f:MenuHyperLink _TextRawHtml="<span class='hot'>新</span> 报表" NavigateUrl="..." />
 <f:TreeNode _TextRawHtml="<span class='nodetitle'>驻马店市</span>，位于……" NodeID="zmd" />
 <f:RenderField _HeaderTextRawHtml="姓名<br>（换行）" DataField="Name" />
 
-<%-- 含 Razor 变量时用表达式形式 --%>
+@* 含 Razor 变量时用表达式形式 *@
 <f:RenderField _HeaderTextRawHtml="@("入学年份<i class=\"f-icon custom-filter\"></i>")" DataField="EntranceYear" />
 <f:CheckBox _SwitchOnTextRawHtml="@ViewBag.OnText" _SwitchOffTextRawHtml="@ViewBag.OffText" />
 ```
@@ -80,10 +83,12 @@ CheckBox5.SwitchOnTextRawHtml = new RawHtml("<i class=\"f-icon check\"></i>");
 import com.fineui.java.core.RawHtml;
 import com.fineui.java.core.Notify;
 
-labResult.setTextRawHtml(new RawHtml("<span class=\"highlight\">%s</span>", node.getText()));
+labResult.setTextRawHtml(new RawHtml("<span class=\"highlight\">%s</span>",
+        org.springframework.web.util.HtmlUtils.htmlEscape(node.getText())));
 CheckBox5.setSwitchOnTextRawHtml(new RawHtml("<i class=\"f-icon f-iconfont f-iconfont-check\"></i>"));
 Notify notify = new Notify();
-notify.setMessageRawHtml(new RawHtml("已选择：<b>%s</b>", name));
+notify.setMessageRawHtml(new RawHtml("已选择：<b>%s</b>",
+        org.springframework.web.util.HtmlUtils.htmlEscape(name)));
 notify.show();
 ```
 
@@ -94,6 +99,10 @@ notify.show();
 | 声明可信 HTML | `F.rawHtml('...')` | `XxxRawHtml="..."` | `.XxxRawHtml(new RawHtml("..."))` | `_XxxRawHtml="..."` 或 `XxxRawHtml="@(new RawHtml("..."))"` | `xxx-raw-html="..."`（直接写 HTML） |
 | 后置代码赋值 | — | `x.XxxRawHtml = new RawHtml(...)` | `x.XxxRawHtml = new RawHtml(...)` | `x.XxxRawHtml = new RawHtml(...)` | `x.setXxxRawHtml(new RawHtml(...))` |
 | 消息框 | `showNotify(F.rawHtml(...))` / `F.alert({message: F.rawHtml(...)})` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `ShowNotify(new RawHtml(...))` | `notify.setMessageRawHtml(new RawHtml(...)); notify.show()`；示例基类可用 `showNotify(new RawHtml(...))` |
+
+## v16.1.0 的清空与普通文本
+
+仅 Core/Java：`TextRawHtml = null` / `setTextRawHtml(null)` 会同时清空文字和关闭 `TextRaw`；`new RawHtml(null)` 则表示明确按 HTML 显示空内容。只想关闭 HTML 显示而保留文字时设置 `TextRaw=false`；从已开启 Raw 的文字切回普通文本时，应先关闭标记，再设置文字，Label 同时保持 `EncodeText=true`。仅设置 `Text` 不会自动关闭原标记。标题、提示及其他 RawHtml 便捷入口同样处理。Pro 继续按本身版本的实现核对，不套用这项 Core/Java 变化。
 
 ## 关键约束
 

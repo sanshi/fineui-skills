@@ -4,8 +4,8 @@
 
 ## 版本自检（先做）
 
-- 本分类内置的已发布高影响破坏性变更清单覆盖到 **v16.0**；另记录待发布的 FormRow 布局等变化。待发布条目仅在目标包确实包含对应改动时适用。
-- **若用户的目标版本高于 v16.0** → 告知用户：待发布清单只覆盖已记录的改动，不能当作更新版本的完整清单；先检查目标包和官方发布历史，并建议更新本分类（`npx skills update`）。
+- 本分类的高影响变更清单覆盖到 **v16.1.0**；该版本的迁移细节见 [v16.1.0 升级检查](references/v16.1.md)。版本号以实际目标包为准，发布日期尚未到达时先确认使用的是候选包还是正式包。
+- **若目标版本高于 v16.1.0**：先核对目标包及对应发布历史，必要时运行 `npx skills update` 更新技能；不能把本清单当作后续版本的完整说明。
 - **若源版本或目标版本 ≤ v9** → 告知用户：本分类只覆盖 v10 及以上，v9 及以下请参考官方在线发布历史 https://fineui.com/versions/ 。
 
 ## 升级流程
@@ -15,8 +15,8 @@ Core 模式升级须核查三种模式共同 JSON、严格 CSP 的缺省值及 `
 按顺序执行，不要跳步。**每一步用中括号标注是「告知用户后继续」还是「询问用户并等待」。**
 
 1. **确定版本区间** —— [询问用户] 当前 FineUI 版本、目标版本。若用户不确定当前版本，从项目里的 `FineUI.js` 版本注释、NuGet 包版本或 `web.config`/`csproj` 判断，并 [告知用户] 你的判断。
-2. **确定写法** —— [告知用户] 项目属于哪种写法（F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java）。判定线索见 `基础` 技能。**只需处理该写法相关的破坏性变更**（清单里 `[JS]`/`[Pro]`/`[Core]` 标注的按需取用）。**若项目是 FineUI.Java**：它首发即 v16.0，不存在「从旧版本升级」的场景；只有其复用的 **F.js 客户端**破坏性变更（清单里 `[JS]` 标注、且体现在客户端 API/渲染上的项）才与之相关，**C#/.NET 专属的 `[Pro]`/`[Core]` 服务端变更不适用**。
-3. **对照破坏性变更** —— 读 [references/breaking-changes.md](references/breaking-changes.md)，把**版本区间内**每一条与项目代码比对；待发布条目先确认目标包是否包含该改动。跨多个大版本时，逐版本过一遍，优先处理“HTML 编码安全主线”、v16 的事件/回发迁移，以及受影响页面的 FormRow 按钮宽度。
+2. **确定写法** —— [告知用户] 项目属于哪种写法（F.js / Pro / Core-MVC / Core-RazorForms / Core-RazorPages / Java）。判定线索见 `基础` 技能。**只需处理该写法相关的破坏性变更**（清单里 `[JS]`/`[Pro]`/`[Core]` 标注的按需取用）。**若项目是 FineUI.Java**：它首发为 v16.0，随后已发布 v16.0.1；升级到 v16.1.0 同样需要核对 Java 生命周期、选择 API、空值和类型变化；更早版本的 C#/.NET 专属条目不适用，F.js 客户端变化按实际版本区间核对。
+3. **对照破坏性变更** —— 读 [references/breaking-changes.md](references/breaking-changes.md)，把**版本区间内**每一条与项目代码比对；候选版条目先确认目标包是否包含该改动。跨多个大版本时，逐版本过一遍，优先处理“HTML 编码安全主线”、v16 的事件/回发迁移，以及受影响页面的 FormRow 按钮宽度。
 4. **生成迁移清单** —— 产出一个 Markdown 文件（如 `FINEUI_UPGRADE_PLAN.md`），逐项列出：受影响的文件/代码位置、变更点、**具体怎么改**（给出改前/改后）。**先写清单，不要直接改代码。**
 5. **逐项确认** —— [询问用户] 对“行为变更类”（如 HBox 高度填充、行高定义、DropDownList.Text 语义）逐项确认是接受新行为还是保持旧行为；对“改名类”（DateParseString、closeArgument、Active→Activate 等）默认直接改。
 6. **应用变更** —— 按确认后的清单改代码。改完 [告知用户] 改了哪些文件。
@@ -26,7 +26,8 @@ Core 模式升级须核查三种模式共同 JSON、严格 CSP 的缺省值及 `
 
 | 文件 | 内容 |
 |------|------|
-| [references/breaking-changes.md](references/breaking-changes.md) | v10+ 各大版本破坏性变更清单 + 迁移办法 + HTML 编码主线 |
+| [references/breaking-changes.md](references/breaking-changes.md) | v10+ 版本变更总览与 HTML 编码主线 |
+| [references/v16.1.md](references/v16.1.md) | 从 v16.0.x 升级到 v16.1.0 的模式、API、空值和类型检查 |
 
 完整逐条以官方在线发布历史为准：https://fineui.com/versions/ （在其中搜索“不兼容”）。
 

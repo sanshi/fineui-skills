@@ -91,7 +91,7 @@ Accordion1.ActivePaneIndex = (idx + 1) % Accordion1.Panes.Count;   // 展开下�
 ```
 ```csharp
 // Core-MVC / RazorPages —— 客户端读活动索引回发，UIHelper 设置
-// 按钮：.OnClick(Url.Action("btn_Click"), new Parameter("activeIndex", "F.ui.Accordion1.getActivePaneIndex()"))
+// 按钮：.OnClick(Url.Action("btn_Click"), Parameter.FromFunction("activeIndex", "getAccordion1ActiveIndex"))
 public IActionResult btn_Click(int activeIndex) {           // RazorPages: OnPostBtn_Click
     UIHelper.Accordion("Accordion1").ActivePaneIndex((activeIndex + 1) % 3);
     return UIHelper.Result();
@@ -116,3 +116,11 @@ Accordion1.setActivePaneIndex((idx + 1) % 3);   // 展开下一个
 ## See also
 
 - [panel.md](panel.md)：Panel · [tab.md](tab.md)：TabStrip
+
+MVC/RazorPages 上例的参数函数放在页面脚本区：
+
+```javascript
+function getAccordion1ActiveIndex() {
+    return F.ui.Accordion1.getActivePaneIndex();
+}
+```

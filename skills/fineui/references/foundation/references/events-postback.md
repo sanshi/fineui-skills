@@ -1,4 +1,4 @@
-# 客户端事件与回发（FineUI v16.0）
+# 客户端事件与回发（FineUI v16.1）
 
 先按意图选入口，不要从历史 API 反推写法。
 
@@ -18,6 +18,10 @@ RF 页面类上可继承的 `[NoRazorForms]` 用于全局开启时关闭特定�
 MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 RF 的事件目标入口。业务数据结果使用 fetch 或明确 `responseType:'data'`，不按 JSON 外形猜测 UI 通道。RF 控件交互必须走本页完整 RF 后台流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页 RF 状态。
 
 严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
+
+## 查看后台累计修改
+
+Core RazorForms/Java 可执行 `F('DatePicker1').getDirtyKeys()` 查看后台改过、需要跨回发保留的属性。普通响应的 `updates[].props` 会自动记脏，不需要另附一份 `_dirtyKeys`；首屏的后台赋值才通过控件 `_dirtyKeys` 提供初始清单。日期范围的起止属性最终更新 `value`；下一轮提交以浏览器当前输入为准，不拿影子中的旧日期覆盖用户修改。
 
 ## 1. 客户端点击：具名函数 + ClickHandler
 
@@ -206,21 +210,36 @@ Pro 的 `PageManager.CustomEvent` / ASPX `OnCustomEvent` 与 `GetCustomEventRefe
 
 ## 5. F.doPostBack 的适用边界
 
-普通页面级业务优先 `F.customEvent`。只有需要完整回发选项时使用 `F.doPostBack(options)`。可用选项随产品不同，下面是 Pro 的加载提示与完成回调示例：
+普通页面级业务优先 `F.customEvent`；需要加载提示、临时禁用和单次回调时，使用 `F.doPostBack(options)`。
+
+| 产品 / 模式 | 请求入口与特有选项 |
+|---|---|
+| Pro | 当前页面，后台 `Page_CustomEvent`；支持 `enableAjax`，不支持 `url/fields/params/responseType` |
+| Core RazorForms | 当前完整网址，后台 `Page_CustomEvent`；页面事件省略 `url`，`params` 可补充命名字段 |
+| Core MVC / RazorPages | 必须提供 Action / Handler 的 `url`，可用 `fields/params`；不进入 `Page_CustomEvent` |
+| Java | 当前页面，后台 `Page_CustomEvent`；不支持 `url/fields/params/responseType` |
+
+以上 AJAX 请求都支持 `disableControl`、五项加载提示和 `complete/success/error`。Pro 设置 `enableAjax:false` 后为整页提交，不执行 AJAX 回调。Core 默认处理控件 JSON；独立业务接口使用 `responseType:'data'`，回调自行读取原文。
+
+`complete` 先于成功或错误回调执行；成功时是 `success → F.beforeAjaxSuccess → 应用响应`，失败时是 `error → F.beforeAjaxError → 默认提示`。严格返回 `false` 停止后续处理，但仍清理加载状态。回调不等待 Promise；`complete/success` 均早于控件更新，需要更新后操作时由后台追加具名函数调用。
+
+下面使用本次加载提示和单次错误回调，适用于 Pro、Core RazorForms、Java：
 
 ```javascript
 F.doPostBack({
-    eventName: 'ExportRows',
-    eventArgument: { rowIds: F.ui.Grid1.getSelectedRows() },
+    eventName: 'Save',
     enableAjaxLoading: true,
-    ajaxLoadingText: '正在导出...',
-    complete: function () {
-        showNotify('处理完成');
+    ajaxLoadingText: '正在保存...',
+    error: function (data, textStatus, xhr) {
+        if (xhr.status === 403) {
+            F.alert('当前账号无权保存此记录。');
+            return false;
+        }
     }
 });
 ```
 
-Core 需要把值绑定到命名表单字段时可用 `fields` / `params`；Core MVC / RazorPages 需要请求明确 action/handler 时可传 `url`。Pro 支持 `enableAjax`、加载提示及 `success` / `error` / `complete`，但不支持 Core 专有的 `url` / `fields` / `params`。Java 推荐直接用 `F.customEvent`；兼容的 `F.doPostBack` 只使用 `eventName` / `eventArgument` / `complete`。不要把 RazorPages 的 `@Url.Handler(...)` 形态套到 RazorForms、Pro 或 Java。
+不要把 RazorPages 的 `@Url.Handler(...)` 形态套到 RazorForms、Pro 或 Java；RF 控件交互必须使用本页事件。表单验证在发送前显式调用 `F.validateForm`，客户端点击处理器主动发送业务事件后返回 `false`，避免继续默认动作。
 
 ## 6. Grid 行命令
 

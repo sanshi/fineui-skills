@@ -101,7 +101,7 @@ Grid1.SelectedRowIDArray = new string[] { "105", "110" };
 ```
 ```java
 // FineUI.Java 页面类 —— Page_Load（!isPostBack()）内，dataBind() 之后
-Grid1.setSelectedRowIdArray(new String[] { "105", "110" });
+Grid1.setSelectedRowIDArray(new String[] { "105", "110" });
 ```
 
 ---
@@ -192,7 +192,7 @@ public void Button1_Click(Object sender, EventArgs e) {
 ```csharp
 // Core-MVC（Fluent API）：按钮把 getGridSelectedRows() 作为参数 selected 回发
 @(F.Button().Text("选中了哪些行").ID("Button1")
-    .OnClick(Url.Action("Button1_Click"), new Parameter("selected", "getGridSelectedRows()")))
+    .OnClick(Url.Action("Button1_Click"), Parameter.FromFunction("selected", "getGridSelectedRows")))
 ```
 ```csharp
 // Core-MVC Controller
@@ -207,7 +207,7 @@ public IActionResult Button1_Click(JArray selected)
 ```html
 <!-- Core-RazorPages：按钮 + 参数 -->
 <f:Button Text="选中了哪些行" ID="Button1" OnClick="@Url.Handler(&quot;Button1_Click&quot;)"
-          OnClickParameter1="@(new Parameter(&quot;selected&quot;, &quot;getGridSelectedRows()&quot;))"></f:Button>
+          OnClickParameter1="@(Parameter.FromFunction(&quot;selected&quot;, &quot;getGridSelectedRows&quot;))"></f:Button>
 ```
 ```csharp
 // Core-RazorPages 后台（OnPost 处理器）
@@ -241,7 +241,7 @@ return UIHelper.Result();
 ```
 ```java
 // FineUI.Java 页面类（处理器内直接用控件字段，void）
-Grid1.setSelectedRowIdArray(new String[] { "102", "106", "108" });
+Grid1.setSelectedRowIDArray(new String[] { "102", "106", "108" });
 ```
 ```javascript
 // F.js

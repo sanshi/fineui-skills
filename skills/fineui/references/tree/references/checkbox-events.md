@@ -47,11 +47,17 @@ F.ui.Tree1.uncheckNodes(['zhumadian']);          // 取消
 ### Pro / Core-RazorForms —— 服务端控件字段 `GetCheckedNodes()`
 
 ```csharp
-protected void btnGetChecked_Click(object sender, EventArgs e) {
-    TreeNode[] nodes = Tree1.GetCheckedNodes();          // TreeNode[]
+protected void btnGetChecked_Click(object sender, EventArgs e)
+{
+    TreeNode[] nodes = Tree1.GetCheckedNodes();
+    var sb = new StringBuilder("<ul>");
     foreach (TreeNode node in nodes)
-        sb.AppendFormat("<li>{0}（{1}）</li>", node.Text, node.NodeID);
-    labResult.Text = sb.ToString();
+    {
+        sb.AppendFormat("<li>{0}（{1}）</li>",
+            HttpUtility.HtmlEncode(node.Text), HttpUtility.HtmlEncode(node.NodeID));
+    }
+    sb.Append("</ul>");
+    labResult.TextRawHtml = new RawHtml(sb.ToString());
 }
 ```
 
@@ -65,8 +71,11 @@ Label labResult;
 public void btnGetCheckedValues_Click(Object sender, EventArgs e) {
     List<TreeNode> nodes = Tree1.getCheckedNodes();   // List<TreeNode>（不是数组）
     StringBuilder sb = new StringBuilder("<ul>");
-    for (TreeNode node : nodes)
-        sb.append(String.format("<li>%s（%s）</li>", node.getText(), node.getId()));  // getId 非 getNodeID
+    for (TreeNode node : nodes) {
+        String text = org.springframework.web.util.HtmlUtils.htmlEscape(node.getText());
+        String id = org.springframework.web.util.HtmlUtils.htmlEscape(node.getId());
+        sb.append(String.format("<li>%s（%s）</li>", text, id));
+    }
     sb.append("</ul>");
     labResult.setTextRawHtml(new RawHtml(sb.toString()));   // 仅可信 HTML 使用 RawHtml
 }
@@ -80,17 +89,22 @@ public void btnGetCheckedValues_Click(Object sender, EventArgs e) {
 // 页面内 JS
 function getCheckedNodes() {
     var result = [];
-    $.each(F.ui.Tree1.getCheckedNodes(true), function (i, n) { result.push({ id: n.id, text: n.text }); });
+    $.each(F.ui.Tree1.getCheckedNodes(true), function (index, node) {
+        result.push({ id: node.id, text: node.text });
+    });
     return F.toJSON(result);
 }
 ```
 ```csharp
-// 按钮：MVC  .OnClick(Url.Action("btnGetChecked_Click"), new Parameter("checkedNodes", "getCheckedNodes()"))
-//       RazorPages  OnClick="@Url.Handler("btnGetChecked_Click")" OnClickParameter1="@(new Parameter("checkedNodes","getCheckedNodes()"))"
+// 按钮：MVC  .OnClick(Url.Action("btnGetChecked_Click"), Parameter.FromFunction("checkedNodes", "getCheckedNodes"))
+//       RazorPages  OnClick="@Url.Handler("btnGetChecked_Click")" OnClickParameter1="@(Parameter.FromFunction("checkedNodes", "getCheckedNodes"))"
 public IActionResult btnGetChecked_Click(JArray checkedNodes) {              // RazorPages: OnPostBtnGetChecked_Click
-    foreach (JObject n in checkedNodes)
-        sb.AppendFormat("<li>{0}（{1}）</li>", n.Value<string>("text"), n.Value<string>("id"));
-    UIHelper.Label("labResult").Text(sb.ToString());
+    var selectedNames = new List<string>();
+    foreach (JObject node in checkedNodes)
+    {
+        selectedNames.Add($"{node.Value<string>("text")}（{node.Value<string>("id")}）");
+    }
+    UIHelper.Label("labResult").Text(String.Join("，", selectedNames));
     return UIHelper.Result();
 }
 ```
@@ -144,6 +158,15 @@ public void Page_CustomEvent(Object sender, CustomEventArgs e) {
 
 ## 四、展开 / 折叠事件
 
+MVC/RazorPages 需要节点文字时，可在页面脚本区声明函数，由框架传入本次事件的节点 ID：
+
+```javascript
+function getTreeNodeInfo(event, nodeId) {
+    var node = F.ui.Tree1.getNodeData(nodeId);
+    return { id: nodeId, text: node.text };
+}
+```
+
 ```csharp
 // Pro / Core-RazorForms —— OnNodeExpand="方法名" + 节点 EnableExpandEvent="true"
 protected void Tree1_NodeExpand(object sender, TreeNodeEventArgs e) {
@@ -151,7 +174,7 @@ protected void Tree1_NodeExpand(object sender, TreeNodeEventArgs e) {
 }
 ```
 ```csharp
-// Core-MVC —— .OnNodeExpand(Url.Action("Tree1_NodeExpand"), new Parameter("nodeInfo", "getNodeInfo(arguments[1])"))
+// Core-MVC —— .OnNodeExpand(Url.Action("Tree1_NodeExpand"), Parameter.FromFunction("nodeInfo", "getTreeNodeInfo"))
 public IActionResult Tree1_NodeExpand(JObject nodeInfo) {
     UIHelper.Label("labResult").Text($"展开：{nodeInfo.Value<string>("text")}");
     return UIHelper.Result();
@@ -187,7 +210,7 @@ private List<TreeNode> DynamicAppendNode(string nodeId) {
 }
 ```
 ```csharp
-// Core-MVC —— .OnNodeLazyLoad(Url.Action("Tree1_NodeLazyLoad"), new Parameter("nodeId", "arguments[1]"))
+// Core-MVC —— .OnNodeLazyLoad(Url.Action("Tree1_NodeLazyLoad"), Parameter.FromEventArgument("nodeId", "nodeId"))
 public IActionResult Tree1_NodeLazyLoad(string nodeId) {
     UIHelper.Tree("Tree1").LoadData(nodeId, DynamicAppendNode(nodeId));   // UIHelper.Tree(...).LoadData
     return UIHelper.Result();

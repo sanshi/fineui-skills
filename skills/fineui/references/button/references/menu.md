@@ -12,6 +12,8 @@
 
 > **C#/Java 没有 `MenuItem` 标签**——可点击菜单项用 `<f:MenuButton>`/`<f:menu-button>`（它带子菜单集合时即成为子菜单入口）。F.js 才有 `type: 'MenuItem'`。
 
+菜单 `Hidden` 默认 `true`，一般由所属按钮或右键菜单动作按需打开。明确设置 `Hidden=false` 表示需要直接显示；不要为了让下拉菜单工作而统一设为可见。
+
 ## Button + 下拉菜单（含子菜单）
 
 按钮挂一个 `Menu`；菜单项里再挂 `Menu` 即多级子菜单。
@@ -99,13 +101,13 @@
 ```csharp
 // Core-MVC（Fluent）：Url.Action + Parameter
 F.MenuCheckBox().ID("MenuLangEN").Text("English").GroupName("MenuLang").Checked(true)
-    .OnCheckedChanged(Url.Action("MenuLang_CheckedChanged"), new Parameter("checkedValue", "getMenuChecked('lang')"))
+    .OnCheckedChanged(Url.Action("MenuLang_CheckedChanged"), Parameter.FromFunction("checkedValue", "getCheckedLanguage"))
 ```
 ```html
 <!-- Core-RazorPages：@Url.Handler + OnCheckedChangedParameter1 -->
 <f:MenuCheckBox Text="English" ID="MenuLangEN" GroupName="MenuLang"
     OnCheckedChanged="@Url.Handler(&quot;MenuLang_CheckedChanged&quot;)"
-    OnCheckedChangedParameter1="@(new Parameter(&quot;checkedValue&quot;, &quot;getMenuChecked('lang')&quot;))" Checked="true"></f:MenuCheckBox>
+    OnCheckedChangedParameter1="@(Parameter.FromFunction(&quot;checkedValue&quot;, &quot;getCheckedLanguage&quot;))" Checked="true"></f:MenuCheckBox>
 ```
 ```csharp
 // 后台：Pro/RazorForms 事件方法（CheckedEventArgs）；MVC/RazorPages action/OnPost 带参
@@ -134,3 +136,11 @@ public void MenuLang_CheckedChanged(Object sender, EventArgs e) {
 - [button.md](button.md)：Button
 - `容器`：Toolbar 工具栏（放在容器 `<Toolbars>`）
 - `基础` 的 rawhtml.md：菜单项文本含 HTML（v15.2 默认转义，用 `F.rawHtml`/`_TextRawHtml`）
+
+MVC/RazorPages 的语言参数使用本页具名函数；更多语言项按对应控件判断：
+
+```javascript
+function getCheckedLanguage() {
+    return F.ui.MenuLangEN.isChecked() ? 'English' : '';
+}
+```

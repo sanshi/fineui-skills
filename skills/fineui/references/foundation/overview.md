@@ -82,6 +82,12 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 8. **Core RazorForms 事件名默认省略 `Async`**：标签推荐写 `OnClick="btnSave_Click"`，后台可用同步的 `void btnSave_Click(...)` 或异步的 `async Task btnSave_ClickAsync(...)`，切换实现时标签不变；两者并存时优先异步方法，异步事件不要使用 `async void`。完整 `Async` 名称只作兼容说明，详见 [references/events-postback.md](references/events-postback.md)；此命名规则不套用到 Pro、Java 或 Core 的其他模式。
 9. **RazorForms 与 Java 的页面入口**：首屏和 FineUI 控件回发都执行 `Page_Init`，Core 异步查询可用 `Task Page_InitAsync`；控件绑定后执行 `Page_Load`。原生 RazorPages 仍用 `OnGet`，MVC 仍用 Action。Core 三模式与 Java 的 FineUI 首屏和 UI 回发都使用 JSON；官方 Core 示例项目显式启用严格 CSP，类库本身默认不开启。
 
+## v16.1.0 常用默认值与边界
+
+表格默认每页 20 行、双击进入编辑，TimePicker 默认间隔 15 分钟，基础主题为 `pure_black`；需要其他行为时明确配置。`Tab`、`AccordionPane` 内容区固定无圆角；Core/Java 的 `Accordion`、`Form`、`SimpleForm`、`Grid`、`RegionPanel`、`TabStrip`、`Tree` 不直接承载 iframe，需要 iframe 时使用支持的 Panel、Window 等容器。未设置的可继承属性和明确的 `0`、空串要区分；Java 的可空 getter 读取后先判空。
+
+普通内容区的相邻按钮除最后一个外使用 `marginr`，保留已有类名；工具栏、按钮组和已有布局间距的不重复添加。升级现有项目时读取[版本升级](../upgrade/overview.md)，按实际模式处理生命周期、空值和类型变化。
+
 ## 官方资源（Official Resources）
 
 - 在线 API：JS https://fineui.com/js/api/ · Pro https://fineui.com/pro/api/ · Core https://fineui.com/core/api/

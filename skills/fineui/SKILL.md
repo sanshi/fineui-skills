@@ -31,7 +31,7 @@ metadata:
 | 窗口、Alert、Confirm、Notify | [窗口](references/window/overview.md) |
 | 内置主题切换 | [主题设置](references/theming/overview.md) |
 | 自定义主题的设计、生成和验证 | [自定义主题](references/custom-theme/overview.md) |
-| 旧项目迁移 | [版本升级](references/upgrade/overview.md) |
+| 旧项目迁移（含 v16.0.x → v16.1.0） | [版本升级](references/upgrade/overview.md) |
 
 ## 在线资料的读取顺序
 

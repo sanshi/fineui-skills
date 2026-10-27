@@ -76,9 +76,9 @@ F.Button().Text("右图标").Icon(Icon.Star).IconAlign(IconAlign.Right)
 ```
 ```csharp
 // Core-MVC：Url.Action（可带回发参数）
-@(F.Button().Text("服务端").OnClick(Url.Action("btnServer_Click"), new Parameter("v", "F.ui.tbx1.getValue()")))
+@(F.Button().Text("服务端").OnClick(Url.Action("btnServer_Click"), Parameter.FromFunction("v", "getTextBox1Value")))
 // Core-RazorPages：@Url.Handler + OnClickParameter1
-// <f:Button Text="服务端" OnClick="@Url.Handler("btnServer_Click")" OnClickParameter1="@(new Parameter("v","..."))" />
+// <f:Button Text="服务端" OnClick="@Url.Handler("btnServer_Click")" OnClickParameter1="@(Parameter.FromFunction("v", "getTextBox1Value"))" />
 ```
 ```csharp
 // 后台：MVC/RazorPages 用 action/OnPost；Pro/RazorForms 用事件方法
@@ -96,6 +96,14 @@ public void btnServer_Click(Object sender, EventArgs e) {
     Notify notify = new Notify();
     notify.setMessage("服务端事件");
     notify.show();
+}
+```
+
+上面的 MVC/RazorPages 页面还需在脚本区声明参数提供函数，发送请求前读取当前输入：
+
+```javascript
+function getTextBox1Value() {
+    return F.ui.tbx1.getValue();
 }
 ```
 

@@ -57,7 +57,7 @@ bars: [{ type: 'Toolbar', position: 'top', items: [
 ```
 ```csharp
 // Core-MVC：客户端读折叠状态回发
-@(F.Button().Text("展开/折叠").OnClick(Url.Action("btn_Click"), new Parameter("collapsed", "F.ui.Panel2.collapsed")))
+@(F.Button().Text("展开/折叠").OnClick(Url.Action("btn_Click"), Parameter.FromFunction("collapsed", "getPanel2Collapsed")))
 // Controller: UIHelper.Panel("Panel2").Collapsed(!collapsed);
 ```
 ```html
@@ -123,3 +123,11 @@ public void Button3_Click(Object sender, EventArgs e) {
 - [tab.md](tab.md)：TabStrip 选项卡
 - [accordion.md](accordion.md)：Accordion 手风琴
 - `布局`：Panel 的 `Layout` 子控件排布（Fit/Region/HBox/VBox/Block）
+
+MVC 上例的参数函数放在页面脚本区：
+
+```javascript
+function getPanel2Collapsed() {
+    return F.ui.Panel2.collapsed;
+}
+```

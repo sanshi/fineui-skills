@@ -395,13 +395,21 @@ ddl1.SelectedValue = "1";                   // 回填
 ### Core-MVC / RazorPages —— 回发参数 或 UIHelper
 
 ```csharp
-// 回发参数：按钮 .OnClick(url, new Parameter("name", "F.ui.tbxName.getValue()"))
+// 回发参数：按钮 .OnClick(url, Parameter.FromFunction("name", "getNameValue"))
 public IActionResult btnSubmit_Click(string name) { ... }          // MVC
 public IActionResult OnPostBtnSubmit_Click(string name) { ... }    // RazorPages
 
 // 或用 UIHelper 读/写控件
 var tbx = UIHelper.TextBox("tbxName");
 UIHelper.Label("labResult").Text("用户名：" + name);
+```
+
+对应页面脚本区声明参数提供函数：
+
+```javascript
+function getNameValue() {
+    return F.ui.tbxName.getValue();
+}
 ```
 
 ### FineUI.Java —— 控件字段的 getter/setter（同 Core-RazorForms 思路，方法化）
