@@ -104,6 +104,14 @@ notify.show();
 
 仅 Core/Java：`TextRawHtml = null` / `setTextRawHtml(null)` 会同时清空文字和关闭 `TextRaw`；`new RawHtml(null)` 则表示明确按 HTML 显示空内容。只想关闭 HTML 显示而保留文字时设置 `TextRaw=false`；从已开启 Raw 的文字切回普通文本时，应先关闭标记，再设置文字，Label 同时保持 `EncodeText=true`。仅设置 `Text` 不会自动关闭原标记。标题、提示及其他 RawHtml 便捷入口同样处理。Pro 继续按本身版本的实现核对，不套用这项 Core/Java 变化。
 
+### Core MVC / RazorPages 的 UIHelper 即时更新
+
+仅适用于 v16.1.0 的 Core MVC/RazorPages UIHelper，不套用到控件创建的流式方法、标签、Core RazorForms 控件属性、Pro、Java 或 F.js setter。支持 Raw 的文字方法使用可选可空布尔参数，例如 `UIHelper.Label("labResult").Text(text, textRaw: false)`；省略或 null 保留浏览器当前 Raw，false/true 才同时修改。`TextRaw(false)` 等方法只改变已有内容的显示方式，`TextRawHtml(new RawHtml(html))` 等方法同时设置两项，传 null 清空并撤销 Raw。标题、提示、确认文字、开关文字及表格提示和表头遵循相同规则。false 不强制开启 EncodeText；Label 要显示字面 HTML 时仍须保持 EncodeText=true。
+
+Label、HyperLink、LinkButton 的旧 `encodeTextOnServerSide` 参数已删除。旧 `Text(html, true)` 仍可能编译，但已变为 Raw=true；旧工程必须检查这些调用，不按旧编码含义继续使用。表格列更新按表格 ID 与 ColumnID 定位，例如 `UIHelper.RenderField("Grid1", "Name").HeaderText(text, headerTextRaw: false)`。
+
+同一列帮助类也可调用 `Width(200)` 更新固定列宽。只改 HeaderText/Raw 时保留活动编辑器；修改列宽会刷新表体布局并结束活动编辑，应先保存未提交输入。两者都保留已有行数据及选择。
+
 ## 关键约束
 
 1. **优先单属性便捷写法**，不要写「`Text` + `TextRaw` 两个属性」。命名一律 `Xxx` → `XxxRawHtml`。

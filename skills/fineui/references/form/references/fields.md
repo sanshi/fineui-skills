@@ -316,7 +316,9 @@ String timeFormat = tp1.getTimeFormatString(); // 固定为 "HH:mm"
 ```csharp
 // Core-MVC（Fluent）
 F.Label().ID("labResult").Label("结果").Text("初始文本")
-// 服务端更新：UIHelper.Label("labResult").Text("新文本");
+// MVC/RazorPages 更新文字时保留当前 Raw；传 textRaw:false 才明确撤销标记。
+UIHelper.Label("labResult").Text("新文本");
+UIHelper.Label("labResult").Text("普通内容", textRaw: false);
 ```
 ```html
 <!-- Core-TagHelper -->
