@@ -1,5 +1,7 @@
 # FineUI 版本升级技能（Upgrade）
 
+Core v16.1.1 补齐开启 RazorForms 时的本页旧 Url.Handler/OnPost/Parameter 兼容。升级 v16.1.0 出现 Parameter 或原生 UI 入口错误时，先读 [旧事件兼容](../foundation/references/razorforms-compatibility.md)，不要一律建议关闭 RazorForms。DLL 与资源一起替换并刷新页面；严格 CSP 下字符串表达式仍需迁移为具名参数提供器。
+
 把现有 FineUI 项目升级到更高版本，**只覆盖 v10 及以上**（v9 及以下不在范围内）。
 
 ## 版本自检（先做）

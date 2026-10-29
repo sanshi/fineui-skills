@@ -62,6 +62,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 | [references/stacks.md](references/stacks.md) | 各写法差异总表、判定线索、命名约定、全局配置 |
 | [references/page-scaffold.md](references/page-scaffold.md) | 最小页面骨架、PageManager 位置、Region/ViewPort 布局、共享 `_Layout` |
 | [references/events-postback.md](references/events-postback.md) | `ClickHandler`、服务端事件、Core RazorForms 同步／异步事件命名、`F.customEvent`、Pro 两个兼容开关与 Grid 行命令 |
+| [references/razorforms-compatibility.md](references/razorforms-compatibility.md) | Core v16.1.1 本页旧事件、对象绑定兜底和 UIHelper 边界 |
 | [references/rawhtml.md](references/rawhtml.md) | 可信 HTML：`F.rawHtml` / `XxxRawHtml` / `new RawHtml(...)` |
 
 ## 相关分类（Related Skills）
@@ -72,12 +73,12 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 
 ## 约束与规则（Constraints & Rules）
 
-1. **先定写法、不混用**：一个页面只用一种写法。F.js 属性 camelCase，C# 三模式 PascalCase，**Java 标签/属性全 kebab-case**（枚举/图标等属性「值」仍保持 PascalCase，如 `text-mode="Password"`）；Fluent API（MVC）与 TagHelper（RazorForms/RazorPages）不要混写。
+1. **先确认运行模式**：F.js 属性使用 camelCase，C# 三模式使用 PascalCase，Java 标签和属性使用 kebab-case。Core RazorForms 推荐标签与后台控件事件；从 v16.1.1 起也兼容既有流式声明与本页 OnPost，不能仅凭声明风格判断模式。
 2. **PageManager 位置**：Pro 写在 aspx 页面内（`<f:PageManager>`）；**Core 三模式统一放在共享 `_Layout.cshtml` 的 `@F.PageManager`**；**Java 放在共享 `shared/layout.html`（`<f:styles>`/`<f:scripts>` 槽）+ 可选实现 `FineUIPageManagerInitializer` bean 做页面级配置**。三者业务页都不写 PageManager。
 3. **文本默认 HTML 编码（v15.2）**：要原样输出 HTML 必须声明可信 HTML（`F.rawHtml` / `XxxRawHtml` / `new RawHtml(...)`），来自用户输入/数据库的内容不要声明。详见 [references/rawhtml.md](references/rawhtml.md)。
 4. **绝不编造 API**：不确定的属性/方法去查官网公开 API 与同模式官方示例。不同写法名称不同，别硬套（如 Grid 列 F.js `text`/`field` ↔ C# `HeaderText`/`DataField` ↔ Java `header-text`/`data-field`）。
 5. **各栈启用标签**：Core 启用 TagHelper 需 `_ViewImports.cshtml` 的 `@addTagHelper *, FineUI.Core`，CSS/JS 用 `@F.RenderCss()` / `@F.RenderScript()`；**Java 页面根标签声明方言命名空间 `<html xmlns:f="http://fineui.com/java">`，CSS/JS 由母版里的 `<f:styles>` / `<f:scripts>` 输出**。
-6. **消息框与回发返回值必须按模式区分**：F.js 用 `F.alert({ message: ... })` / `showNotify(...)`；Pro 与 **Core-RazorForms** 的同步控件事件返回 `void`、直接操作控件，**不写 `OnPostXxx`、不返回 `IActionResult`、不调用 `UIHelper.Result()`**。按钮点击可写 `void Xxx_Click(object sender, EventArgs e)`；分页、排序、行命令等事件的第二参数必须使用各自的专用 `EventArgs`。RazorForms 后台类必须是 `partial` 并继承项目现有的 RazorForms 页面基类（官方示例为 `XxxModel : PageBase`；项目基类继承 FineUI.Core 的 `FineUIPageBase`）；不要改成非 `partial` 的 RazorPages 页面并使用 `OnGet` / `OnPostXxx`。只有 Core-MVC 的 action 和 Core-RazorPages 的 `OnPostXxx` 返回 `IActionResult`，结尾 `return UIHelper.Result();`；Java 用消息类 `Alert.show(...)`、`Confirm.show(...)` 或 `new Notify().show()`，同步处理器返回 `void`，事件参数同样按事件类型选择。
+6. **按事件入口选择签名**：Pro 与 Core RazorForms 推荐同步控件事件返回 void，按钮使用 `(object sender, EventArgs e)`，表格等事件使用对应专用 EventArgs；Java 使用自身事件类型。Core RazorForms v16.1.1 的本页旧 OnPost 可以返回 IActionResult/UIHelper.Result()，与普通 RF 事件共存；UIHelper 即时更新不保证同步后台控件属性或持久恢复。只有直接访问生成的控件字段时才需要对应 partial/designer。详见 [旧事件兼容](references/razorforms-compatibility.md)。
 7. **客户端动作只写具名函数**：Pro/Core 用 `ClickHandler="onXxxClick"`，Java 用 `click-handler="onXxxClick"`，函数首参为 `event`。不要在新代码中使用 `OnClientClick` / `on-client-click` 或把脚本塞进 Handler；详见 [references/events-postback.md](references/events-postback.md)。
 8. **Core RazorForms 事件名默认省略 `Async`**：标签推荐写 `OnClick="btnSave_Click"`，后台可用同步的 `void btnSave_Click(...)` 或异步的 `async Task btnSave_ClickAsync(...)`，切换实现时标签不变；两者并存时优先异步方法，异步事件不要使用 `async void`。完整 `Async` 名称只作兼容说明，详见 [references/events-postback.md](references/events-postback.md)；此命名规则不套用到 Pro、Java 或 Core 的其他模式。
 9. **RazorForms 与 Java 的页面入口**：首屏和 FineUI 控件回发都执行 `Page_Init`，Core 异步查询可用 `Task Page_InitAsync`；控件绑定后执行 `Page_Load`。原生 RazorPages 仍用 `OnGet`，MVC 仍用 Action。Core 三模式与 Java 的 FineUI 首屏和 UI 回发都使用 JSON；官方 Core 示例项目显式启用严格 CSP，类库本身默认不开启。

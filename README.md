@@ -107,3 +107,7 @@ AI 会自动命中相关技能，按 FineUI 官方写法生成对应端的代码
 ## License
 
 [MIT](./LICENSE)
+
+### Core v16.1.1 兼容说明
+
+[旧事件兼容参考](skills/fineui/references/foundation/references/razorforms-compatibility.md) 说明在 RazorForms 中保留本页 OnPost、Parameter 和 UIHelper 即时更新的边界，并包含对象绑定和混合事件示例。此项是 Core 的兼容能力，不扩展到 Java 或 Pro 的事件合同。

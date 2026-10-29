@@ -268,3 +268,7 @@ Core RazorForms 使用相同标签结构；Java 对应 `<f:render-field><f:comma
 Pro、Core RazorForms 与 Java 的普通控件回发参数都以 F.js 客户端事件名开头；无参事件发送 `click`、`change` 等事件名，带参事件发送 `rowcommand$编码JSON对象` 等格式。对象先序列化、再用 `encodeURIComponent` 编码，服务器只按第一个 `$` 分隔并按字段名读取。业务代码不要手工拼接控件回发参数；页面级业务操作使用 `F.customEvent`。
 
 FineUI.Java 普通控件回发不把后台方法名放进 URL；服务端根据本次模板和 `Page_Load` 重建的事件映射分派。回发保留当前页面的查询字符串，因此页面类仍可通过 `getQueryValue()` 读取首次 URL 参数。业务代码不应依赖或自行构造内部控件回发参数。
+
+## Core v16.1.1 旧事件兼容
+
+全局开启 RazorForms 时，本页控件声明中的 Url.Handler/OnPost 和 Parameter 可以保留，并与普通后台控件事件共存；无需为此添加 NoRazorForms。跨页 UI 请求仍不支持混用。UIHelper 是兼容旧页面的即时更新，不保证持久状态同步。具体签名、对象绑定和严格 CSP 写法见 [旧事件兼容](razorforms-compatibility.md)。

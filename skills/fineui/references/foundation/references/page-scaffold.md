@@ -15,7 +15,7 @@
 
 ## Core 混合项目中的原生页面
 
-全局开启 RazorForms 时，某个 FineUI 页面需要采用原生 OnPost 交互，在模型类或共同基类上添加可继承的 `[NoRazorForms]`：
+全局开启 RazorForms 时，某个 FineUI 页面明确需要完全绕开 RazorForms 状态与生命周期，在模型类或共同基类上添加可继承的 `[NoRazorForms]`：
 
 ```csharp
 [NoRazorForms]
@@ -37,6 +37,8 @@ public class StudentEditModel : PageBase
 不要生成 `PageManager.Instance.EnableRazorForms=false`、旧名或标签/流式模式设置，它们已废弃，设置时明确报迁移错误。全局 `EnableRazorForms` 配置仍保留。普通独立上传、下载、JSON 接口不要求标记，请求不携带 Core RazorForms 专属字段时，会自然进入原生 Handler。
 
 三种 Core 模式共用首屏和响应 JSON；只有 Core RazorForms 使用模板重跑、控件内 `_dirtyKeys` 和 `__FSTATE`。原生 POST 不执行 OnGet、Page_Load 或模板重跑，也不保持后台控件状态。CSP 策略独立于模式，原生页面可以使用严格策略。
+
+v16.1.1 起，仅为了保留本页 Url.Handler/OnPost/Parameter 不必添加该标记；旧事件可与后台控件事件共用 RazorForms 管线。见 [旧事件兼容](razorforms-compatibility.md)。
 
 ## 1) F.js —— 纯前端
 
