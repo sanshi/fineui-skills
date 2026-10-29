@@ -88,3 +88,7 @@ F.create({ type: 'Panel', renderTo: '#wrap', id: 'Panel1', title: '面板', body
 - [rawhtml.md](rawhtml.md)：可信 HTML 声明式写法
 - [events-postback.md](events-postback.md)：客户端事件、服务端事件、自定义回发与 Pro 兼容开关
 - `表格` 技能：以 Grid 为例的各写法完整对照（含 Java）
+
+## Core v16.1.1 旧事件兼容
+
+全局开启 RazorForms 时，本页控件声明中的 Url.Handler/OnPost 和 Parameter 可以保留，并与普通后台控件事件共存；无需为此添加 NoRazorForms。跨页 UI 请求仍不支持混用。UIHelper 是兼容旧页面的即时更新，不保证持久状态同步。具体签名、对象绑定和严格 CSP 写法见 [旧事件兼容](razorforms-compatibility.md)。

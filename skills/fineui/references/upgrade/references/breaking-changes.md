@@ -4,6 +4,10 @@
 
 > **完整逐条以官方在线发布历史为准**：https://fineui.com/versions/ （在其中搜索“不兼容”）。本清单是高影响项的精炼；升级跨越多个大版本时，把区间内每个版本的“不兼容”条目都过一遍。
 
+## v16.1.1 兼容补充
+
+Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容。下方旧版本的迁移记录不再表示这些写法在当前版被禁止。UIHelper 仍只保证即时更新，详情见 [旧事件兼容](../../foundation/references/razorforms-compatibility.md)。
+
 ## v16.1.0（2026-10-28）
 
 完整操作见 [v16.1.0 升级检查](v16.1.md)，覆盖以下影响：
@@ -33,7 +37,7 @@
 - **[Pro] 单元格编辑改为 `GetModifiedData()`**；`GetModifiedDict` / `GetDeletedList` / `GetNewAddedList` 已废弃。
 - **[Core] `AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记所需过滤器**。Startup 不再需要手工添加这两项；老项目保留原手工登记也不会重复执行，建议升级后删除以简化 Startup。
 - **[Core-RazorForms] 事件方法按完整名称兼容调用并等待 `Task`**。标签省略 `Async` 仍是推荐写法，保留异步优先，后台可切换 `void` 同步方法或 `async Task` 异步方法；显式写 `SaveAsync` 时不再优先找 `SaveAsyncAsync`，依赖旧行为的页面应明确填写实际需要调用的完整方法名。普通控件事件方法缺失会报错，`async void`、空任务及未支持返回类型须改为有效的 `void` 或 `Task`。
-- **[Core-RazorForms] 点击时给后台带额外数据不再用 `OnClickParameter1..N`**，推荐改为自定义回发（`ClickHandler` + `F.customEvent`）；需要落进 `[BindProperty]` 命名表单字段时用 `F.doPostBack({ eventName, params })`。MVC 与 RazorPages 不受影响，继续使用 `OnClickParameter`。
+- **[Core-RazorForms，旧版本迁移记录；v16.1.1 已恢复本页 Parameter 兼容] 点击时给后台带额外数据曾建议不再用 `OnClickParameter1..N`**，推荐改为自定义回发（`ClickHandler` + `F.customEvent`）；需要落进 `[BindProperty]` 命名表单字段时用 `F.doPostBack({ eventName, params })`。MVC 与 RazorPages 不受影响，继续使用 `OnClickParameter`。
 - **[Core] 配置项 `ExcludedURLs`（不使用 FineUI 中间件的网址列表）已废弃**，不再需要配置；已有配置继续生效，无需修改。
 - **[JS] 不再支持 IE**；移除 `F.isIE8()` / `F.isIE89()` / `F.isIE9()` / `F.isIE()`。
 
