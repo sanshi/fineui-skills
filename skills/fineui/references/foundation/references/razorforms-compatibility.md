@@ -33,7 +33,7 @@ public void btnAppend_Click(object sender, EventArgs e)
 
 `labResult` 是当前页生成并绑定的控件字段。原生 Handler 保留 ASP.NET Core 参数绑定、ModelState、异步等待及过滤器。使用 `UIHelper.Result()` 返回界面结果；不要把本页 UI 事件改成返回业务 JSON、上传或下载。那些独立接口仍按原有请求方式调用。
 
-严格内容安全策略（CSP）下使用 `Parameter.FromFunction`、`FromData`、`FromEventArgument`。`readNote` 必须是页面中真实定义的具名函数，每次发送前取当前值。普通策略允许旧字符串表达式；兼容不会自动放宽 CSP。参数名不能以框架保留的 `__` 开头。
+严格内容安全策略（CSP）下使用 `Parameter.FromFunction`、`FromData`、`FromEventArgument`。确需按事件位置取附加参数时使用数字下标，例如 `Parameter.FromEventArgument("nodeId", 1)`，不使用字符串形参名称；标准 RF 事件优先从事件对象取值。`readNote` 必须是页面中真实定义的具名函数，每次发送前取当前值。普通策略允许旧字符串表达式；兼容不会自动放宽 CSP。参数名不能以框架保留的 `__` 开头。
 
 ## UIHelper 的边界
 

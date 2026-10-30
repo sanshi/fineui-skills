@@ -17,7 +17,7 @@ Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updat
 
 MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 Core RazorForms 的事件目标入口。独立业务 JSON 或文本接口直接使用原生 `fetch` 或 `jQuery.ajax`，`F.doPostBack` 只处理 FineUI 控件回发，不按 JSON 外形猜测 UI 通道。Core RazorForms 的控件交互必须经过本页完整的后台处理流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页的 Core RazorForms 控件状态。
 
-严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
+严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。FromEventArgument 的第二参数为原始回调的从零下标，例如 `Parameter.FromEventArgument("nodeId", 1)` 读取第二个实参；不再接受字符串形参名称，旧调用须修改并重新编译。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
 
 ## 查看后台累计修改
 

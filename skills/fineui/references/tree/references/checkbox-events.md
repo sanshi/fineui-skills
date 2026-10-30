@@ -210,7 +210,7 @@ private List<TreeNode> DynamicAppendNode(string nodeId) {
 }
 ```
 ```csharp
-// Core-MVC —— .OnNodeLazyLoad(Url.Action("Tree1_NodeLazyLoad"), Parameter.FromEventArgument("nodeId", "nodeId"))
+// Core-MVC —— .OnNodeLazyLoad(Url.Action("Tree1_NodeLazyLoad"), Parameter.FromEventArgument("nodeId", 1))
 public IActionResult Tree1_NodeLazyLoad(string nodeId) {
     UIHelper.Tree("Tree1").LoadData(nodeId, DynamicAppendNode(nodeId));   // UIHelper.Tree(...).LoadData
     return UIHelper.Result();
