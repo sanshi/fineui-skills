@@ -13,31 +13,31 @@
 ## 按事件入口选择签名
 
 ```html
-<f:Button ID="Save" Text="保存" OnClick="@Url.Handler("Save")"
+<f:Button ID="btnSave" Text="保存" OnClick="@Url.Handler("Save")"
     OnClickParameter1="@(Parameter.FromFunction("note", "readNote"))" />
-<f:Button ID="Append" Text="追加" OnClick="Append_Click" />
+<f:Button ID="btnAppend" Text="追加" OnClick="btnAppend_Click" />
 ```
 
 ```csharp
 public IActionResult OnPostSave(string note)
 {
-    Result.Text = note;
+    labResult.Text = note;
     return UIHelper.Result();
 }
 
-public void Append_Click(object sender, EventArgs e)
+public void btnAppend_Click(object sender, EventArgs e)
 {
-    Result.Text += "，已确认";
+    labResult.Text += "，已确认";
 }
 ```
 
-`Result` 是当前页生成并绑定的控件字段。原生 Handler 保留 ASP.NET Core 参数绑定、ModelState、异步等待及过滤器。使用 `UIHelper.Result()` 返回界面结果；不要把本页 UI 事件改成返回业务 JSON、上传或下载。那些独立接口仍按原有请求方式调用。
+`labResult` 是当前页生成并绑定的控件字段。原生 Handler 保留 ASP.NET Core 参数绑定、ModelState、异步等待及过滤器。使用 `UIHelper.Result()` 返回界面结果；不要把本页 UI 事件改成返回业务 JSON、上传或下载。那些独立接口仍按原有请求方式调用。
 
 严格内容安全策略（CSP）下使用 `Parameter.FromFunction`、`FromData`、`FromEventArgument`。`readNote` 必须是页面中真实定义的具名函数，每次发送前取当前值。普通策略允许旧字符串表达式；兼容不会自动放宽 CSP。参数名不能以框架保留的 `__` 开头。
 
 ## UIHelper 的边界
 
-在 RazorForms 中推荐直接操作后台控件实例。为兼容旧页面，允许调用 UIHelper 控件更新方法，但这些调用不保证同步到服务器控件属性或按 RazorForms 持久属性恢复。需要下一轮继续读取的状态，使用后台控件属性赋值；不要用 `UIHelper.Label("Result").Text(...)` 后再假定 `Result.Text` 已改变。
+在 RazorForms 中推荐直接操作后台控件实例。为兼容旧页面，允许调用 UIHelper 控件更新方法，但这些调用不保证同步到服务器控件属性或按 RazorForms 持久属性恢复。需要下一轮继续读取的状态，使用后台控件属性赋值；不要用 `UIHelper.Label("labResult").Text(...)` 后再假定 `labResult.Text` 已改变。
 
 ## OnGet 和绑定对象
 
