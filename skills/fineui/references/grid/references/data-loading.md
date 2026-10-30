@@ -1,5 +1,7 @@
 # Grid 数据加载与分页（Data Loading & Paging）
 
+v16.1.1 Core RazorForms / Java 可在后台事件中直接修改普通表格的排序、分页等属性，详见[回发时动态修改表格](dynamic-configuration.md)。内存模式先加载完整数据，数据库模式仍由业务事件查询并绑定。
+
 两种分页模式，务必先分清：
 
 | 模式 | 何时用 | 关键点 |

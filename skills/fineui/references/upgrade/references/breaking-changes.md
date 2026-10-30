@@ -8,9 +8,11 @@
 
 Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容。下方旧版本的迁移记录不再表示这些写法在当前版被禁止。UIHelper 仍只保证即时更新，详情见 [旧事件兼容](../../foundation/references/razorforms-compatibility.md)。
 
+v16.1.1 另新增 Core RazorForms / Java 的普通表格回发修改能力。Core RazorForms 普通表格推荐直接修改属性和列集合，旧 `ConfigColumns` 只作为迁移识别项，不再推荐使用；接口保留兼容，见[动态表格升级检查](v16.1.md#dynamic-grid-upgrade)。不要将其误报为接口移除，也不要将复杂编辑表格批量改成普通换列。
+
 ## v16.1.0（2026-10-28）
 
-完整操作见 [v16.1.0 升级检查](v16.1.md)，覆盖以下影响：
+完整操作见 [v16.1 升级检查](v16.1.md)，覆盖以下影响：
 
 - Core 三种模式统一 JSON；Core RazorForms 每轮处理模板，初始化数据按 Page_Init/Page_Load 用途迁移，单页模式改用 `[NoRazorForms]`。
 - 严格 CSP 的脚本、动态参数和窗体回调改用结构化动作及具名函数；服务器与浏览器资源同时升级并刷新旧页面。

@@ -25,6 +25,7 @@
 - 行选择：复选框多选、单选、读取选中行
 - 数据加载：本地内联数据 / 服务端数据 / 服务端分页
 - 单元格编辑、排序、筛选、分组、合计行、工具栏
+- v16.1.1 Core RazorForms / Java 回发直接修改普通表格属性、已有列和列集合
 
 ## 开始前（Before You Start）—— 先判定"哪个模式"
 
@@ -168,6 +169,7 @@ public class Grid extends FineUIPageBase {
 
 | 文件 | 何时读 |
 |------|--------|
+| [references/dynamic-configuration.md](references/dynamic-configuration.md) | v16.1.1 Core RazorForms / Java 回发修改表格、列集合、排序与分页；数据绑定条件及复杂控件边界 |
 | [references/header.md](references/header.md) | 表头选项（隐藏/菜单/提示/列自定义属性）、**多表头**、动态创建列 |
 | [references/row-features.md](references/row-features.md) | 行扩展列、弹窗列、行命令按钮、行单击/双击/选中事件、行/单元格样式、行高行密度 |
 | [references/advanced.md](references/advanced.md) | 列锁定、列/行拖拽排序、单元格合并、大数据表格 |

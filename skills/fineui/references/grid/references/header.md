@@ -16,7 +16,7 @@
 | 表头提示 / 位置 | `headerTooltip` / `headerTooltipPosition` | `HeaderToolTip` / `HeaderToolTipPosition` | `header-tool-tip` / `header-tool-tip-position` |
 | 列自定义属性 | 列 `attrs: { ... }` | 见 §5（各栈写法不同） | 列内嵌 `<f:attributes><f:attribute key= value=>`（见 §5） |
 | 多表头（分组） | 列嵌套 `columns: [ ... ]` | `<f:GroupField>` + 嵌套 `<Columns>` / `F.GroupField()` | `<f:group-field>` + 嵌套 `<f:columns>` |
-| 运行时重配列 | `grid.configColumns(...)` | 服务端 `Grid.Columns.Add(...)` | 服务端 `Grid1.addColumn(...)` |
+| 建列与重配 | `grid.configColumns(...)` | 初始化 `Grid.Columns.Add(...)`；Core RazorForms 回发见下文 | 初始化 `Grid1.addColumn(...)`；回发可用 `setColumns(...)`（v16.1.1） |
 
 ---
 
@@ -233,6 +233,8 @@ columns: [
 
 ## 7. 动态创建列（运行时/服务端建列）
 
+**v16.1.1 Core RazorForms / Java 回发修改**：普通表格优先直接修改属性和列集合，使用 `Columns` 赋值或 `setColumns(...)`，详见[回发时动态修改表格](dynamic-configuration.md)。下面的 C# / Java 示例介绍初始化建列，不能据此将回发事件也放进首次加载分支。
+
 ### F.js —— `configColumns()` 运行时重配
 
 ```javascript
@@ -290,7 +292,7 @@ public class DynamicColumns extends FineUIPageBase {
 }
 ```
 
-标签里 `<Columns>`（Java `<f:columns>`）留空。**Pro 只支持首次初始化建列、不支持回发动态建列**；Java 同 RazorForms，在 `Page_Load` 建列即可。
+使用上述初始化建列示例时，标签里 `<Columns>`（Java `<f:columns>`）留空。Pro 按自己的 `Page_Init` 生命周期建立列声明，不套用 Core RazorForms / Java v16.1.1 的回发集合替换写法。Core RazorForms / Java 的首次加载分支负责初始化，用户触发的换列放到对应后台事件中。
 
 ---
 

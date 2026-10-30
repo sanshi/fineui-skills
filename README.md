@@ -77,7 +77,7 @@ npx skills update
 | 分类 | 说明 |
 |------|------|
 | [基础与模式](skills/fineui/references/foundation/overview.md) | 基础：写法判定、`F.create`、PageManager、页面骨架、客户端事件与回发、RawHtml 安全模型、命名约定 |
-| [表格](skills/fineui/references/grid/overview.md) | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据 |
+| [表格](skills/fineui/references/grid/overview.md) | 表格：列、数据、编辑、选择、分页、排序、合计行、过滤、多表头、分组、树表格、列锁定、合并、行扩展、事件、拖拽排序和大数据；v16.1.1 回发动态修改表格 |
 | [表单](skills/fineui/references/form/overview.md) | 表单与日历：容器、常用字段、高级字段、Calendar、字段校验、整表校验和取值 |
 | [数据列表](skills/fineui/references/datalist/overview.md) | 数据列表：静态项、数据绑定、图文内容、单选多选、分组、导航和加载更多 |
 | [窗口](skills/fineui/references/window/overview.md) | 窗口与消息框：Window、iframe、关闭回传、Alert、Confirm 和 Notify |
@@ -87,7 +87,7 @@ npx skills update
 | [按钮](skills/fineui/references/button/overview.md) | 按钮：语义色、图标、徽标、点击事件、确认按钮、LinkButton、ButtonGroup 和下拉菜单 |
 | [主题设置](skills/fineui/references/theming/overview.md) | 主题设置：全局默认、PageManager 覆盖和运行时切换 |
 | [自定义主题](skills/fineui/references/custom-theme/overview.md) | 自定义主题：配色设计、配置生成、三栈接入、运行截图验证和主题包交付 |
-| [版本升级](skills/fineui/references/upgrade/overview.md) | 版本升级：覆盖 v10 至 v16.1.0，按模式核对生命周期、API、空值与类型变化并生成迁移清单 |
+| [版本升级](skills/fineui/references/upgrade/overview.md) | 版本升级：覆盖 v10 至 v16.1.1，按模式核对生命周期、API、空值与类型变化；普通表格推荐直接修改属性和列集合 |
 
 ## 用法
 

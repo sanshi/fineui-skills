@@ -23,7 +23,7 @@ metadata:
 | Core RazorForms 兼容旧 Url.Handler、OnPost、Parameter | [旧事件兼容](references/foundation/references/razorforms-compatibility.md) |
 | 页面骨架、开发模式、事件与回发、可信 HTML | [基础与模式](references/foundation/overview.md) |
 | 表单、字段、校验、日历 | [表单](references/form/overview.md) |
-| 表格、列、选择、分页、编辑与数据加载 | [表格](references/grid/overview.md) |
+| 表格、列、选择、分页、编辑与数据加载，回发修改表格属性 | [表格](references/grid/overview.md) |
 | 数据列表 | [数据列表](references/datalist/overview.md) |
 | 树与节点 | [树](references/tree/overview.md) |
 | 面板、标签页、手风琴 | [容器](references/panel/overview.md) |
