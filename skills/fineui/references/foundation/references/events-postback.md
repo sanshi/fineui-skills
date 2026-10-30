@@ -9,6 +9,8 @@
 | 有状态页面的业务动作或自定义数据 | `F.customEvent(name, payload)`（Pro、Core RazorForms、Java） | `Page_CustomEvent` |
 | 需要非 AJAX、loading、命名表单字段或完成回调 | `F.doPostBack({ ... })` | `Page_CustomEvent` 或指定 MVC/RazorPages 地址 |
 
+Core v16.1.1 已停用 `ControlBase.GetPostBackEventReference` 的四个重载：源码调用报告编译错误，旧程序集调用抛出带迁移说明的 `NotSupportedException`。标准事件使用控件事件声明，RazorForms 页面脚本的业务操作使用 `F.customEvent`；MVC/RazorPages 手工 UI 请求使用带明确 `url` 的 `F.doPostBack`。Core 不再提供 `F.createEventArg`，Java 同样不提供；Pro 仍用于后台脚本生成。
+
 ## Core 三种模式的共同 JSON 与独立接口
 
 Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updates/commands 响应。MVC/RazorPages 使用无状态子集，保留 Action/OnPost、模型绑定及 URL 编码表单或 multipart，不上传 Core RazorForms 的控件状态或事件身份字段，不执行模板重跑和 Page_Load。
