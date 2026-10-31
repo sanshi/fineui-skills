@@ -10,6 +10,8 @@ Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容。下�
 
 Core 升级到 v16.1.1 时，还须处理两项接口不兼容：`ControlBase.GetPostBackEventReference` 的全部重载已停用，源码调用会编译失败，旧程序集调用会抛出异常；`Parameter.FromEventArgument` 的第二参数由形参名称改为从零开始的数字下标，须修改调用并重新编译宿主及预编译视图。具体替代入口和改前、改后示例见 [v16.1 升级检查](v16.1.md)。这两项变更仅适用于 Core；Pro 的 `GetPostBackEventReference` 保持原行为。
 
+Pro 的 `Grid.PageSizeOptions` 从 v16.1.1 起也改为 `int[]`，与 Core 对齐。后台字符串数组须改为整数数组，并重新编译依赖旧 getter/setter 签名的程序集及预编译网站。ASPX 逗号写法保留，非法选项改为立即报错，`null` 或空数组使用默认值；具体改前、改后代码见 [v16.1 升级检查](v16.1.md)。
+
 v16.1.1 另新增 Core RazorForms / Java 的普通表格回发修改能力。Core RazorForms 普通表格推荐直接修改属性和列集合，旧 `ConfigColumns` 只作为迁移识别项，不再推荐使用；接口保留兼容，见[动态表格升级检查](v16.1.md#dynamic-grid-upgrade)。不要将其误报为接口移除，也不要将复杂编辑表格批量改成普通换列。
 
 ## v16.1.0（2026-10-28）

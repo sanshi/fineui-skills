@@ -6,7 +6,9 @@
 
 ## 1. 页大小选择器
 
-内置选择器开启 `ShowPageSizeSelector`。Core/Java 的 `PageSizeOptions` 是创建分页栏时使用的正整数数组，后台分别传 `int[]` 或 `int...`；未设置、`null` 或空数组使用 10、20、50、100，非法项会报错。v16.1.1 起 Core RazorForms / Java 支持在回发中修改此数组，并同步已有分页栏；同时可修改 `ShowPageSizeSelector` 和 `PagingToolbarVisible`，见[动态修改表格](dynamic-configuration.md)。Core MVC/RazorPages 不因此获得相同的后台属性恢复能力。Pro 的既有属性类型不变，F.js 使用数字数组。
+内置选择器开启 `ShowPageSizeSelector`。`PageSizeOptions` 配置内置分页栏的正整数选项：Core 从 v16.1.0、Pro 从 v16.1.1 起传 `int[]`，Java 使用 `int...`，F.js 使用数字数组；未设置、`null` 或空数组使用 10、20、50、100，非法项会报错。Pro 的 ASPX 逗号写法保留，旧后台字符串数组须改成整数数组，并重新编译依赖旧接口的程序集及预编译网站。三栈的数组读写均复制，修改元素后须重新赋值。
+
+v16.1.1 起 Core RazorForms / Java 支持在回发中修改此数组，并同步已有分页栏；同时可修改 `ShowPageSizeSelector` 和 `PagingToolbarVisible`，见[动态修改表格](dynamic-configuration.md)。Core MVC/RazorPages 不因此获得相同的后台属性恢复能力，Pro 此次类型统一也不扩展其回发配置能力。
 
 ```javascript
 // F.js
