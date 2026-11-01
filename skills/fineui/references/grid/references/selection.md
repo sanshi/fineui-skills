@@ -13,6 +13,8 @@
 
 本文只讲前者。
 
+清空全部行和单元格使用 `ClearSelection()` / `clearSelection()`；真实后台控件的本轮读取也立即为空。跨页、不可选旧选择及旧复数入口迁移见[统一清空选择](../../form/references/clear-selection.md)。
+
 ## 选择模式
 
 - **多选**（默认）：开启复选框选择即多选。

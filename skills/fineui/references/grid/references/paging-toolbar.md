@@ -148,7 +148,11 @@ public void btnClearData_Click(Object sender, EventArgs e) {
     Grid1.clearData();
 }
 public void btnRebindData_Click(Object sender, EventArgs e) { Grid1.setDataSource(getAll()); Grid1.dataBind(); }
-public void btnSelectAll_Click(Object sender, EventArgs e) { Grid1.selectAllRows(); }   // 清空选中：Grid1.deselectAllRows()
+public void btnSelectAll_Click(Object sender, EventArgs e) {
+    Grid1.selectAllRows();
+}
+
+// 清空全部选择使用 Grid1.clearSelection()；只取消当前页可选行使用 deselectAllRows()。
 ```
 
 ---

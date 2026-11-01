@@ -1,5 +1,7 @@
 # 复选框、事件与懒加载（CheckBox / Events / Lazy Load）
 
+节点高亮和复选框勾选分别处理：`ClearSelection()` / `clearSelection()` 只清空高亮；取消后台已加载节点的勾选使用 `UncheckAllNodes()` / `uncheckAllNodes()`。隐藏复选框、禁用复选框和半选的边界见[统一清空选择](../../form/references/clear-selection.md)。
+
 ## 一、复选框树
 
 容器开 `EnableCheckBox`；级联勾选 `CascadeCheck`；节点 `Checked` 设初始勾选。

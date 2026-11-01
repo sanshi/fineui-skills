@@ -109,6 +109,8 @@ public void btnCloseWindow_Click(Object sender, EventArgs e) {
 
 ## DropDownBox（下拉框容器）
 
+同时清空选中值、文字、标签和弹出选择状态使用 `ClearSelection()` / `clearSelection()`；后台读取与 UIHelper 的区别见[统一清空选择](clear-selection.md)。
+
 输入框 + 下拉弹出面板，面板内可挂任意控件（Tree、Grid、CheckBoxList 等）。是"下拉树"、"下拉表格"、"多选下拉"的基础控件。
 
 关键参数：

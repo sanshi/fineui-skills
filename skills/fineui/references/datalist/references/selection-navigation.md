@@ -1,5 +1,7 @@
 # DataList 选择、分组与导航
 
+清空全部选择使用 `DataList1.ClearSelection()`（Pro / Core）、`DataList1.clearSelection()`（Java / F.js）；包含不可选项的旧选择，保留列表数据。后台状态时机、UIHelper 与旧写法迁移见[统一清空选择](../../form/references/clear-selection.md)。
+
 ## 单选与多选
 
 | 用途 | F.js | Pro / Core | FineUI.Java |
