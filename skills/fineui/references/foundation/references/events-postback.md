@@ -9,7 +9,7 @@
 | 有状态页面的业务动作或自定义数据 | `F.customEvent(name, payload)`（Pro、Core RazorForms、Java） | `Page_CustomEvent` |
 | 需要非 AJAX、loading、命名表单字段或完成回调 | `F.doPostBack({ ... })` | `Page_CustomEvent` 或指定 MVC/RazorPages 地址 |
 
-Core v16.1.1 已停用 `ControlBase.GetPostBackEventReference` 的四个重载：源码调用报告编译错误，旧程序集调用抛出带迁移说明的 `NotSupportedException`。标准事件使用控件事件声明，RazorForms 页面脚本的业务操作使用 `F.customEvent`；MVC/RazorPages 手工 UI 请求使用带明确 `url` 的 `F.doPostBack`。
+Core v16.1.1 已停用 `ControlBase.GetPostBackEventReference` 的四个重载：源码调用报告编译错误，旧程序集调用抛出带迁移说明的 `NotSupportedException`。标准事件使用控件事件声明，RazorForms 页面脚本的新业务操作使用 `F.customEvent`；保留的本页公开 OnPost 可用 `F.doPostBack('@Url.Handler("Save")', 'SimpleForm1')` 调用，仍进入 RF 完整流程。MVC/RazorPages 手工 UI 请求继续使用带明确 `url` 的 `F.doPostBack`。
 
 ## Core 三种模式的共同 JSON 与独立接口
 
@@ -18,6 +18,8 @@ Core RazorForms、MVC、RazorPages 共用 FineUIPageConfig 首屏 JSON 和 updat
 项目全局开启 Core RazorForms 后，可在页面模型类或共同基类上添加可继承的 `[NoRazorForms]`，让特定页面改用原生 RazorPages 模式；不生成 PageManager 每页模式 setter。普通独立上传、下载、JSON 接口不要求标记。Core 请求不发送 __FPROTOCOL，浏览器资源与服务器随同一产品包发布，不新增独立协议版本或签名模式凭据。
 
 MVC/RazorPages 的手工 UI 请求使用有明确 url 的 `F.doPostBack`；不能使用 Core RazorForms 的事件目标入口。独立业务 JSON 或文本接口直接使用原生 `fetch` 或 `jQuery.ajax`，`F.doPostBack` 只处理 FineUI 控件回发，不按 JSON 外形猜测 UI 通道。Core RazorForms 的控件交互必须经过本页完整的后台处理流程，不能调用另一个 MVC/RazorPages UI 接口再用其 UIHelper.Result 修改本页控件；这种 F.doPostBack 原生 UI 调用会在发送前报错。独立业务数据、上传和下载不进入 UI 响应读取器，也不附加本页的 Core RazorForms 控件状态。
+
+Core v16.1.1 的本页公开 OnPost 是上述完整 RF 流程的兼容入口，手写回发不必在某个控件上重复声明相同 URL。普通 RF 方法名事件仍按本轮声明调用，不因页面 URL 带 `handler` 而执行 OnPost。旧请求若返回合法业务 JSON，可由 `complete`、`success` 或全局成功钩子返回 `false` 接管；回调收到原文，未接管时才完整校验并应用 UI。具体代码、匿名流式控件与严格 CSP 边界见[旧事件兼容](razorforms-compatibility.md)。
 
 严格内容安全策略（Content Security Policy，CSP）下，事件 Parameter 优先使用 `Parameter.FromFunction`、`FromEventArgument`、`FromData`。FromEventArgument 的第二参数为原始回调的从零下标，例如 `Parameter.FromEventArgument("nodeId", 1)` 读取第二个实参；不再接受字符串形参名称，旧调用须修改并重新编译。具名提供函数在真正发送前求值一次；确认或发送前检查取消时不调用。即时 UIHelper setter 保留调用顺序，属性更新与命令不重复。
 

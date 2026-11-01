@@ -6,7 +6,7 @@
 
 ## v16.1.1 兼容补充
 
-Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容。下方旧版本的迁移记录不再表示这些写法在当前版被禁止。UIHelper 仍只保证即时更新，详情见 [旧事件兼容](../../foundation/references/razorforms-compatibility.md)。
+Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容，手写 `F.doPostBack` 也可调用本页公开 OnPost；编码网址及固定结构的匿名流式控件可保持原写法，自动 ID 不作为业务接口。Core 旧 Listener 调用语句在普通策略下按函数体兼容，严格 CSP 仍用具名函数。合法业务 JSON 可由成功回调返回 `false` 接管，未接管时仍按完整 UI 响应校验。下方旧版本的迁移记录不再表示这些写法在当前版被禁止。动态方法名事件仍须每轮由服务器登记；UIHelper 仍只保证即时更新。详情见 [旧事件兼容](../../foundation/references/razorforms-compatibility.md)。
 
 Core 升级到 v16.1.1 时，还须处理两项接口不兼容：`ControlBase.GetPostBackEventReference` 的全部重载已停用，源码调用会编译失败，旧程序集调用会抛出异常；`Parameter.FromEventArgument` 的第二参数由形参名称改为从零开始的数字下标，须修改调用并重新编译宿主及预编译视图。具体替代入口和改前、改后示例见 [v16.1 升级检查](v16.1.md)。这两项变更仅适用于 Core；Pro 的 `GetPostBackEventReference` 保持原行为。
 
