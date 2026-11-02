@@ -94,6 +94,8 @@ public class Login extends FineUIPageBase {
 
 ## 相关分类（Related Skills）
 
+Core RazorForms/Java 在 FormRow 中程序化创建字段时，纯动态方法名事件可只在首次绑定，无须每轮 Page_Load 重复登记；处理器仍须满足严格签名并校验权限。模板、服务器明确绑定和主动解绑优先。两端方法签名、异步差异与 FormDynamic 片段见[客户端事件与回发](../foundation/references/events-postback.md)；Core 旧 OnGet 字段数组与本页 OnPost 兼容见[旧事件兼容](../foundation/references/razorforms-compatibility.md)。
+
 - `基础`：写法判定、页面骨架、命名约定、RawHtml
 - `表格`：Grid 单元格编辑用同一套字段控件作 `editor`
 - `版本升级`：旧 FormRow 行内按钮升级后的宽度变化与迁移检查

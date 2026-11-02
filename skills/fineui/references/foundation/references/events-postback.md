@@ -111,7 +111,7 @@ F.create({ type: 'Button', text: '显示窗体', handler: onShowWindowClick });
 
 兼容说明：优化后的 Core RazorForms 也接受标签中的完整 `Async` 名称，按该名称精确调用并等待返回的 `Task`，不再追加后缀或改名回退；新代码仍优先采用无后缀标签。此规则不适用于 Pro、Java、Core MVC 或 RazorPages。
 
-Core RazorForms 的普通控件回发默认请求当前完整 URL，保留已有查询参数；事件名称通过当次重跑服务器模板取得的可信声明查找，不通过新增 `?handler=...` 选择。首屏和受控回发响应均为 JSON，不需要启用另一种架构。独立上传、下载或自定义 JSON 入口仍使用显式地址；RazorPages 的 `@Url.Handler(...)` 与 MVC action 保留原合同。
+Core RazorForms 的普通控件回发默认请求当前完整 URL，保留已有查询参数；后台方法优先按本轮服务器明确登记选择，纯动态控件可按下节的严格签名回退，不通过新增 `?handler=...` 选择。首屏和受控回发响应均为 JSON，不需要启用另一种架构。独立上传、下载或自定义 JSON 入口仍使用显式地址；RazorPages 的 `@Url.Handler(...)` 与 MVC action 保留原合同。
 
 普通策略下，旧 `RegisterStartupScript` 与字符串消息回调仍可运行。严格内容安全策略（Content Security Policy，CSP）中，Core RazorForms 使用控件即时方法，MVC/RazorPages 使用 `UIHelper`；共同动作使用 `PageContext.Execute(ClientCommand...)` 或 `PageContext.InvokeFunction("具名函数", ...)`，不要拼接脚本。RazorForms 页面模型有同名属性，在后台代码中须写 `FineUI.Core.PageContext.InvokeFunction(...)` 等完整类名。可信 Razor 内联脚本可自动获得本次请求 nonce；nonce 不允许 `eval`，也不会自动授权 `RawHtml` 数据中的脚本。回调收到的是原始 JSON 文本；超时登录等拦截逻辑应解析 `commands` 中的 `page.redirect`，不能搜索旧 JS 片段。
 
@@ -121,6 +121,48 @@ Core RazorForms 的普通控件回发默认请求当前完整 URL，保留已有
 <f:Button ID="btnDelete" runat="server" Text="删除"
     ConfirmText="确定删除？" ConfirmTarget="Top" OnClick="btnDelete_Click" />
 ```
+
+### Core RazorForms 与 Java：纯动态事件不必每轮重新登记
+
+v16.1.1 中，纯动态控件仍在首次加载时绑定原方法名，不增加特性或命名前缀。例如 Core `/Form/FormDynamic` 的模板只有 FormRow1，后台保留：
+
+```csharp
+protected void Page_Load(object sender, EventArgs e)
+{
+    if (!IsPostBack)
+    {
+        LoadData();
+    }
+}
+
+private void LoadData()
+{
+    ddlGender = new DropDownList { ID = "ddlGender", AutoSelectFirstItem = false };
+    ddlGender.Items.Add("男", "0");
+    ddlGender.Items.Add("女", "1");
+    ddlGender.Events.Add(new Event("change", "ddlGender_SelectedIndexChanged"));
+    FormRow1.Items.Add(ddlGender);
+}
+
+protected void ddlGender_SelectedIndexChanged(object sender, EventArgs e)
+{
+    ShowNotify("选择的性别：" + ddlGender.Text);
+}
+```
+
+动态字段 ddlGender 仍需手工声明。首次 LoadData 的其它输入、校验和布局保留，只删除回发时重新添加事件的分支。Java 同样保留首次 `ddl.setOnSelectedIndexChanged("ddlGender_SelectedIndexChanged")` 和原处理方法，不必在 Page_Load 的 else 分支重新绑定。
+
+| 回退规则 | Core RazorForms | FineUI.Java |
+| --- | --- | --- |
+| 参数 | 第一个严格为 object；第二个为 EventArgs 或能接收实际事件的派生类 | 第一个严格为 Object；第二个为本端 EventArgs 或兼容派生类 |
+| 返回 | void、Task 或 Task 派生类型；不用 async void、ValueTask | void、Future 或 Future 派生类型，包含 CompletableFuture |
+| 方法名 | 无 Async 后缀时优先 XxxAsync；已带 Async 时精确查找 | 精确查原名称，不自动尝试 Async 后缀 |
+
+回退仅用于已经恢复、但本轮模板没有声明且服务器没有明确登记该事件的动态控件。模板和 Page_Load 的明确登记始终优先；模板控件本轮没有该事件时，不能借回退重新启用。主动 Remove/Clear 或 Java 空方法名解绑也优先，旧候选不能复活它。未知控件、未知事件、重载歧义、static、泛型或错误签名均不能作为回退入口。
+
+Page_Init、Page_Load、Page_CustomEvent 及其 Async 同组不参与回退，Java 还排除旧 Page_Get；框架方法、本轮模板引用的事件和数据绑定回调也排除。条件模板本轮缺席时，只按当前成功取得的模板结果判断，不提供历史来源证明。
+
+**符合这些规则的业务方法成为可请求的事件入口。** 不再登记不是禁止调用的方法；处理器仍须校验当前用户、业务记录和操作权限。客户端候选只供查找，不是授权凭据，不把后台事件映射放进状态。此规则适用于两端首屏创建并恢复的动态控件；Core 回发新建控件也沿用同一规则，不扩大到 Pro 或原生 MVC/RazorPages。
 
 ## 3. FineUI.Pro 的两个兼容开关
 
