@@ -41,7 +41,7 @@ v16.1.1 另新增 Core RazorForms / Java 的普通表格回发修改能力。Cor
 - **[Core] 最低运行环境提高到 .NET 8**；NuGet 对 `Microsoft.AspNetCore.Mvc.NewtonsoftJson` 仅要求 8.0.31 或更高版本，不设上限。仍在 .NET 6/7 的项目必须先升级；较高版本的宿主应显式引用与自身 ASP.NET Core 主版本一致的适配包。
 - **[Pro] 开启 `EnableFStateValidation` 的项目必须显式配置非 `AutoGenerate` 的 `<machineKey validationKey="...">`**；Web 农场节点使用同一密钥。
 - **[Pro] 单元格编辑改为 `GetModifiedData()`**；`GetModifiedDict` / `GetDeletedList` / `GetNewAddedList` 已废弃。
-- **[Core] `AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记所需过滤器**。Startup 不再需要手工添加这两项；老项目保留原手工登记也不会重复执行，建议升级后删除以简化 Startup。
+- **[Core] 从 v16.0.0 起，`AddFineUI` 自动登记 `JArray`/`JObject` 模型绑定器，并在启用 RazorForms 时登记页面过滤器**。升级时检索 `Startup.cs`、`Program.cs` 及宿主的 MVC 配置扩展，删除框架过滤器 `RazorFormsFilter`（旧名 `WebFormsFilter`）的手工登记和多余的 `JsonModelBinderProvider` 登记。保留 `AddFineUI`、宿主的 MVC/Razor Pages 注册及 `.AddNewtonsoftJson()`。例如 v16.1.1 中保留 `options.Filters.Add<RazorFormsFilter>()` 或 `AddService<RazorFormsFilter>()` 会使同一次回发重复恢复状态并返回 400。详见[启动配置迁移](v16.1.md#core-razorforms-startup)。
 - **[Core-RazorForms] 事件方法按完整名称兼容调用并等待 `Task`**。标签省略 `Async` 仍是推荐写法，保留异步优先，后台可切换 `void` 同步方法或 `async Task` 异步方法；显式写 `SaveAsync` 时不再优先找 `SaveAsyncAsync`，依赖旧行为的页面应明确填写实际需要调用的完整方法名。普通控件事件方法缺失会报错，`async void`、空任务及未支持返回类型须改为有效的 `void` 或 `Task`。
 - **[Core-RazorForms，旧版本迁移记录；v16.1.1 已恢复本页 Parameter 兼容] 点击时给后台带额外数据曾建议不再用 `OnClickParameter1..N`**，推荐改为自定义回发（`ClickHandler` + `F.customEvent`）；需要落进 `[BindProperty]` 命名表单字段时用 `F.doPostBack({ eventName, params })`。MVC 与 RazorPages 不受影响，继续使用 `OnClickParameter`。
 - **[Core] 配置项 `ExcludedURLs`（不使用 FineUI 中间件的网址列表）已废弃**，不再需要配置；已有配置继续生效，无需修改。

@@ -12,6 +12,8 @@ Core v16.1.1 补齐开启 RazorForms 时的本页旧 Url.Handler/OnPost/Paramete
 
 ## 升级流程
 
+Core 项目升级到 v16.0.0 或以上时，先检查 [RazorForms 启动配置](references/v16.1.md#core-razorforms-startup)。使用 `AddFineUI` 的宿主可以删除手工登记的框架过滤器。
+
 Core 模式升级须核查三种模式共同 JSON、严格 CSP 的缺省值及 `[NoRazorForms]` 页面标记迁移；普通独立接口不要求标记。Pro/Core 页面还应查找 FormRow 内直接放置的按钮，判断升级后是否需要 `100% auto` 保留窄按钮。具体影响与替代写法见破坏性变更清单。
 
 按顺序执行，不要跳步。**每一步用中括号标注是「告知用户后继续」还是「询问用户并等待」。**
