@@ -3,7 +3,7 @@ name: fineui
 description: 帮助开发者在 F.js、FineUI.Pro、FineUI.Core 和 FineUI.Java 项目中选择正确开发模式、查找官方用法并实现页面、控件、主题或升级。涉及 FineUI 的页面、表格、表单、布局、树、窗口、按钮、主题及迁移时使用。
 metadata:
   author: FineUI
-  version: "16.1.2"
+  version: "16.2.0"
 ---
 
 # FineUI 开发
