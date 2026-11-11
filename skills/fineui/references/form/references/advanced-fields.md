@@ -6,52 +6,45 @@ FileUpload（文件上传）、TriggerBox（触发器输入框）、DropDownBox�
 
 ## FileUpload（文件上传）
 
-选择文件的输入框 + 浏览按钮。`Accept` 限制文件类型；`Multiple` 允许多文件；`ButtonOnly` 仅显示按钮。
+三栈服务端使用 `AcceptFileTypes` 限制选择器中的扩展名，例如 `.jpg,.jpeg,.png`；F.js 对应配置是 `accept`。`Multiple` 允许多文件，`ButtonOnly` 仅显示按钮。浏览器中的类型限制只帮助选择文件，服务端仍需校验扩展名、大小和实际内容。
 
-> **服务端保存**：FileUpload 控件本身只负责选择文件，**保存逻辑在服务端**（Pro 用 `filePhoto.PostedFile`；Core 用 `IFormFile` 或 `FileUpload1.PostedFile`）。安全上传范式（白名单扩展名 + 时间戳重命名 + 不可直访目录）见 `基础` 的 AGENTS.md 或官方示例。
+v16.2.0 在创建时设置 `EnableDragDrop=true`，即可拖入文件或点击整个区域选择。每次选择替换该字段原来的待提交文件，普通提交模式可逐项移除。这个开关默认为 false，已有实例不支持在回发中切换。
+
+```html
+<!-- Core RazorForms 或 RazorPages；Pro 另加 runat="server"。 -->
+<f:FileUpload ID="filePhotos" Label="图片" Multiple="true"
+    EnableDragDrop="true" AcceptFileTypes=".jpg,.jpeg,.png" />
+```
+
+```csharp
+// Core MVC 创建控件。
+F.FileUpload().ID("filePhotos").Label("图片").Multiple(true)
+    .EnableDragDrop(true).AcceptFileTypes(".jpg,.jpeg,.png")
+```
+
+```html
+<!-- Java 直接使用对应的短横线属性。 -->
+<f:file-upload id="filePhotos" label="图片" multiple="true"
+    enable-drag-drop="true" accept-file-types=".jpg,.jpeg,.png"></f:file-upload>
+```
 
 ```javascript
-// F.js
-{ type: 'FileUpload', id: 'fu1', fieldLabel: '上传文件', buttonText: '选择文件', accept: 'image/*' }
-// 多文件：multiple: true；仅按钮：buttonOnly: true
+F.create({
+    type: 'FileUpload',
+    id: 'filePhotos',
+    renderTo: document.body,
+    fieldLabel: '图片',
+    multiple: true,
+    enableDragDrop: true,
+    accept: '.jpg,.jpeg,.png'
+});
 ```
-```aspx
-<%-- Pro --%>
-<f:FileUpload runat="server" ID="fu1" Label="上传头像" Accept="image/*" ButtonText="选择图片" />
-```
-```csharp
-// Core-MVC（Fluent）
-F.FileUpload().ID("fu1").Label("上传头像").Accept("image/*").ButtonText("选择图片")
-```
-```html
-<!-- Core-TagHelper -->
-<f:FileUpload ID="fu1" Label="上传头像" Accept="image/*" ButtonText="选择图片"></f:FileUpload>
-```
-```html
-<!-- FineUI.Java（Thymeleaf 方言）：button-icon/button-text；多文件 multiple="true"；仅按钮 button-only="true" -->
-<f:file-upload id="filePhoto" label="上传头像" empty-text="请选择一张照片" button-icon="Add" button-text="选择图片" required="true" show-red-star="true"></f:file-upload>
-```
-```java
-// FineUI.Java 页面类：服务端保存（按钮事件）——控件字段用全限定名消歧
-public void btnSubmit_Click(Object sender, EventArgs e) {
-    if (filePhoto.hasFile()) {
-        String originalName = filePhoto.getShortFileName();   // 原始文件名
-        // …校验扩展名白名单 + 大小后，保存到静态资源之外的目录…
-        // 保存出错或提交完成后务必 reset，否则下次提交会再次上传：
-        filePhoto.reset();
-    }
-}
-```
-```csharp
-// Pro 服务端保存（Page_Load 或按钮事件）
-if (fu1.PostedFile != null) {
-    string ext = Path.GetExtension(fu1.PostedFile.FileName).ToLower();
-    if (ext == ".jpg" || ext == ".png") {
-        string newName = DateTime.Now.Ticks + ext;
-        fu1.PostedFile.SaveAs(Server.MapPath("~/App_Data/upload/" + newName));
-    }
-}
-```
+
+Pro、Core RazorForms 和 Java 可声明 `FileSelected` 后台事件完成选定即上传。Core MVC/RazorPages 按对应示例的事件地址接线。等待期间显示整批数量，校验失败时保留本次选择并显示原因；只有成功接收后再 `Reset()/reset()`，让用户重试失败文件。
+
+服务端文件来自 Pro 的 `PostedFile/PostedFiles`、Core 的 `PostedFile/PostedFiles`（ASP.NET Core 上传文件对象）和 Java 的 `getPostedFile()/getPostedFiles()`。上传控件不自动保存业务文件。校验后使用服务器生成的存储名，保存到不可直接访问的目录；不能直接用用户文件名拼接保存路径。
+
+[拖放后提交示例](https://fineui.com/core/demo/#/Form/FileUploadDragDrop) · [选定即上传示例](https://fineui.com/core/demo/#/Form/FileUploadDragDropAuto)
 
 ---
 
@@ -231,47 +224,9 @@ DropDownBox1.setValues(java.util.Arrays.asList("php", "basic"));
 
 ## HtmlEditor（富文本编辑器）
 
-集成第三方富文本编辑器（CKEditor / UEditor / UMEditor / TinyMCE）。`Editor` 指定编辑器类型；`EditorBasePath` 指定编辑器资源路径。
+v16.2.0 默认采用基于 ProseMirror 的内置编辑器，支持主题、工具栏配置及原位 HTML 源码编辑。Pro/Core 使用 `Text`、Java 使用 `getText()/setText()` 读写 HTML，F.js 使用 `getValue()/setValue()`。服务端的旧编辑器路径属性为 `BasePath`，类型枚举为 `Editor`。
 
-> HtmlEditor 是**容器型字段**，需要先在页面引入对应编辑器的 JS/CSS，再创建控件。
-
-```javascript
-// F.js —— editor 指定编辑器类型
-{ type: 'HtmlEditor', id: 'he1', fieldLabel: '内容', editor: 'ckeditor', height: 300,
-  editorBasePath: '/ckeditor/' }
-```
-```aspx
-<%-- Pro --%>
-<f:HtmlEditor runat="server" ID="he1" Label="内容" Editor="CKEditor" Height="300px"
-    EditorBasePath="~/ckeditor/" />
-```
-```csharp
-// Core-MVC（Fluent）
-F.HtmlEditor().ID("he1").Label("内容").Editor(HtmlEditorType.CKEditor).Height(300)
-    .EditorBasePath("~/ckeditor/")
-```
-```html
-<!-- Core-TagHelper -->
-<f:HtmlEditor ID="he1" Label="内容" Editor="CKEditor" Height="300" EditorBasePath="~/ckeditor/"></f:HtmlEditor>
-```
-```html
-<!-- FineUI.Java（Thymeleaf 方言）：资源路径是 base-path（不是 EditorBasePath）；toolbar-set 指定工具栏；编辑器 JS 由脚本槽引入 -->
-<f:html-editor id="HtmlEditor1" label="文本编辑器" editor="CKEditor" base-path="/res/third-party/ckeditor/" toolbar-set="Full" height="350"></f:html-editor>
-<!-- 脚本槽：<th:block layout:fragment="script"><script src="/res/third-party/ckeditor/ckeditor.js"></script></th:block> -->
-```
-```csharp
-// 读值（Pro / RazorForms）
-string html = he1.Value;   // 返回 HTML 字符串
-// 赋值
-he1.Value = "<p>初始内容</p>";
-```
-```java
-// FineUI.Java 页面类：读/写用 getText()/setText()（不是 getValue/setValue）；客户端切只读 F.ui.HtmlEditor1.setReadonly(true)
-String html = HtmlEditor1.getText();          // 返回 HTML 字符串
-HtmlEditor1.setText("<p>初始内容</p>");
-```
-
-> **安全提示**：HtmlEditor 的值是用户输入的 HTML，**不要**直接声明为 RawHtml 输出；如需展示，先做 HTML 净化（白名单过滤）。
+创建配置、资源加载和旧引擎兼容见 [富文本编辑器](html-editor.md)。升级后需要继续编辑图片或表格、依赖旧插件或原生实例接口的页面，显式保留原 `Editor` 和对应资源。
 
 ## See also
 

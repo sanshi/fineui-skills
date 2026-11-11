@@ -25,6 +25,7 @@ metadata:
 | 表单、字段、校验、日历 | [表单](references/form/overview.md) |
 | 清空行、列表或节点选择，区分清数据、重置与取消树勾选 | [统一清空选择](references/form/references/clear-selection.md) |
 | 表格、列、选择、分页、编辑与数据加载，回发修改表格属性 | [表格](references/grid/overview.md) |
+| 图表、后台绑定、数据点点击与表格联动 | [图表](references/chart/overview.md) |
 | 数据列表 | [数据列表](references/datalist/overview.md) |
 | 树与节点 | [树](references/tree/overview.md) |
 | 面板、标签页、手风琴 | [容器](references/panel/overview.md) |
@@ -33,7 +34,7 @@ metadata:
 | 窗口、Alert、Confirm、Notify | [窗口](references/window/overview.md) |
 | 内置主题切换 | [主题设置](references/theming/overview.md) |
 | 自定义主题的设计、生成和验证 | [自定义主题](references/custom-theme/overview.md) |
-| 旧项目迁移（含 v16.0.x / v16.1.0 → v16.1.1） | [版本升级](references/upgrade/overview.md) |
+| 旧项目迁移（覆盖 v10 至 v16.2.0） | [版本升级](references/upgrade/overview.md) |
 
 ## 在线资料的读取顺序
 

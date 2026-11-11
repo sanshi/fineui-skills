@@ -89,6 +89,7 @@ public class Login extends FineUIPageBase {
 | [references/form-layout.md](references/form-layout.md) | Form vs SimpleForm、LabelWidth/LabelAlign、多列 FormRow/ColumnWidths |
 | [references/fields.md](references/fields.md) | 基础字段（TextBox/TextArea/NumberBox/DatePicker/DropDownList/CheckBox/RadioButtonList/CheckBoxList/TimePicker/Label/Hidden）+ 读值 |
 | [references/advanced-fields.md](references/advanced-fields.md) | 高级字段：FileUpload（文件上传）、TriggerBox（触发器）、DropDownBox（下拉树/下拉表格/多选下拉）、HtmlEditor（富文本） |
+| [references/html-editor.md](references/html-editor.md) | v16.2.0 内置富文本编辑器、资源、工具栏、HTML 边界和旧引擎兼容 |
 | [references/calendar.md](references/calendar.md) | Calendar 内嵌日历：日期与范围、月/年/时间面板、最小最大日期、选择事件与读写值 |
 | [references/validation.md](references/validation.md) | 必填/正则/比较/自定义校验、整表校验、服务端 MarkInvalid |
 

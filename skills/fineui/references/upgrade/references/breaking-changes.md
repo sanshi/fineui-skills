@@ -4,6 +4,14 @@
 
 > **完整逐条以官方在线发布历史为准**：https://fineui.com/versions/ （在其中搜索“不兼容”）。本清单是高影响项的精炼；升级跨越多个大版本时，把区间内每个版本的“不兼容”条目都过一遍。
 
+## v16.2.0
+
+默认 HtmlEditor 改为内置 Editor.Default，核心资源移除 jQuery UI；Core RazorForms/Java 已有列 ID 的变更会报错，Java 选择列表绑定 null 会清空。具体搜索项、保留旧编辑器的方法及新功能边界见 [v16.2.0 升级检查](v16.2.md)。
+
+## v16.1.2
+
+核对数字舍入、自动清除触发按钮、两参后台事件、F.beforePostBack 移除、隐藏属性手工回传和精度边界。见 [跨过 v16.1.2](v16.2.md#跨过-v1612-时一并核对)。
+
 ## v16.1.1 兼容补充
 
 Core RazorForms 已恢复本页旧 Url.Handler/OnPost/Parameter 的兼容，手写 `F.doPostBack` 也可调用本页公开 OnPost；编码网址及固定结构的匿名流式控件可保持原写法，自动 ID 不作为业务接口。Core 旧 Listener 调用语句在普通策略下按函数体兼容，严格 CSP 仍用具名函数。合法业务 JSON 可由成功回调返回 `false` 接管，未接管时仍按完整 UI 响应校验。下方旧版本的迁移记录不再表示这些写法在当前版被禁止。Core RazorForms/Java 的纯动态方法名事件保留首次绑定，可按严格签名回退；模板、明确登记和主动解绑仍优先，符合签名的方法须按可请求入口校验业务权限。Core 的旧 OnGet 动态字段数组及本页 OnPost 也可保留。UIHelper 仍只保证即时更新。详情见 [旧事件兼容](../../foundation/references/razorforms-compatibility.md)和[事件与回发](../../foundation/references/events-postback.md)。

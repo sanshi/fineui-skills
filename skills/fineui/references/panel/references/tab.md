@@ -4,6 +4,14 @@
 
 > **Java（Thymeleaf 方言）**：`<f:tab-strip tab-position= active-tab-index= enable-tab-close-menu= show-border= height= is-fluid=>`，选项卡集合放 `<f:tabs>`，每个 `<f:tab title= title-raw-html= body-padding= layout= enable-iframe= iframe-url= content=>`，内容放 `<f:items>`。自定义属性用 `<f:attributes>`/`<f:attribute key= value=>`。
 
+## 标题排序与滚轮浏览
+
+v16.2.0 默认允许滚轮浏览标题栏；创建时用 `EnableTabWheelScroll=false`（JS `tabWheelScroll: false`）关闭。创建时开启 `EnableTabMove=true`（JS `tabMoving: true`）可拖动标题排序，Java 为 `enable-tab-move`、`enable-tab-wheel-scroll` 和对应 setter。两项都是创建开关，不能靠回发赋值重配已有实例。
+
+滚轮和排序保留当前激活页及其中输入。排序后 `ActiveTabIndex` 按新的集合下标定位，固定打开某页时用该页签对象或稳定 ID。客户端 `tabmove` 参数依次为 `event, tab, fromIndex, toIndex, targetTab, after`，下标从零开始。
+
+[排序与滚轮示例](https://fineui.com/core/demo/#/TabStrip/Reorder)
+
 ## 静态选项卡
 
 ```javascript

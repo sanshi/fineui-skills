@@ -1,6 +1,6 @@
 # Grid 高级功能（列锁定 / 拖拽排序 / 单元格合并 / 大数据）
 
-四个进阶能力。**要点：合并与拖拽的实际动作都在客户端 JS 完成，没有服务端"合并/拖拽"属性；持久化列/行顺序靠自定义回发。**
+列锁定、拖拽排序、合并与大数据按各自的创建开关启用。v16.2.0 企业版普通 Grid 支持行拖拽；持久化列或行顺序由业务处理。
 
 ## 概念 → 各写法属性名对照
 
@@ -11,6 +11,7 @@
 | 列可锁 / 初始锁 | 列 `lockable` / `locked` | `EnableLock` / `Locked` | `.EnableLock().Locked()` | `EnableLock` / `Locked` | `enable-lock` / `locked` |
 | 列锁到右侧 | 列 `lockedPosition:'right'` | `LockedPosition="Right"` | `.LockedPosition(LockedPosition.Right)` | `LockedPosition="Right"` | `locked-position="Right"` |
 | 启用列拖拽 | `columnMoving: true` | `EnableColumnMove="true"` | `.EnableColumnMove(true)` | `EnableColumnMove="true"` | `enable-column-move="true"` |
+| 启用行拖拽（v16.2.0 企业版） | `rowMoving: true` | `EnableRowMove="true"` | `.EnableRowMove(true)` | `EnableRowMove="true"` | `enable-row-move="true"` |
 | 启用大数据 | `bigData: true` | `EnableBigData="true"` | `.EnableBigData(true)` | `EnableBigData="true"` | `enable-big-data="true"` |
 
 ---
@@ -111,54 +112,22 @@ public void Page_CustomEvent(Object sender, CustomEventArgs e) {
 
 ## 3. 行拖拽排序（Row Move）
 
-**没有启用原生行拖拽的 Grid 属性**（`EnableRowDragDrop`/`AllowRowMove` 均不存在）。"行移动"是按钮 + 客户端方法实现：
+Pro/Core/Java 企业版普通 Grid 从 v16.2.0 起在创建时开启 `EnableRowMove=true`，F.js 对应 `rowMoving: true`，Java 为 `enable-row-move="true"` 或 `setEnableRowMove(true)`。默认关闭，已有实例不支持动态切换开关。用户拖动最左侧独立手柄列，落点以主题色横线显示。
+
+`rowmove` 在浏览器完成重排后触发，签名如下。此时 `this.data` 已是新的行顺序，事件本身不自动保存数据库。
 
 ```javascript
-// 上移/下移选中行
-grid.moveRowUp(grid.getSelectedRow());
-grid.moveRowDown(grid.getSelectedRow());
-
-// 两个表格间移动行
-function moveRight(rowIds) {
-    var rowDatas = $.map(rowIds, function (id) { return gridLeft.getRowData(id); });
-    gridRight.addNewRecords(rowDatas, true);   // 加到右表
-    gridLeft.deleteRows(rowIds, true);         // 从左表删
+function onRowMove(event, sourceRowId, targetRowId, position) {
+    const rowIds = this.data.map(row => row.id);
+    console.log('当前顺序', rowIds);
 }
 ```
 
-**服务端保存行顺序**（Core 自定义事件收 `JArray rowIds`）：
+Pro、Core RazorForms 和 Java 可在保存按钮中调用 `F.customEvent('Grid1_RowSort', { rowIds: rowIds })`，由 `Page_CustomEvent` 校验行 ID、权限及完整性后保存。纯 JS 页面通过自己的业务请求或本地存储保存顺序。Core MVC/RazorPages 用明确的业务事件地址提交；不要直接照搬这些模式不具备的页面级自定义事件。若希望用户确认后保存，可让监听器只显示顺序，由“保存”按钮提交。
 
-```csharp
-protected void Page_CustomEvent(object sender, CustomEventArgs e) {
-    if (e.EventName == "Grid1_RowMove") {
-        JArray rowIds = e.EventArgumentsAsJObject.Value<JArray>("rowIds");
-        DataTable newTable = original.Clone();
-        foreach (string rowId in rowIds) newTable.ImportRow(FindRow(rowId, original));
-        HttpContext.Session.SetObject(KEY, newTable);
-        ShowNotify("数据保存成功！");
-    }
-}
-```
+内存分页限当前页。实际存在列排序、表头筛选、行或单元格编辑、行展开、树、行分组、卡片、大数据、延迟渲染或数据库分页时暂停拖拽；恢复兼容状态后手柄可重新使用。`EnableRowDragDrop/AllowRowMove` 不是公开属性。原来的 `moveRowUp/moveRowDown` 按钮式移动和跨表格业务搬移仍是不同操作。
 
-```java
-// FineUI.Java —— 同 Core：客户端 F.customEvent('Grid1_RowMove', {rowIds:[...]}) 触发，页面类 Page_CustomEvent 接收保存
-public void Page_CustomEvent(Object sender, CustomEventArgs e) {
-    if ("Grid1_RowMove".equals(e.getEventName())) {
-        session().setAttribute(KEY, e.getArgument());   // 按上报的 rowIds 顺序重排数据源
-        Notify notify = new Notify();
-        notify.setMessage("数据保存成功！");
-        notify.show();
-    }
-}
-```
-
-Pro、Core RazorForms 与 Java 统一使用结构化自定义事件：
-
-```javascript
-F.customEvent('Grid1_RowMove', { rowIds: rowIds });
-```
-
-Pro 后台同样在 `Page_CustomEvent` 中通过 `e.EventName` 分派，并从 `e.EventArgumentsAsJObject` 读取 `rowIds`。不要使用 `__doPostBack` 拼接 `$` / `#` 字符串，再在 `Page_Load` 中手工拆分。
+[行拖拽与保存示例](https://fineui.com/core/demo/#/GridMove/RowSort)
 
 ---
 

@@ -2,6 +2,20 @@
 
 分三层：**字段级校验**（在字段上）、**整表校验**（在提交按钮上）、**服务端标记无效**（后台）。
 
+## 常驻填写说明与错误位置
+
+v16.2.0 的 `HelperText` 是字段下方常驻的纯文本说明，默认空字符串；后台更新或清空说明时保留当前输入及已选文件。`MessageTarget.Under` 把校验错误放在字段下方，说明与错误可同时显示，默认错误位置仍为 `Side`。
+
+```html
+<!-- Core；Pro 增加 runat="server"。 -->
+<f:TextBox ID="tbxEmail" Label="联系邮箱" Required="true"
+    HelperText="用于接收审批结果，请填写常用邮箱。" MessageTarget="Under" />
+```
+
+Java 对应 `helper-text`、`message-target="Under"`，后台为 `setHelperText(...)`；F.js 对应 `helperText`、`msgTarget: 'under'`。说明内容按文字显示，不能把 HTML 当作排版入口。Core MVC/RazorPages 的复选列表从本版起也可通过 AjaxHelper 的 `Required(bool)` 更新页面必填规则。
+
+[字段帮助示例](https://fineui.com/core/demo/#/Form/FieldHelperText)
+
 ## 一、字段级校验
 
 ### 必填
